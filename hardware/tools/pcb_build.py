@@ -458,11 +458,11 @@ board.Add(ko)
 add_gnd_pours(board, pcbnew)
 
 # ------------------------------------------------------------ silk text
-t = pcbnew.PCB_TEXT(board)
-t.SetText("BASSBERRY 2.1  rev 0.2  Z2Labs  CERN-OHL-S-2.0")
-t.SetPosition(P(156.0, 75.0)); t.SetLayer(pcbnew.F_SilkS)
-t.SetTextSize(pcbnew.VECTOR2I(mm(1.5), mm(1.5)))
-board.Add(t)
+for txt, yy, sz in (("BASSBERRY 2.1  rev 0.2", 70.0, 1.5), ("Z2Labs - CERN-OHL-S-2.0", 73.0, 1.0)):
+    t = pcbnew.PCB_TEXT(board)
+    t.SetText(txt); t.SetPosition(P(156.0, yy)); t.SetLayer(pcbnew.F_SilkS)
+    t.SetTextSize(pcbnew.VECTOR2I(mm(sz), mm(sz))); t.SetTextThickness(mm(0.15 if sz < 1.2 else 0.2))
+    board.Add(t)
 
 filler = pcbnew.ZONE_FILLER(board)
 filler.Fill(board.Zones())
