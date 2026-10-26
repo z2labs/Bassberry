@@ -575,7 +575,7 @@ def gnd_links(only):
     """last resort for a GND pin with no room for its own via: a short straight or L-shaped track to the nearest GND
     copper on its layer (another part's GND pad, a dog-bone via, an exposed pad) within 6 mm, clearance-checked"""
     import fatten
-    fatten.CLR = 0.15; fatten.CLR_PAD = 0.15
+    fatten.CLR = 0.15; fatten.CLR_PAD = 0.5          # 0.5 mm escape lane round every foreign pad: a link never walls one in
     cu = fatten.Copper(board)
     targets = []
     for fp in board.GetFootprints():
