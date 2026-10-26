@@ -68,7 +68,7 @@ def short(name):
 # (x, y, rot, side) for mechanically fixed parts; everything else is grid-placed by sheet below.
 FIXED = {
     # Raspberry Pi face-down socket: header along the left edge, matching the 3D model
-    "J101": (8.5, 52.5, None, "F"),  # header centre; rotation chosen automatically (pin 40 to the rear)
+    "J101": (57.5, 52.5, None, "F"),  # header centre; face-down Pi => header on the right, pin 40 (port end) to the rear
     # 3S cells (clips), cells run front-to-back
     "BT401": (81.0, 18.0, 0, "F"), "BT402": (81.0, 82.0, 0, "F"),
     "BT403": (100.0, 82.0, 0, "F"), "BT404": (100.0, 18.0, 0, "F"),
@@ -88,8 +88,8 @@ FIXED = {
 REGIONS = {  # sheet -> (x0, y0, x1, y1, side) for automatic placement
     "pi": (8.0, 23.0, 64.0, 43.0, "B"),
     "audio": (66.0, 8.0, 128.0, 86.0, "B"),
-    "power": (130.0, 9.0, 177.0, 84.0, "B"),
-    "battery": (130.0, 86.0, 160.0, 96.0, "B"),
+    "power": (130.0, 9.0, 177.0, 97.0, "B"),
+    "battery": (66.0, 88.0, 110.0, 98.0, "B"),
     "ui": (6.0, 73.0, 64.0, 96.0, "B"),
 }
 
@@ -152,7 +152,7 @@ for ref, c in sorted(comps.items()):
             vertical = abs(p1.x - p40.x) < abs(p1.y - p40.y)
             rear = p40.y < p1.y
             right = bb.GetCenter().x > (p1.x + p40.x) / 2
-            score = vertical * 4 + rear * 2 + right
+            score = vertical * 4 + rear * 2 + (not right)
             if best is None or score > best[0]:
                 best = (score, r, (p1.x + p40.x) / 2, (p1.y + p40.y) / 2)
         rot = best[1]
@@ -179,15 +179,15 @@ def hole(x, y, d=3.2, pad=6.0, ref="H"):
 for i, (x, y) in enumerate([(66, 4.5), (175.5, 9), (4.5, 105.5), (175.5, 105.5), (4.5, 26)]):
     hole(x, y, ref=f"H{i+1}")
 # Pi B+/2/3/4/5 holes not covered by the Zero footprint (58 x 49 mm pattern), M2.5
-hole(57.5, 23.5, d=2.7, ref="H6")
-hole(57.5, 81.5, d=2.7, ref="H7")
+hole(8.5, 23.5, d=2.7, ref="H6")
+hole(8.5, 81.5, d=2.7, ref="H7")
 # aluminium pedestal bolts (from the bottom into the block)
-hole(30.0, 58.0, d=2.7, ref="H8")
-hole(44.0, 58.0, d=2.7, ref="H9")
+hole(22.0, 61.0, d=2.7, ref="H8")
+hole(36.0, 61.0, d=2.7, ref="H9")
 
 # ------------------------------------------------------------ Pi SoC thermal pad: exposed copper + via field (GND)
 gnd = netobjs.get("GND")
-PAD = (24.0, 45.0, 50.0, 71.0)  # Pi 4/5 SoC region (verify against Pi mechanical drawings)
+PAD = (16.0, 48.0, 42.0, 74.0)  # Pi 4/5 SoC region (verify against Pi mechanical drawings)
 for layer in (pcbnew.F_Cu, pcbnew.F_Mask):
     z = pcbnew.ZONE(board)
     z.SetLayer(layer)
@@ -201,7 +201,7 @@ for layer in (pcbnew.F_Cu, pcbnew.F_Mask):
 for ix in range(13):
     for iy in range(13):
         x, y = PAD[0] + 1.0 + ix * 2.0, PAD[1] + 1.0 + iy * 2.0
-        if math.hypot(x - 30.0, y - 58.0) < 4 or math.hypot(x - 44.0, y - 58.0) < 4:
+        if math.hypot(x - 22.0, y - 61.0) < 4 or math.hypot(x - 36.0, y - 61.0) < 4:
             continue
         v = pcbnew.PCB_VIA(board)
         v.SetPosition(P(x, y)); v.SetDrill(mm(0.3)); v.SetWidth(mm(0.6)); v.SetNet(gnd)
@@ -216,7 +216,7 @@ ls = pcbnew.LSET(); [ls.AddLayer(l) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew
 ko.SetLayerSet(ls)
 ko.SetZoneName("PI_ANTENNA_KEEPOUT")
 ol = ko.Outline(); ol.NewOutline()
-for (x, y) in [(4.0, 72.0), (22.0, 72.0), (22.0, 88.0), (4.0, 88.0)]:
+for (x, y) in [(44.0, 72.0), (61.0, 72.0), (61.0, 88.0), (44.0, 88.0)]:  # verify vs Pi antenna position
     ol.Append(mm(OX + x), mm(OY + y))
 board.Add(ko)
 
