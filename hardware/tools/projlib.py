@@ -59,6 +59,13 @@ IP2366 = ic_symbol(
     w=25.4, nc=(40, 1, 2, 3, 4))
 
 
+XC6216 = ic_symbol(
+    "XC6216B332PR", "U", "Package_TO_SOT_SMD:SOT-89-5",
+    "https://www.torexsemi.com/file/xc6216/XC6216-XE6216.pdf",
+    "Torex XC6216B 3.3 V LDO, VIN 2-28 V, 150 mA, CE active high, SOT-89-5 (1 VOUT, 2 VSS, 3 CE, 4 NC, 5 VIN)",
+    left=[(5, "VIN", PI), (3, "CE", IN)], right=[(1, "VOUT", PO)], bottom=[(2, "VSS", PI)], w=12.7, nc=(4,))
+
+
 def rail_symbol(name, template="power:+3V3"):
     """Global power symbol for a project rail, cloned from KiCad's power:+3V3 (same graphics, power_in pin)."""
     from kilib import get_symbol
@@ -77,7 +84,7 @@ def rail_symbol(name, template="power:+3V3"):
 
 def write_lib(path, rails=()):
     lib = [Sym("kicad_symbol_lib"), [Sym("version"), 20241209], [Sym("generator"), "bassberry_projlib"],
-           [Sym("generator_version"), "1.0"], IP2366] + [rail_symbol(r) for r in rails]
+           [Sym("generator_version"), "1.0"], IP2366, XC6216] + [rail_symbol(r) for r in rails]
     open(path, "w", encoding="utf-8").write(dump(lib) + "\n")
     d = os.path.dirname(path)
     open(os.path.join(d, "sym-lib-table"), "w", encoding="utf-8").write(

@@ -24,7 +24,9 @@ Sources
   [DS-CH32]   WCH CH32V003 datasheet V1.1, Table 2-1 (TSSOP20 column): 1 PD4 .. 20 PD3, 7 VSS, 9 VDD; PC1 SDA, PC2 SCL, PD1 SWIO.
   [DS-CH340]  WCH CH340DS1 V3: CH340C SOP16: 1 GND, 2 TXD, 3 RXD, 4 V3, 5 UD+, 6 UD-, 15 R232, 16 VCC; V3 = VCC for 3.3 V.
   [DS-LC6]    ST USBLC6-2SC6: 1 I/O1, 2 GND, 3 I/O2, 4 I/O2, 5 VBUS, 6 I/O1 (pins 1/6 and 3/4 are the two lines).
-  [DS-HT75]   Holtek HT75xx-1 SOT-89: 1 GND, 2 VIN, 3 VOUT; VIN max 30 V (HT7533-1).
+  [DS-HT75]   Holtek HT75xx-1 rev 1.50 SOT-89: 1 GND, 2 VIN, 3 VOUT; VIN max 24 V, Pd 250 mW.
+  [DS-XC6216] Torex XC6216/XE6216 ETR0321: SOT-89-5 1 VOUT, 2 VSS, 3 CE (B type: active high), 4 NC, 5 VIN; VIN 2-28 V,
+              Pd 500 mW (1300 mW PCB mounted), dropout 300 mV at 20 mA.
   [USB-C]     USB Type-C receptacle pin map: VBUS A4/A9/B4/B9, GND A1/A12/B1/B12, CC1 A5, CC2 B5, D+ A6/B6, D- A7/B7.
   [KEY-1042]  Keystone 1042 18650 holder drawing ('+' marked contact = pad 1 in the KiCad footprint silk).
   [KICAD]     KiCad library conventions: diode/LED pad 1 = cathode; SolderJumper "Bridged12" = pads 1-2 shorted by copper.
@@ -68,6 +70,7 @@ CH32 = {"PD4": "1", "PD5": "2", "PD6": "3", "PD7": "4", "PA1": "5", "PA2": "6", 
 CH340 = {"GND": "1", "TXD": "2", "RXD": "3", "V3": "4", "UD+": "5", "UD-": "6", "R232": "15", "VCC": "16"}  # [DS-CH340]
 LC6 = {"IO1": "1", "GND": "2", "IO2": "3", "IO2b": "4", "VBUS": "5", "IO1b": "6"}        # [DS-LC6]
 HT75 = {"GND": "1", "VIN": "2", "VOUT": "3"}                                             # [DS-HT75]
+XC6216 = {"VOUT": "1", "VSS": "2", "CE": "3", "NC": "4", "VIN": "5"}                    # [DS-XC6216]
 USBC = {"VBUS": ["A4", "A9", "B4", "B9"], "GND": ["A1", "A12", "B1", "B12"], "CC1": ["A5"], "CC2": ["B5"],
         "D+": ["A6", "B6"], "D-": ["A7", "B7"]}                                          # [USB-C]
 CELL = {"+": "1", "-": "2"}                                                              # [KEY-1042]
@@ -76,7 +79,7 @@ ENC = {"A": "A", "B": "B", "C": "C", "S1": "S1", "S2": "S2"}                    
 
 PINTABLES = {"J101": PI_J8, "U201": TAS, "U202": TAS, "U302": IP, "U303": TPS, "U304": MT, "Q101": DMP, "Q102": DMMT,
              "Q301": NMOS8, "Q302": NMOS8, "Q303": NMOS8, "Q304": NMOS8, "Q305": NMOS8, "U101": EEP, "U501": CH32,
-             "U502": CH340, "U301": LC6, "U305": HT75, "U306": HT75, "BT401": CELL, "BT402": CELL, "BT403": CELL,
+             "U502": CH340, "U301": LC6, "U305": HT75, "U306": XC6216, "BT401": CELL, "BT402": CELL, "BT403": CELL,
              "SW506": ENC}
 MULTI = {"J301": USBC}
 DIODES = ("D", )          # refs starting with D use DIODE names
@@ -218,9 +221,10 @@ A = [
     # ================= LDOs [DS-HT75]
     ("same", [("U305", "VIN"), ("F401", "2")], "always-on LDO from the fused battery"),
     ("same", [("U305", "VOUT"), MCU("VDD")], "always-on 3V3 -> supervisor VDD"),
-    ("same", [("U306", "VIN"), ("J301", "VBUS")], "USB-side LDO from VBUS"),
+    ("same", [("U306", "VIN"), ("U306", "CE"), ("J301", "VBUS")], "USB-side LDO from VBUS, CE tied to VIN (XC6216B: active high)"),
     ("same", [("U306", "VOUT"), ("U502", "VCC"), ("U301", "VBUS")], "USB 3V3 -> CH340 VCC + ESD VBUS"),
-    ("gnd", [("U305", "GND"), ("U306", "GND")], "LDO grounds"),
+    ("gnd", [("U305", "GND"), ("U306", "VSS")], "LDO grounds"),
+    ("float", ("U306", "NC"), "XC6216 pin 4 NC"),
     # ================= USB console [DS-CH340] [DS-LC6] [USB-C]
     ("same", [("J301", "D+"), ("U502", "UD+")], "D+ (both receptacle rows) -> CH340 UD+"),
     ("same", [("J301", "D-"), ("U502", "UD-")], "D- (both receptacle rows) -> CH340 UD-"),

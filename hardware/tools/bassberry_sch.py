@@ -286,8 +286,10 @@ pw.flag("PVDD_SUB", 375, 330)
 # always-on 3V3 (supervisor) and USB-side 3V3 (CH340, ESD)
 pw.part("Regulator_Linear:HT75xx-1-SOT89", "U5", "HT7533-1", 80, 375, fp="Package_TO_SOT_SMD:SOT-89-3",
         nets={"VIN": "+BATT", "VOUT": "+3V3_AON", "GND": "GND"})
-pw.part("Regulator_Linear:HT75xx-1-SOT89", "U6", "HT7533-1", 160, 375, fp="Package_TO_SOT_SMD:SOT-89-3",
-        nets={"VIN": "VBUS", "VOUT": "+3V3_USB", "GND": "GND"})
+# USB-side 3V3 for the console: VBUS can be 20 V under PD -> a 28 V LDO with a 500 mW package (the HT7533's 24 V /
+# 250 mW is not enough at 20 V x 15 mA). Only alive while USB is plugged in.
+pw.part("bassberry:XC6216B332PR", "U6", "XC6216B332PR", 160, 375, fp="Package_TO_SOT_SMD:SOT-89-5",
+        nets={"VIN": "VBUS", "CE": "VBUS", "VOUT": "+3V3_USB", "VSS": "GND"})
 r = Row(pw, 100, 392, 10.16)
 r.C("C50", "1u 25V", "+BATT", "GND", C0603)
 r.C("C51", "1u", "+3V3_AON", "GND", C0603)
