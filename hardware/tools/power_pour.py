@@ -190,6 +190,27 @@ def main(path):
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
     nv = add_vias(b)
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
+    # a pour piece that touches nothing of its own net is dead copper (DRC isolated_copper): drop it
+    pts = {}
+    for t in b.GetTracks():
+        for q in ((t.GetPosition(),) if t.GetClass() == "PCB_VIA" else (t.GetStart(), t.GetEnd())):
+            pts.setdefault(t.GetNetname(), []).append((q, None if t.GetClass() == "PCB_VIA" else t.GetLayer()))
+    for fp in b.GetFootprints():
+        for p in fp.Pads():
+            pts.setdefault(p.GetNetname(), []).append((p.GetPosition(), p))
+    dead = 0
+    for z in list(b.Zones()):
+        if not z.GetZoneName().startswith("PWR_"):
+            continue
+        l = z.GetLayer(); f = z.GetFilledPolysList(l)
+        if f is None or not f.OutlineCount():
+            b.Remove(z); dead += 1; continue
+        hit = any(f.Contains(q) for q, o in pts.get(z.GetNetname(), [])
+                  if o is None or (o == l if isinstance(o, int) else o.IsOnLayer(l)))
+        if not hit:
+            b.Remove(z); dead += 1
+    if dead:
+        print(f"power_pour: {dead} dead pour pieces removed")
     print(f"power_pour: {nv} vias enlarged or added in parallel")
     pcbnew.SaveBoard(path, b)
     print(f"power_pour: {made} zones on {len([n for n in nets if any(fnmatch.fnmatchcase(n, g) for g, w, a in TARGET)])} nets")
