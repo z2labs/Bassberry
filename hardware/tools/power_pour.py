@@ -20,6 +20,9 @@ GND_MOAT = 1.0   # mm kept free around a GND pad that has no via of its own yet 
 VIA_A = 1.5      # A per 0.6/0.3 mm via (same figure as the layer-3 twin)
 PRIO = 5        # 5..9 by current: above the GND pours (0), below the SoC thermal pad (10)
 SPLIT = 1.0     # mm a pour keeps from another high-current net's track on the same layer
+# zone name -> (layer, net): a plane on an inner layer that takes all the room the signals leave there
+PLANES = {"PWR_PLANE_+BATT_In1.Cu": (pcbnew.In1_Cu, "+BATT")}
+TAP_A = {"big": 4.5, "small": 1.5}   # A each pad of the plane net must be able to push into the plane
 
 
 def add_vias(b):
@@ -111,6 +114,76 @@ def add_vias(b):
     return made
 
 
+def plane_taps(b):
+    """vias from every pad of a plane net (on its own outer copper: pad, track or pour) down into the plane: pads
+    1 mm or wider need TAP_A['big'] (they are the fuse, sense resistor, links and bulk caps), smaller ones one via."""
+    FM, mm = pcbnew.FromMM, pcbnew.ToMM
+    fatten.CLR = 0.2; fatten.CLR_PAD = 0.2
+    cu = fatten.Copper(b)
+    outline = pcbnew.SHAPE_POLY_SET(); b.GetBoardPolygonOutlines(outline, True)
+    keep = [z for z in b.Zones() if z.GetIsRuleArea()]
+    vias = [[mm(v.GetPosition().x), mm(v.GetPosition().y), mm(v.GetDrillValue()), v.GetNetname()] for v in b.GetTracks() if v.GetClass() == "PCB_VIA"]
+    ALL = (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu)
+    made = 0
+    for zname, (pl, net) in PLANES.items():
+        plane = next(z for z in b.Zones() if z.GetZoneName() == zname)
+        pf = plane.GetFilledPolysList(pl)
+        own = {}
+        for l in (pcbnew.F_Cu, pcbnew.B_Cu):
+            ps = pcbnew.SHAPE_POLY_SET()
+            for z in b.Zones():
+                if z.GetNetname() == net and not z.GetIsRuleArea() and z.IsOnLayer(l):
+                    f = z.GetFilledPolysList(l)
+                    if f is not None and f.OutlineCount():
+                        ps.Append(f)
+            for t in b.GetTracks():
+                if t.GetNetname() == net and t.GetClass() != "PCB_VIA" and t.GetLayer() == l:
+                    t.TransformShapeToPolygon(ps, l, 0, FM(0.02), pcbnew.ERROR_INSIDE)
+            for fp in b.GetFootprints():
+                for p in fp.Pads():
+                    if p.GetNetname() == net and p.IsOnLayer(l):
+                        p.TransformShapeToPolygon(ps, l, 0, FM(0.02), pcbnew.ERROR_INSIDE)
+            ps.Simplify()
+            own[l] = ps
+
+        def inside(ps, p, r):
+            return all(ps.Contains(pcbnew.VECTOR2I(FM(p[0] + r * math.cos(a)), FM(p[1] + r * math.sin(a))))
+                       for a in [k * math.pi / 4 for k in range(8)] + [0])
+        for fp in b.GetFootprints():
+            for p in fp.Pads():
+                if p.GetNetname() != net:
+                    continue
+                if p.GetAttribute() in (pcbnew.PAD_ATTRIB_PTH,):
+                    continue                                  # a plated hole already reaches the plane
+                l = pcbnew.B_Cu if p.IsOnLayer(pcbnew.B_Cu) else pcbnew.F_Cu
+                s = p.GetSize(pcbnew.F_Cu)
+                need = TAP_A["big"] if min(mm(s.x), mm(s.y)) >= 1.0 else TAP_A["small"]
+                c = (mm(p.GetPosition().x), mm(p.GetPosition().y))
+                have = sum(VIA_A * v[2] / 0.3 for v in vias if v[3] == net and math.hypot(v[0] - c[0], v[1] - c[1]) < 2.5)
+                for r in (0.8, 1.2, 1.6, 2.0, 2.5, 3.0):
+                    if have >= need:
+                        break
+                    for k in range(16):
+                        if have >= need:
+                            break
+                        q = (c[0] + r * math.cos(k * math.pi / 8), c[1] + r * math.sin(k * math.pi / 8))
+                        if not inside(outline, q, 0.8) or any(z.Outline().Contains(pcbnew.VECTOR2I(FM(q[0]), FM(q[1]))) for z in keep):
+                            continue
+                        for dia, drill in ((1.0, 0.5), (0.6, 0.3)):
+                            if any(math.hypot(q[0] - v[0], q[1] - v[1]) < (drill + v[2]) / 2 + 0.35 for v in vias):
+                                continue
+                            if not inside(own[l], q, dia / 2 + 0.05) or not inside(pf, q, dia / 2 + 0.05):
+                                continue
+                            if not all(cu.clear(net, ll, q, q, dia / 2) for ll in ALL):
+                                continue
+                            v = pcbnew.PCB_VIA(b); v.SetPosition(pcbnew.VECTOR2I(FM(q[0]), FM(q[1])))
+                            v.SetWidth(FM(dia)); v.SetDrill(FM(drill)); v.SetNet(p.GetNet()); b.Add(v)
+                            cu.add(net, "all", ("circ", q, dia / 2), v)
+                            vias.append([q[0], q[1], drill, net]); have += VIA_A * drill / 0.3; made += 1
+                            break
+    return made
+
+
 def main(path):
     b = pcbnew.LoadBoard(path)
     FM = pcbnew.FromMM
@@ -187,7 +260,20 @@ def main(path):
                 z.SetIslandRemovalMode(pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
                 z.Outline().Append(ps.UnitSet(i))          # outline with its holes (the GND moats)
                 b.Add(z); made += 1
+    # In1.Cu: whatever room the signals leave becomes a +BATT plane (below every corridor pour), fed by taps
+    outline = pcbnew.SHAPE_POLY_SET(); b.GetBoardPolygonOutlines(outline, True)
+    for pname, (pl, pnet) in PLANES.items():
+        z = pcbnew.ZONE(b)
+        z.SetLayer(pl); z.SetNet(b.FindNet(pnet)); z.SetAssignedPriority(4)
+        z.SetZoneName(pname); z.SetLocalClearance(FM(0.25)); z.SetMinThickness(FM(0.25))
+        z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL); z.SetIslandRemovalMode(pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
+        z.Outline().Append(outline)
+        b.Add(z); made += 1
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
+    nt = plane_taps(b)
+    if nt:
+        print(f"power_pour: {nt} plane tap vias")
+        pcbnew.ZONE_FILLER(b).Fill(b.Zones())
     nv = add_vias(b)
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
     # a pour piece that touches nothing of its own net is dead copper (DRC isolated_copper): drop it

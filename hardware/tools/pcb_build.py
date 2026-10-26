@@ -112,7 +112,7 @@ FIXED = {
     "U302": (162.5, 40.0, 180, "B"),          # QFN pins 11-20 (gate drive, LX, BST) face the power stage
     "Q305": (135.0, 14.0, 90, "B"), "R305": (141.0, 14.0, 90, "B"),
     # Pi 5 V buck + back-power diode next to header pins 2/4 (bottom)
-    "U303": (75.0, 80.0, 0, "B"), "L302": (75.0, 90.0, 0, "B"), "Q101": (66.0, 78.5, 90, "B"),
+    "U303": (75.0, 80.0, 0, "B"), "Q101": (57.0, 80.0, 90, "B"),
     # sub boost
     "U304": (100.0, 50.0, 0, "B"), "L303": (100.0, 60.0, 0, "B"),   # next to amp 2
     # amplifiers (bottom, under the cells), output filters towards their connectors
@@ -132,6 +132,7 @@ PARTNER = {
     "C242": ("U202", "16"), "C243": ("U202", "27"),
     "C302": ("U302", "8"), "C304": ("U302", "23"), "C312": ("Q301", "5"), "C313": ("Q301", "5"),
     "C315": ("R304", "2"), "C316": ("R304", "2"),
+    "L302": ("U303", "2"),       # TPS565208: inductor straight off the SW pin end (pins 1-3 side), not across the package
     "C332": ("U303", "3"), "C333": ("U303", "3"), "C334": ("U303", "3"),
     "C335": ("L302", "2"), "C336": ("L302", "2"), "C337": ("L302", "2"),
     "C340": ("D306", "1"), "C341": ("D306", "1"),
@@ -355,7 +356,8 @@ def side_for(ref):
     return "B"
 
 
-todo = [r for r in sorted(fps) if r not in where]
+# inductors first: the power loop (IC pin -> inductor) gets its spot before the decoupling caps crowd the pin
+todo = sorted((r for r in fps if r not in where), key=lambda r: (not r.startswith("L"), r))
 for _round in range(6):
     left = []
     for ref in todo:
