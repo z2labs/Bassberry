@@ -174,14 +174,14 @@ def geom(fp, rot, side):
     x0, y0 = tomm(pcbnew.VECTOR2I(bb.GetX(), bb.GetY()))
     box = (x0, y0, x0 + pcbnew.ToMM(bb.GetWidth()), y0 + pcbnew.ToMM(bb.GetHeight()))
     pads = {}
-    pbox = None
+    holes = []        # every drilled hole (PTH pins, NPTH pegs) blocks the other side too
     for p in fp.Pads():
         pads.setdefault(p.GetNumber(), tomm(p.GetPosition()))
-        if p.GetNumber() and p.GetAttribute() == pcbnew.PAD_ATTRIB_PTH and pcbnew.ToMM(p.GetDrillSize().x) > 0.5:
+        drilled = p.GetAttribute() in (pcbnew.PAD_ATTRIB_PTH, pcbnew.PAD_ATTRIB_NPTH) and pcbnew.ToMM(p.GetDrillSize().x) > 0.5
+        if drilled:
             b = p.GetBoundingBox(); a = tomm(pcbnew.VECTOR2I(b.GetX(), b.GetY()))
-            r = (a[0], a[1], a[0] + pcbnew.ToMM(b.GetWidth()), a[1] + pcbnew.ToMM(b.GetHeight()))
-            pbox = r if pbox is None else (min(pbox[0], r[0]), min(pbox[1], r[1]), max(pbox[2], r[2]), max(pbox[3], r[3]))
-    return box, pads, pbox
+            holes.append((a[0], a[1], a[0] + pcbnew.ToMM(b.GetWidth()), a[1] + pcbnew.ToMM(b.GetHeight())))
+    return box, pads, holes
 
 
 occupied = {"F": [], "B": []}
@@ -201,11 +201,11 @@ def free(rect, side):
 
 
 def occupy(fp_geom, x, y, side, tht, ref=""):
-    box, pads, pbox = fp_geom
+    box, pads, holes = fp_geom
     occupied[side].append((box[0] + x, box[1] + y, box[2] + x, box[3] + y)); owner[side].append(ref)
-    if tht and pbox:
-        o = "B" if side == "F" else "F"
-        occupied[o].append((pbox[0] + x - 0.3, pbox[1] + y - 0.3, pbox[2] + x + 0.3, pbox[3] + y + 0.3)); owner[o].append(ref + "(pins)")
+    o = "B" if side == "F" else "F"
+    for h in holes:
+        occupied[o].append((h[0] + x - 0.3, h[1] + y - 0.3, h[2] + x + 0.3, h[3] + y + 0.3)); owner[o].append(ref + "(hole)")
 
 
 fps, where, padpos = {}, {}, {}
