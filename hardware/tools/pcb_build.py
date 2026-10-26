@@ -86,7 +86,7 @@ PI_AREA = (3.0, 19.0, 61.5, 107.0)       # face-down Pi body over the top side: 
 THERMAL = (16.0, 48.0, 42.0, 74.0)       # SoC thermal pad + via field (both sides)
 ANTENNA = (44.0, 72.0, 61.0, 88.0)       # Pi Wi-Fi/BT antenna: no copper on any layer (verify vs Pi drawing)
 BLOCK = {"F": [PI_AREA, ANTENNA], "B": [THERMAL, ANTENNA]}
-HOLES = [(66.0, 4.5, 3.2), (175.5, 9.0, 3.2), (4.5, 105.5, 3.2), (175.5, 105.5, 3.2), (132.5, 50.0, 3.2),
+HOLES = [(66.0, 4.5, 3.2), (175.5, 9.0, 3.2), (4.5, 105.5, 3.2), (175.5, 105.5, 3.2), (135.0, 50.0, 3.2),
          (8.5, 23.5, 2.7), (8.5, 81.5, 2.7), (22.0, 61.0, 2.7), (36.0, 61.0, 2.7)]
 for (x, y, d) in HOLES:
     r = (3.0 if d > 3 else 2.5) + 0.3
@@ -98,7 +98,7 @@ for (x, y, d) in HOLES:
 #   BT401 '+' rear / '-' front (CELL0 -> BMS B- at the front), BT402 '-' rear, BT403 '+' rear (CELL3 -> fuse -> charger).
 FIXED = {
     "J101": (57.5, 52.5, None, "F"),
-    "BT401": (74.5, 50.0, 90, "F"), "BT402": (96.0, 50.0, 270, "F"), "BT403": (117.5, 50.0, 90, "F"),
+    "BT401": (74.5, 50.0, 90, "F"), "BT402": (97.0, 50.0, 270, "F"), "BT403": (119.5, 50.0, 90, "F"),
     "J301": (141.0, 3.6, 180, "F"),
     # front UI strip (top), plungers through the lid
     "SW501": (72.0, 104.0, 0, "F"), "SW502": (84.0, 104.0, 0, "F"), "SW503": (96.0, 104.0, 0, "F"),
@@ -107,24 +107,24 @@ FIXED = {
     # BMS module wire pads under the front of the cells, fuse at the rear next to cell 3 '+'
     "J401": (96.0, 97.0, 0, "B"), "F401": (128.0, 8.0, 90, "B"), "J402": (136.0, 97.0, 0, "B"),
     # speaker connectors (bottom, cables to the chambers)
-    "J201": (66.5, 40.0, 90, "B"), "J202": (130.0, 66.0, 90, "B"), "J203": (98.0, 70.0, 0, "B"),
+    "J201": (52.0, 28.0, 90, "B"), "J202": (172.0, 62.0, 90, "B"), "J203": (150.0, 62.0, 0, "B"),
     # charger power stage (bottom, rear right, next to USB-C): HS/LS pairs either side of L301
     "L301": (163.0, 24.0, 0, "B"),
     "Q301": (150.5, 16.0, 90, "B"), "Q302": (150.5, 27.0, 90, "B"),
     "Q303": (175.5, 16.0, 270, "B"), "Q304": (175.5, 27.0, 270, "B"),
     "R302": (150.5, 7.0, 0, "B"), "R304": (171.0, 6.0, 0, "B"),
-    "C314": (154.0, 44.0, 0, "B"), "C317": (171.0, 44.0, 0, "B"),
+    "C314": (151.0, 46.0, 0, "B"), "C317": (174.0, 46.0, 0, "B"),
     "U302": (162.5, 40.0, 0, "B"),
     "Q305": (135.0, 14.0, 90, "B"), "R305": (141.0, 14.0, 90, "B"),
     # Pi 5 V buck + back-power diode next to header pins 2/4 (bottom)
     "U303": (75.0, 80.0, 0, "B"), "L302": (75.0, 90.0, 0, "B"), "Q101": (66.0, 78.5, 90, "B"),
     # sub boost
-    "U304": (110.0, 88.0, 0, "B"), "L303": (118.0, 88.0, 0, "B"),
+    "U304": (110.0, 88.0, 0, "B"), "L303": (120.0, 88.0, 0, "B"),
     # amplifiers (bottom, under the cells), output filters towards their connectors
     "U201": (82.0, 30.0, 0, "B"), "U202": (112.0, 30.0, 0, "B"),
     "C234": (82.0, 10.0, 0, "B"), "C244": (112.0, 10.0, 0, "B"),
     # supervisor + console + LDOs
-    "U501": (146.0, 84.0, 0, "B"), "U502": (140.0, 30.0, 90, "B"), "U301": (141.0, 9.0, 0, "B"),
+    "U501": (146.0, 84.0, 0, "B"), "U502": (140.0, 30.0, 90, "B"),
     "U305": (156.0, 76.0, 0, "B"), "U306": (134.0, 22.0, 0, "B"),
     "J501": (160.0, 88.0, 90, "B"),
 }
@@ -180,7 +180,7 @@ def geom(fp, rot, side):
     pbox = None
     for p in fp.Pads():
         pads.setdefault(p.GetNumber(), tomm(p.GetPosition()))
-        if p.GetNumber() and p.GetAttribute() == pcbnew.PAD_ATTRIB_PTH:
+        if p.GetNumber() and p.GetAttribute() == pcbnew.PAD_ATTRIB_PTH and pcbnew.ToMM(p.GetDrillSize().x) > 0.5:
             b = p.GetBoundingBox(); a = tomm(pcbnew.VECTOR2I(b.GetX(), b.GetY()))
             r = (a[0], a[1], a[0] + pcbnew.ToMM(b.GetWidth()), a[1] + pcbnew.ToMM(b.GetHeight()))
             pbox = r if pbox is None else (min(pbox[0], r[0]), min(pbox[1], r[1]), max(pbox[2], r[2]), max(pbox[3], r[3]))
