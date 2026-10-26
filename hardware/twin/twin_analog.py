@@ -161,10 +161,10 @@ class Copper:
                 adj[a].append(b); adj[b].append(a)
             cap[(a, b)] += c; cap[(b, a)] += c
         for (li, i, j) in cells:
-            for di, dj in ((1, 0), (0, 1)):
+            for di, dj, f in ((1, 0, 1.0), (0, 1, 1.0), (1, 1, 0.5), (1, -1, 0.5)):   # diagonals: thin 45-deg runs
                 n2 = (li, i + di, j + dj)
                 if n2 in cells:
-                    edge((li, i, j), n2, kcap[self.layers[li]])
+                    edge((li, i, j), n2, kcap[self.layers[li]] * f)
         INF = 1e9
 
         def cell_of(x, y):

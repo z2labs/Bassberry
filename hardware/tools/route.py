@@ -67,14 +67,18 @@ def widths(board):
 # pass 1 also takes everything that escapes from between power pins (charger QFN, amp bootstrap pins), so the
 # fattened power copper never walls them in
 LOCAL = [f"{PW}CHG_*", "CHG_LED_*", "NTC", f"{PW}CC?", f"{A}AMP?_BST*", f"{A}AMP?_VRDIG", f"{A}AMP?_AVDD", f"{PW}BUCK_*", f"{PW}BOOST_*"]
-POWER = LOCAL + [f"{BT}CELL*", "+BATT", "+5V", "+5V_BUCK", f"{PW}BUCK_SW", "VBUS", f"{PW}CHG_VIN", f"{PW}CHG_NODE?", f"{PW}CHG_LX?",
+HEAVY = [f"{BT}CELL*", "+BATT", "+5V", "+5V_BUCK", f"{PW}BUCK_SW", "VBUS", f"{PW}CHG_VIN", f"{PW}CHG_NODE?", f"{PW}CHG_LX?",
          "PVDD_SUB", f"{PW}BOOST_SW", f"{PW}BOOST_OUT", f"{A}AMP1_AP", f"{A}AMP1_AN", f"{A}AMP1_BP", f"{A}AMP1_BN",
-         f"{A}AMP2_P", f"{A}AMP2_N", f"{A}SAT_*", f"{A}SUB_*", "+3V3", "+3V3_AON", "+3V3_USB"]
+         f"{A}AMP2_P", f"{A}AMP2_N", f"{A}SAT_*", f"{A}SUB_*"]
+POWER = LOCAL + ["+3V3", "+3V3_AON", "+3V3_USB"]
 FAST = ["I2S_*", f"{PI}PI_BCLK", f"{PI}PI_LRCLK", f"{PI}PI_DOUT", "USB_DP", "USB_DN", "I2C_*", f"{PI}ID_S?",
         "AMP*_PDN", "PI_*",                                    # everything else that leaves the Pi header
         f"{A}AMP2_SDIN", f"{A}AMP1_SDOUT"]
 PASSES = [
-    ("pass1_power", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:15", "-via", "6000", "-it", "80"]),   # heavy copper stays outside; the QFN escape needs a longer negotiation
+    # 1a: high-current nets alone, outer layers only (In1 closed: 0.5 oz inner copper carries a third), vias avoided
+    ("pass1a_heavy", HEAVY, ["-top", "F.Cu:6", "-via", "20000", "-it", "80"]),
+    # 1b: everything that escapes from between power pins (QFN, amp bootstrap), the 3V3 rails
+    ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:15", "-via", "6000", "-it", "80"]),
     ("pass2_fast", FAST, ["-top", "F.Cu:10", "-top", "B.Cu:2", "-via", "2500"]),
     ("pass3_rest", ["*"], ["-top", "F.Cu:4", "-via", "2000"]),
 ]
@@ -89,11 +93,13 @@ def rules(only, width):
     }
 
 
-def export_dsn(board, path):
+def export_dsn(board, path, closed=("In2.Cu",)):
     assert pcbnew.ExportSpecctraDSN(board, path), "DSN export failed"
     t = open(path, encoding="utf-8").read()
-    # In2.Cu is the solid GND plane: closed for the router
-    t2 = re.sub(r"\(layer In2\.Cu\s*\(type \w+\)", "(layer In2.Cu (type power)", t)
+    # In2.Cu is the solid GND plane: always closed; pass 1a also closes In1.Cu
+    t2 = t
+    for l in closed:
+        t2 = re.sub(r"\(layer " + re.escape(l) + r"\s*\(type \w+\)", f"(layer {l} (type power)", t2)
     open(path, "w", encoding="utf-8").write(t2)
     return t2 != t
 
@@ -120,7 +126,7 @@ def main():
     summary = []
     for name, only, args in PASSES:
         dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
-        export_dsn(b, dsn)
+        export_dsn(b, dsn, ("In2.Cu", "In1.Cu") if name == "pass1a_heavy" else ("In2.Cu",))
         json.dump(rules(only, width), open(rj, "w"), indent=1)
         cmd = [SR, "-de", dsn, "-do", ses, "-rules", rj, "-report", rep] + args
         print(">>", " ".join(cmd), flush=True)
@@ -138,7 +144,7 @@ def main():
         import_ses(b, ses)
         summary.append((name, len(bad)))
         pcbnew.SaveBoard(BOARD, b)
-        if name == "pass1_power":     # give the power copper its width before the other nets are routed around it
+        if name == "pass1a_heavy":    # give the power copper its width before the other nets are routed around it
             subprocess.run([sys.executable, os.path.join(HERE, "fatten.py"), BOARD])
         b = pcbnew.LoadBoard(BOARD)
     n = add_thermal_vias(b, pcbnew)
