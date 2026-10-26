@@ -361,8 +361,7 @@ def side_for(ref):
     return "B"
 
 
-# inductors first: the power loop (IC pin -> inductor) gets its spot before the decoupling caps crowd the pin
-todo = sorted((r for r in fps if r not in where), key=lambda r: (not r.startswith("L"), r))
+todo = [r for r in sorted(fps) if r not in where]
 for _round in range(6):
     left = []
     for ref in todo:

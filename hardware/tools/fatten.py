@@ -18,6 +18,7 @@ CLR_PAD = 0.50      # mm, to other nets' pads: a 0.2 mm track with 0.15 mm clear
 EDGE = 0.5          # mm to the board edge
 VIA_D, VIA_HOLE = 0.6, 0.3
 VIA_A = 1.5
+GROW = "--grow" in sys.argv   # 1.0/0.5 mm vias: only after routing (power_pour); between passes they eat the room
 # net glob -> (target width mm on outer copper, design current A)   [IPC-2221, 1 oz, 20 K rise]
 TARGET = [
     ("/battery/CELL?", 2.4, 6.0), ("+BATT", 2.4, 6.0),
@@ -176,7 +177,7 @@ def main(path, dry=False):
                        (d + mm(x.GetDrillValue())) / 2 + 0.3 for x in allv if x is not skip)
         have = sum(cap(mm(x.GetDrillValue())) for x in mates)
         # the via itself first: 1.0 / 0.5 mm where it clears (2.5 A)
-        if have < need and mm(v.GetDrillValue()) < 0.45 and holes_ok(c, 0.5, skip=v) and \
+        if GROW and have < need and mm(v.GetDrillValue()) < 0.45 and holes_ok(c, 0.5, skip=v) and \
                 all(cu.clear(net, l, c, c, 0.5) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu)):
             have += cap(0.5) - cap(mm(v.GetDrillValue()))
             if not dry:
@@ -191,7 +192,7 @@ def main(path, dry=False):
                 ang = math.radians(22.5 * k)
                 p = (c[0] + r * math.cos(ang), c[1] + r * math.sin(ang))
                 sw = min(wt, 1.0)
-                for vd, vh in ((1.0, 0.5), (VIA_D, VIA_HOLE)):
+                for vd, vh in (((1.0, 0.5),) if GROW else ()) + ((VIA_D, VIA_HOLE),):
                     if not inside(p, vd / 2 + EDGE) or not holes_ok(p, vh):
                         continue
                     ok = all(cu.clear(net, l, p, p, vd / 2) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu))
