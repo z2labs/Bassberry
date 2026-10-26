@@ -52,17 +52,13 @@ def main(path):
                 moat.Simplify()
                 ps.BooleanSubtract(moat)
             for i in range(ps.OutlineCount()):
-                outline = ps.Outline(i)
                 z = pcbnew.ZONE(b)
                 z.SetLayer(layer); z.SetNet(ni); z.SetAssignedPriority(PRIO)
                 z.SetZoneName(f"PWR_{net.split('/')[-1]}_{b.GetLayerName(layer)}_{i}")
                 z.SetLocalClearance(FM(0.25)); z.SetMinThickness(FM(0.25))
                 z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
                 z.SetIslandRemovalMode(pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
-                zo = z.Outline(); zo.NewOutline()
-                for k in range(outline.PointCount()):
-                    p = outline.CPoint(k)
-                    zo.Append(p.x, p.y)
+                z.Outline().Append(ps.UnitSet(i))          # outline with its holes (the GND moats)
                 b.Add(z); made += 1
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
     pcbnew.SaveBoard(path, b)
