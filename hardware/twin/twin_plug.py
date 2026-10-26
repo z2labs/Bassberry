@@ -90,7 +90,7 @@ def board_geometry(path):
         o = z.Outline().BBox()
         zones[z.GetZoneName()] = (mm(o.GetX()) - OX, mm(o.GetY()) - OY, mm(o.GetRight()) - OX, mm(o.GetBottom()) - OY)
     outline = b.GetBoardEdgesBoundingBox()
-    edge = pcbnew.SHAPE_POLY_SET(); b.GetBoardPolygonOutlines(edge)
+    edge = pcbnew.SHAPE_POLY_SET(); b.GetBoardPolygonOutlines(edge, True)
     def on_board(x, y):
         return edge.Contains(pcbnew.VECTOR2I(pcbnew.FromMM(x + OX), pcbnew.FromMM(y + OY)))
     return holes, pads, top_parts, zones, on_board
