@@ -483,7 +483,7 @@ def gnd_ties(refs):
             tx = min(max(q.x, eb.GetX()), eb.GetRight()); ty = min(max(q.y, eb.GetY()), eb.GetBottom())
             if abs(pcbnew.ToMM(tx - q.x)) > 1.6 or abs(pcbnew.ToMM(ty - q.y)) > 1.6:
                 continue       # far from the pad: leave it to the pour
-            ps = p.GetSize(pcbnew.F_Cu); hw = min(0.125, pcbnew.ToMM(min(ps.x, ps.y)) / 2)
+            ps = p.GetSize(pcbnew.F_Cu); hw = min(0.125, pcbnew.ToMM(min(ps.x, ps.y)) / 2 - 0.025)   # a bit narrower than the pin
             a = (pcbnew.ToMM(q.x), pcbnew.ToMM(q.y)); e = (pcbnew.ToMM(tx), pcbnew.ToMM(ty))
             if abs(e[0] - a[0]) < 0.05 or abs(e[1] - a[1]) < 0.05:
                 path = [a, e]                              # pin faces the pad: straight in
