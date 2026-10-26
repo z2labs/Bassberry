@@ -261,6 +261,7 @@ r.C("C34", "100n 50V", "+BATT", "GND", C0603)
 r.C("C35", "22u 10V", "+5V_BUCK", "GND", C1206)
 r.C("C36", "22u 10V", "+5V_BUCK", "GND", C1206)
 r.C("C37", "22u 10V", "+5V_BUCK", "GND", C1206)
+pw.flag("+5V_BUCK", 180, 330)
 
 # sub boost (optional) MT3608, ~17 V
 pw.text("Sub PVDD boost (optional): Vout = 0.6*(1+R41/R42) = 17.1 V. JP1 selects PVDD_SUB = +BATT (default) or boost.", 200, 290)
