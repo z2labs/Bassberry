@@ -128,13 +128,13 @@ for ref, a, b in filt:
     r.L(ref, "10u 3A shielded", a, b, "Inductor_SMD:L_Changjiang_FXL1040")
 r = Row(au, 200, 80, 12.7)
 for i, (_, _, b) in enumerate(filt):
-    r.C(f"C{40+i}", "680n 50V", b, "GND", C0805)
+    r.C(f"C{60+i}", "680n 50V", b, "GND", C0805)
 r = Row(au, 200, 185, 12.7)
 r.L("L5", "10u 5A shielded", "AMP2_P", "SUB_P", IND_PWR)
 r.L("L6", "10u 5A shielded", "AMP2_N", "SUB_N", IND_PWR)
 r = Row(au, 200, 205, 12.7)
-r.C("C44", "680n 50V", "SUB_P", "GND", C0805)
-r.C("C45", "680n 50V", "SUB_N", "GND", C0805)
+r.C("C64", "680n 50V", "SUB_P", "GND", C0805)
+r.C("C65", "680n 50V", "SUB_N", "GND", C0805)
 
 for ref, name, p, nn, y in (("J1", "SAT LEFT", "SAT_L_P", "SAT_L_N", 60), ("J2", "SAT RIGHT", "SAT_R_P", "SAT_R_N", 90),
                             ("J3", "SUB", "SUB_P", "SUB_N", 190)):
