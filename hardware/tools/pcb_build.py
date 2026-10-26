@@ -70,9 +70,9 @@ FIXED = {
     # Raspberry Pi face-down socket: header along the left edge, matching the 3D model
     "J101": (8.5, 58.0, 90, "F"),
     # 3S cells (clips), cells run front-to-back
-    "BT401A": (81.0, 18.0, 0, "F"), "BT401B": (81.0, 82.0, 0, "F"),
-    "BT402A": (100.0, 82.0, 0, "F"), "BT402B": (100.0, 18.0, 0, "F"),
-    "BT403A": (119.0, 18.0, 0, "F"), "BT403B": (119.0, 82.0, 0, "F"),
+    "BT401": (81.0, 18.0, 0, "F"), "BT402": (81.0, 82.0, 0, "F"),
+    "BT403": (100.0, 82.0, 0, "F"), "BT404": (100.0, 18.0, 0, "F"),
+    "BT405": (119.0, 18.0, 0, "F"), "BT406": (119.0, 82.0, 0, "F"),
     # rear edge: USB-C (power sheet J1)
     "J301": (150.0, 3.5, 180, "F"),
     # front strip UI

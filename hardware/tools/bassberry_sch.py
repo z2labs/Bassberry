@@ -280,8 +280,8 @@ bt.text("Reverse-cell LED lights only when a cell is inserted backwards. P- of t
 cells = [("CELL0", "CELL1"), ("CELL1", "CELL2"), ("CELL2", "CELL3")]
 for i, (neg, pos) in enumerate(cells):
     x = 50 + i * 60
-    bt.part("Connector_Generic:Conn_01x01", f"BT{i+1}A", f"cell {i+1} +", x, 70, fp="Battery:BatteryClip_Keystone_54_D16-19mm", nets={"1": pos})
-    bt.part("Connector_Generic:Conn_01x01", f"BT{i+1}B", f"cell {i+1} -", x, 90, fp="Battery:BatteryClip_Keystone_54_D16-19mm", nets={"1": neg})
+    bt.part("Connector_Generic:Conn_01x01", f"BT{2*i+1}", f"cell {i+1} +", x, 70, fp="Battery:BatteryClip_Keystone_54_D16-19mm", nets={"1": pos})
+    bt.part("Connector_Generic:Conn_01x01", f"BT{2*i+2}", f"cell {i+1} -", x, 90, fp="Battery:BatteryClip_Keystone_54_D16-19mm", nets={"1": neg})
     bt.part("Device:LED", f"D{i+1}", "LED red 0603 (reverse cell)", x + 25, 80, rot=90, fp="LED_SMD:LED_0603_1608Metric",
             nets={"1": pos, "2": f"REV{i+1}"})
     bt.R(f"R{i+1}", "2k2", x + 35, 80, f"REV{i+1}", neg, R0603)
