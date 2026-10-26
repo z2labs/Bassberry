@@ -112,7 +112,7 @@ FIXED = {
     "U302": (162.5, 40.0, 180, "B"),          # QFN pins 11-20 (gate drive, LX, BST) face the power stage
     "Q305": (135.0, 14.0, 90, "B"), "R305": (141.0, 14.0, 90, "B"),
     # Pi 5 V buck + back-power diode next to header pins 2/4 (bottom)
-    "U303": (75.0, 80.0, "face:2:+y", "B"), "L302": (75.0, 88.0, "face:1:-y", "B"), "Q101": (66.0, 78.5, 90, "B"),
+    "U303": (75.0, 80.0, "face:2:+y", "B"), "L302": (75.0, 88.0, "face:1:-y", "B"), "Q101": (66.0, 78.5, "face:1:-x", "B"),
     # sub boost
     "U304": (100.0, 50.0, 0, "B"), "L303": (100.0, 60.0, 0, "B"),   # next to amp 2
     # amplifiers (bottom, under the cells), output filters towards their connectors
