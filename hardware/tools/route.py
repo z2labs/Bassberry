@@ -143,10 +143,12 @@ def trunk_plan(board):
         if tg is None:
             continue
         want = min(TRUNK_MAX, tg)
-        big = [d for d, p in ps if d * 0.95 >= TRUNK_MIN]
-        if len(big) < 2:
+        fits = sorted((d * 0.95 for d, p in ps), reverse=True)
+        if len(fits) < 2 or fits[1] < TRUNK_MIN:
             continue
-        w = round(min(want, min(big) * 0.95), 2)
+        # widest width that still joins at least two pads (and every pad that is at least that wide);
+        # 0805/0603 decoupling caps and fine-pitch pins become taps
+        w = round(min(want, fits[1]), 2)
         # a pad joins the trunk only if the trunk fits it; everything narrower is a tap, routed later
         small = [p for d, p in ps if d * 0.95 < w]
         plan[n] = (w, small)
