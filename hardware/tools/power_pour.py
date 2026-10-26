@@ -279,8 +279,13 @@ def main(path):
     # a pour piece that touches nothing of its own net is dead copper (DRC isolated_copper): drop it
     pts = {}
     for t in b.GetTracks():
-        for q in ((t.GetPosition(),) if t.GetClass() == "PCB_VIA" else (t.GetStart(), t.GetEnd())):
-            pts.setdefault(t.GetNetname(), []).append((q, None if t.GetClass() == "PCB_VIA" else t.GetLayer()))
+        if t.GetClass() == "PCB_VIA":
+            pts.setdefault(t.GetNetname(), []).append((t.GetPosition(), None)); continue
+        a, e = t.GetStart(), t.GetEnd()
+        n = max(1, int(pcbnew.ToMM((e - a).EuclideanNorm()) / 0.3))      # sample along the whole segment
+        for i in range(n + 1):
+            q = pcbnew.VECTOR2I(int(a.x + (e.x - a.x) * i / n), int(a.y + (e.y - a.y) * i / n))
+            pts.setdefault(t.GetNetname(), []).append((q, t.GetLayer()))
     for fp in b.GetFootprints():
         for p in fp.Pads():
             pts.setdefault(p.GetNetname(), []).append((p.GetPosition(), p))
