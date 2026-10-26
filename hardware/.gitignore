@@ -1,2 +1,10 @@
 
 _datasheets/
+bassberry/_*
+bassberry/*.rpt
+bassberry/*.net
+bassberry/*-backups/
+bassberry/fp-info-cache
+bassberry/*.kicad_prl
+bassberry/_autosave*
+bassberry/~*

@@ -33,8 +33,8 @@ ds = board.GetDesignSettings()
 ds.SetBoardThickness(mm(1.6))
 
 # ------------------------------------------------------------ outline with Pi port notch (rear-left)
-NOTCH = (5.0, 61.0, 21.0)  # x0, x1, depth from rear edge
-pts = [(0, 0), (NOTCH[0], 0), (NOTCH[0], NOTCH[2]), (NOTCH[1], NOTCH[2]), (NOTCH[1], 0), (W, 0), (W, H), (0, H)]
+NOTCH = (0.0, 61.0, 21.0)  # open rear-left corner for the Pi USB/Ethernet block
+pts = [(0, NOTCH[2]), (NOTCH[1], NOTCH[2]), (NOTCH[1], 0), (W, 0), (W, H), (0, H)]
 for i in range(len(pts)):
     a, b = pts[i], pts[(i + 1) % len(pts)]
     seg = pcbnew.PCB_SHAPE(board)
@@ -176,7 +176,7 @@ def hole(x, y, d=3.2, pad=6.0, ref="H"):
     board.Add(fp)
 
 
-for i, (x, y) in enumerate([(66, 4.5), (175.5, 9), (4.5, 105.5), (175.5, 105.5), (4.5, 26)]):
+for i, (x, y) in enumerate([(66, 4.5), (175.5, 9), (4.5, 105.5), (175.5, 105.5), (66, 62)]):
     hole(x, y, ref=f"H{i+1}")
 # Pi B+/2/3/4/5 holes not covered by the Zero footprint (58 x 49 mm pattern), M2.5
 hole(8.5, 23.5, d=2.7, ref="H6")
