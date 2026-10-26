@@ -62,7 +62,10 @@ def widths(board):
     return out
 
 
-POWER = [f"{BT}CELL*", "+BATT", "+5V", "+5V_BUCK", f"{PW}BUCK_SW", "VBUS", f"{PW}CHG_VIN", f"{PW}CHG_NODE?", f"{PW}CHG_LX?",
+# pass 1 also takes everything that escapes from between power pins (charger QFN, amp bootstrap pins), so the
+# fattened power copper never walls them in
+LOCAL = [f"{PW}CHG_*", f"{PW}CC?", f"{A}AMP?_BST*", f"{A}AMP?_VRDIG", f"{A}AMP?_AVDD", f"{PW}BUCK_*", f"{PW}BOOST_*"]
+POWER = LOCAL + [f"{BT}CELL*", "+BATT", "+5V", "+5V_BUCK", f"{PW}BUCK_SW", "VBUS", f"{PW}CHG_VIN", f"{PW}CHG_NODE?", f"{PW}CHG_LX?",
          "PVDD_SUB", f"{PW}BOOST_SW", f"{PW}BOOST_OUT", f"{A}AMP1_AP", f"{A}AMP1_AN", f"{A}AMP1_BP", f"{A}AMP1_BN",
          f"{A}AMP2_P", f"{A}AMP2_N", f"{A}SAT_*", f"{A}SUB_*", "+3V3", "+3V3_AON", "+3V3_USB"]
 FAST = ["I2S_*", f"{PI}PI_BCLK", f"{PI}PI_LRCLK", f"{PI}PI_DOUT", "USB_DP", "USB_DN", "I2C_*", f"{PI}ID_S?",

@@ -12,7 +12,8 @@ usage: kicad-python fatten.py board.kicad_pcb [--dry]
 import os, sys, math, fnmatch
 import pcbnew
 
-CLR = 0.20          # mm, widened copper to any other net (netclass is 0.15)
+CLR = 0.20          # mm, widened copper to any other net's track or via (netclass is 0.15)
+CLR_PAD = 0.50      # mm, to other nets' pads: a 0.2 mm track with 0.15 mm clearance must still escape from every pad
 EDGE = 0.5          # mm to the board edge
 VIA_D, VIA_HOLE = 0.6, 0.3
 VIA_A = 1.5
@@ -104,7 +105,8 @@ class Copper:
 
     def clear(self, net, layer, a, b, hw, skip=()):
         """True if a capsule a-b with half width hw on layer keeps CLR from every other-net item"""
-        qb = (min(a[0], b[0]) - hw - CLR - 0.05, min(a[1], b[1]) - hw - CLR - 0.05, max(a[0], b[0]) + hw + CLR + 0.05, max(a[1], b[1]) + hw + CLR + 0.05)
+        m = hw + max(CLR, CLR_PAD) + 0.05
+        qb = (min(a[0], b[0]) - m, min(a[1], b[1]) - m, max(a[0], b[0]) + m, max(a[1], b[1]) + m)
         for (n, ls, g, bb, obj) in self.items:
             if n == net or obj in skip:
                 continue
@@ -113,12 +115,12 @@ class Copper:
             if bb[0] > qb[2] or bb[2] < qb[0] or bb[1] > qb[3] or bb[3] < qb[1]:
                 continue
             if g[0] == "seg":
-                d = d_seg_seg(a, b, g[1], g[2]) - g[3]
+                d = d_seg_seg(a, b, g[1], g[2]) - g[3]; need = CLR
             elif g[0] == "circ":
-                d = d_pt_seg(g[1], a, b) - g[2]
+                d = d_pt_seg(g[1], a, b) - g[2]; need = CLR
             else:
-                d = d_seg_rect(a, b, g[1:5])
-            if d < hw + CLR:
+                d = d_seg_rect(a, b, g[1:5]); need = CLR_PAD if n else CLR
+            if d < hw + need:
                 return False
         return True
 
