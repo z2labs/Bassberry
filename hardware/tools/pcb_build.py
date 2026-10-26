@@ -288,6 +288,15 @@ for ref, (x, y, rot, side) in sorted(FIXED.items(), key=lambda kv: kv[0] not in 
         put(ref, x, y, rot, side)
 
 
+# fine-pitch ICs get a fan-out ring: no other part within this margin of their courtyard (the 0.4 mm-pitch QFN
+# needs room for 30 escapes; srouter cannot shove)
+CLEAR_AROUND = {"U302": 2.0}
+for ref, m in CLEAR_AROUND.items():
+    if ref in where:
+        i = owner[where[ref][3]].index(ref)
+        bx = occupied[where[ref][3]][i]
+        BLOCK[where[ref][3]].append((bx[0] - m, bx[1] - m, bx[2] + m, bx[3] + m))
+
 # 2) everything else: spiral search next to its partner pad
 def partner_target(ref):
     if ref in PARTNER:
