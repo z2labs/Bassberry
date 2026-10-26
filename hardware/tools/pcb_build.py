@@ -96,7 +96,7 @@ FIXED = {
     # front UI strip (top), plungers through the lid
     "SW501": (72.0, 104.0, 0, "F"), "SW502": (84.0, 104.0, 0, "F"), "SW503": (96.0, 104.0, 0, "F"),
     "SW504": (108.0, 104.0, 0, "F"), "SW505": (120.0, 104.0, 0, "F"),
-    "J502": (134.0, 100.5, 90, "F"), "SW506": (158.0, 97.0, 0, "F"),
+    "J502": (134.0, 100.5, 90, "F"), "SW506": (147.0, 96.0, 0, "F"),
     # BMS module wire pads under the front of the cells, fuse at the rear next to cell 3 '+'
     "J401": (96.0, 98.0, 0, "B"), "F401": (128.0, 8.0, 90, "B"), "J402": (136.0, 97.0, 0, "B"),
     # speaker connectors (bottom, cables to the chambers)
