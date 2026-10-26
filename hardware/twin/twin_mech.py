@@ -54,6 +54,9 @@ def check(parts):
     u = parts.get("J301")
     if u:
         rep.add("PASS" if u["box"][1] <= 1.0 else "FAIL", "usb", f"USB-C mouth at the rear edge (front of shell at y = {u['box'][1]:.2f} mm)")
+        sig = [p for n, p in u["pads"].items() if n[:1] in "AB"]
+        ymin = min(p[1] for p in sig) if sig else -1
+        rep.add("PASS" if ymin > 0.5 else "FAIL", "usb", f"USB-C contact pads on the board, behind the mouth (nearest pad row y = {ymin:.2f} mm)")
     for r in ("SW501", "SW502", "SW503", "SW504", "SW505", "SW506", "J502"):
         p = parts.get(r)
         if p:
@@ -80,7 +83,9 @@ def selftest(parts):
     q = copy.deepcopy(parts); b = q["BT402"]["box"]; q["BT402"]["box"] = (b[0], b[1], b[0] + (b[3] - b[1]), b[1] + (b[2] - b[0]))
     p2 = copy.deepcopy(parts); p2["BT402"]["pads"]["1"], p2["BT402"]["pads"]["2"] = parts["BT402"]["pads"]["2"], parts["BT402"]["pads"]["1"]
     p3 = copy.deepcopy(parts); p3["SW503"]["side"] = "B"
-    for name, pp in (("cell holder turned 90 degrees", q), ("cell 2 holder reversed", p2), ("PLAY button on the bottom", p3)):
+    p4 = copy.deepcopy(parts); p4["J301"]["pads"] = {n: (x, -0.45) for n, (x, y) in parts["J301"]["pads"].items()}
+    for name, pp in (("cell holder turned 90 degrees", q), ("cell 2 holder reversed", p2), ("PLAY button on the bottom", p3),
+                     ("USB-C turned round (pads over the edge)", p4)):
         new = {r[2] for r in check(pp).fails()} - base
         st.add("PASS" if new else "FAIL", "inject", f"{name}: {len(new)} new FAIL")
     return st
