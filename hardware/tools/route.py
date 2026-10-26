@@ -6,6 +6,7 @@ Input : hardware/bassberry/bassberry.kicad_pcb (placed by pcb_build.py; kept as 
 Output: hardware/bassberry/bassberry.kicad_pcb (routed), route/passN.{dsn,ses,json}
 
 Layer roles (DSN layer type + -top cost), GND is never routed (In2 plane + F/B pours, stitched afterwards):
+  pass 0 trunks  the wide part of every high-current net, between its big pads (net split, see trunk_pass): outer only
   pass 1 power   wide rails, battery, charger power stage, speaker outputs:  B.Cu open, In1 open, F.Cu cost 3
   pass 2 fast    I2S, I2C, USB D+/D-, HAT ID:                                In1 open, B.Cu cost 2, F.Cu cost 10
   pass 3 rest    everything else:                                           In1 + B.Cu open, F.Cu cost 4
@@ -115,6 +116,67 @@ def import_ses(board, ses):
             t.SetDrill(pcbnew.FromMM(0.2 if w < 0.5 else 0.3))
 
 
+# ------------------------------------------------------------ pass 0: power trunks (neck-down by net split)
+# srouter gives a net ONE width that must fit its smallest pad, so a battery rail that also touches a 0.3 mm amp pin
+# would be routed 0.2 mm wide end to end. Pass 0 routes only the wide part of each high-current net: on a scratch copy
+# of the board the small pads of the net are moved to a dummy net, and srouter joins the big pads (holders, fuse,
+# 2512 links, inductors, MOSFET tabs, connectors) at the widest width those pads allow. The SES goes back into the real
+# board on the real net, and the later passes join the small pads to that trunk at their own width: a neck-down
+# that happens only at the last millimetres before a fine-pitch pin.
+TRUNK_MAX = 1.6      # mm, widest trunk asked from the router (fatten.py and the pours widen further)
+TRUNK_MIN = 0.5      # mm, a trunk narrower than this is no trunk
+
+
+def trunk_plan(board):
+    import fnmatch
+    from fatten import TARGET
+    pads = {}
+    for fp in board.GetFootprints():
+        for p in fp.Pads():
+            n = p.GetNetname()
+            if n:
+                s = p.GetSize(pcbnew.F_Cu)
+                pads.setdefault(n, []).append((min(pcbnew.ToMM(s.x), pcbnew.ToMM(s.y)), p))
+    plan = {}
+    for n, ps in pads.items():
+        tg = next((w for g, w, a in TARGET if fnmatch.fnmatchcase(n, g)), None)
+        if tg is None:
+            continue
+        want = min(TRUNK_MAX, tg)
+        big = [d for d, p in ps if d * 0.95 >= TRUNK_MIN]
+        if len(big) < 2:
+            continue
+        w = round(min(want, min(big) * 0.95), 2)
+        # a pad joins the trunk only if the trunk fits it; everything narrower is a tap, routed later
+        small = [p for d, p in ps if d * 0.95 < w]
+        plan[n] = (w, small)
+    return plan
+
+
+def trunk_pass(b):
+    plan = trunk_plan(b)
+    print("trunks:", ", ".join(f"{n} {w} mm ({len(sm)} taps)" for n, (w, sm) in sorted(plan.items())))
+    tmp = os.path.join(OUT, "pass0_split.kicad_pcb")
+    pcbnew.SaveBoard(tmp, b)
+    b2 = pcbnew.LoadBoard(tmp)
+    taps = {}
+    for fp in b2.GetFootprints():
+        for p in fp.Pads():
+            n = p.GetNetname()
+            if n in plan:
+                d = min(pcbnew.ToMM(p.GetSize(pcbnew.F_Cu).x), pcbnew.ToMM(p.GetSize(pcbnew.F_Cu).y))
+                if d * 0.95 < plan[n][0]:
+                    if n not in taps:
+                        ni = pcbnew.NETINFO_ITEM(b2, "TAP~" + n.replace("/", "_")); b2.Add(ni); taps[n] = ni
+                    p.SetNet(taps[n])
+    name = "pass0_trunk"
+    dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
+    export_dsn(b2, dsn, ("In2.Cu", "In1.Cu"))
+    r = rules(list(plan), [(n, w, CLR) for n, (w, sm) in plan.items()])
+    json.dump(r, open(rj, "w"), indent=1)
+    return name, dsn, ses, rep, rj
+
+
 def main():
     shutil.copy(PLACED, BOARD)   # always route from the placed board written by pcb_build.py
     # gate: no pad may be walled in by its neighbours (holes, pads) before the router even starts
@@ -127,10 +189,13 @@ def main():
     width = widths(b)
     print("routing widths:", ", ".join(f"{g} {w}" for g, w, c in width))
     summary = []
-    for name, only, args in PASSES:
-        dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
-        export_dsn(b, dsn, ("In2.Cu", "In1.Cu") if name == "pass1a_heavy" else ("In2.Cu",))
-        json.dump(rules(only, width), open(rj, "w"), indent=1)
+    for name, only, args in [("pass0_trunk", None, ["-top", "F.Cu:3", "-via", "6000", "-it", "80"])] + PASSES:
+        if only is None:
+            name, dsn, ses, rep, rj = trunk_pass(b)
+        else:
+            dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
+            export_dsn(b, dsn, ("In2.Cu", "In1.Cu") if name == "pass1a_heavy" else ("In2.Cu",))
+            json.dump(rules(only, width), open(rj, "w"), indent=1)
         cmd = [SR, "-de", dsn, "-do", ses, "-rules", rj, "-report", rep] + args
         print(">>", " ".join(cmd), flush=True)
         t0 = time.time()
@@ -147,7 +212,7 @@ def main():
         import_ses(b, ses)
         summary.append((name, len(bad)))
         pcbnew.SaveBoard(BOARD, b)
-        if name == "pass1b_local":    # give the power copper its width before the other nets are routed around it
+        if name in ("pass0_trunk", "pass1b_local"):    # give the power copper its width before the rest is routed around it
             subprocess.run([sys.executable, os.path.join(HERE, "fatten.py"), BOARD])
         b = pcbnew.LoadBoard(BOARD)
     n = add_thermal_vias(b, pcbnew)
