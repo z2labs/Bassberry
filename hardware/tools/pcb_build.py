@@ -107,7 +107,7 @@ FIXED = {
     "Q303": (175.5, 16.0, 270, "B"), "Q304": (175.5, 27.0, 270, "B"),
     "R302": (150.5, 7.0, 0, "B"), "R304": (168.0, 5.0, 0, "B"),
     "C314": (151.0, 46.0, 0, "B"), "C317": (174.0, 46.0, 0, "B"),
-    "U302": (162.5, 40.0, 0, "B"),
+    "U302": (162.5, 40.0, 180, "B"),          # QFN pins 11-20 (gate drive, LX, BST) face the power stage
     "Q305": (135.0, 14.0, 90, "B"), "R305": (141.0, 14.0, 90, "B"),
     # Pi 5 V buck + back-power diode next to header pins 2/4 (bottom)
     "U303": (75.0, 80.0, 0, "B"), "L302": (75.0, 90.0, 0, "B"), "Q101": (66.0, 78.5, 90, "B"),
@@ -137,6 +137,9 @@ PARTNER = {
     "C501": ("U501", "9"), "C502": ("U501", "9"), "C510": ("U502", "16"),
     "D301": ("J301", "A4"), "R106": ("J101", "11"),
     "R344": ("U202", "16"), "R345": ("U202", "27"),        # PVDD_SUB select links next to amp 2
+    # gate resistors and snubbers at the MOSFETs, so the QFN pins only fan out
+    "R306": ("Q301", "4"), "R307": ("Q302", "4"), "R308": ("Q303", "4"), "R309": ("Q304", "4"),
+    "R320": ("Q302", "5"), "R321": ("Q304", "5"),
 }
 SIDE_TOP = set()  # everything not FIXED goes to the bottom (JP101/TP101 too: flashing is a one-off, from below)
 
