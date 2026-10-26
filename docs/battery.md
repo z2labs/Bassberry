@@ -1,6 +1,6 @@
 # Battery: 3S 18650, new or harvested cells
 
-Bassberry uses three 18650 cells in series (3S, 9.0–12.6 V), held by snap-in metal clips on the motherboard. No spot welding is needed, and cells can be swapped.
+Bassberry uses three 18650 cells in series (3S, 9.0–12.6 V), held by snap-in holders with spring metal contacts (Keystone 1042 or compatible) on the motherboard. No spot welding is needed, and cells can be swapped.
 That makes it easy to reuse cells from old laptop packs. Li-ion stores a lot of energy, though, so please follow these rules.
 
 ## Choosing cells
