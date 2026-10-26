@@ -179,6 +179,82 @@ def trunk_pass(b):
     return name, dsn, ses, rep, rj
 
 
+# ------------------------------------------------------------ rip-up and reroute for what the passes left
+# A net that lost the negotiation (or got walled in by nets routed in a later pass) is routed again first: the
+# small-signal nets that pass within RIP mm of its pads are ripped up, the stuck net is routed alone, then the ripped
+# nets are routed back. Power, trunks, GND and the pre-routed USB pair are never ripped.
+RIP = 1.2
+NO_RIP = ["GND", "USB_DP", "USB_DN"]
+
+
+def stuck_nets(logf):
+    out = []
+    for l in open(logf, encoding="utf-8", errors="replace").read().splitlines():
+        m = re.match(r"\s*!\s*(\S+?):", l.strip())
+        if m and not l.strip().startswith("! diff pair"):
+            out.append(m.group(1))
+    return out
+
+
+def run_pass(b, name, only, args, width):
+    dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
+    export_dsn(b, dsn, ("In2.Cu",))
+    json.dump(rules(only, width), open(rj, "w"), indent=1)
+    logf = os.path.join(OUT, name + ".log")
+    with open(logf, "w", encoding="utf-8") as fh:
+        p = subprocess.run([SR, "-de", dsn, "-do", ses, "-rules", rj, "-report", rep] + args, stdout=fh, stderr=subprocess.STDOUT, text=True)
+    if p.returncode != 0 or not os.path.exists(ses):
+        print(f"   {name}: srouter failed"); return b, None
+    import_ses(b, ses)
+    pcbnew.SaveBoard(BOARD, b)
+    b = pcbnew.LoadBoard(BOARD)
+    return b, stuck_nets(logf)
+
+
+def repair(b, summary):
+    import fnmatch
+    width = widths(b)
+    protected = lambda n: (not n or n in NO_RIP or any(fnmatch.fnmatchcase(n, g) for g in HEAVY + POWER))
+    stuck = stuck_nets(os.path.join(OUT, "pass3_rest.log"))
+    for rnd in range(1, 4):
+        if not stuck:
+            break
+        print(f"   repair {rnd}: stuck {stuck}")
+        rip = set()
+        for fp in b.GetFootprints():
+            for p in fp.Pads():
+                if p.GetNetname() not in stuck:
+                    continue
+                c = p.GetPosition()
+                for t in b.GetTracks():
+                    n = t.GetNetname()
+                    if n in stuck or protected(n):
+                        continue
+                    a = (t.GetPosition() if t.GetClass() == "PCB_VIA" else t.GetStart())
+                    e = (t.GetPosition() if t.GetClass() == "PCB_VIA" else t.GetEnd())
+                    ax, ay, ex, ey, cx, cy = (pcbnew.ToMM(v) for v in (a.x, a.y, e.x, e.y, c.x, c.y))
+                    L = (ex - ax) ** 2 + (ey - ay) ** 2
+                    k = 0 if L == 0 else max(0, min(1, ((cx - ax) * (ex - ax) + (cy - ay) * (ey - ay)) / L))
+                    d = ((ax + k * (ex - ax) - cx) ** 2 + (ay + k * (ey - ay) - cy) ** 2) ** 0.5
+                    if d < RIP + pcbnew.ToMM(max(p.GetSize(pcbnew.F_Cu).x, p.GetSize(pcbnew.F_Cu).y)) / 2:
+                        rip.add(n)
+        for t in list(b.GetTracks()):
+            if t.GetNetname() in rip or t.GetNetname() in stuck:
+                b.Remove(t)
+        print(f"   repair {rnd}: ripped {sorted(rip)}")
+        b, s1 = run_pass(b, f"repair{rnd}a", stuck, ["-top", "F.Cu:4", "-via", "1500", "-it", "120"], width)
+        if s1 is None:
+            break
+        b, s2 = run_pass(b, f"repair{rnd}b", sorted(rip), ["-top", "F.Cu:4", "-via", "1500", "-it", "120"], width) if rip else (b, [])
+        if s2 is None:
+            break
+        stuck = sorted(set(s1) | set(s2))
+        summary.append((f"repair{rnd}", len(stuck)))
+    if stuck:
+        print("   repair: still unrouted", stuck)
+    return b
+
+
 def main():
     shutil.copy(PLACED, BOARD)   # always route from the placed board written by pcb_build.py
     # gate: no pad may be walled in by its neighbours (holes, pads) before the router even starts
@@ -217,6 +293,7 @@ def main():
         if name in ("pass0_trunk", "pass1b_local"):    # give the power copper its width before the rest is routed around it
             subprocess.run([sys.executable, os.path.join(HERE, "fatten.py"), BOARD])
         b = pcbnew.LoadBoard(BOARD)
+    b = repair(b, summary)
     n = add_thermal_vias(b, pcbnew)
     print("SoC via field restored:", n)
     if not any(z.GetZoneName().startswith("GND_") for z in b.Zones()):

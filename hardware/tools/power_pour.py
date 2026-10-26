@@ -92,6 +92,18 @@ def main(path):
     b = pcbnew.LoadBoard(path)
     FM = pcbnew.FromMM
     # remove pours from an earlier run
+    # duplicate vias (two tools dropping one on the same spot) -> keep one
+    seen, dup = set(), []
+    for v in list(b.GetTracks()):
+        if v.GetClass() == "PCB_VIA":
+            k = (v.GetNetname(), round(pcbnew.ToMM(v.GetPosition().x), 2), round(pcbnew.ToMM(v.GetPosition().y), 2))
+            if k in seen:
+                dup.append(v)
+            seen.add(k)
+    for v in dup:
+        b.Remove(v)
+    if dup:
+        print(f"power_pour: {len(dup)} duplicate vias removed")
     tracks = list(b.GetTracks())
     nets = sorted({t.GetNetname() for t in tracks if t.GetClass() != "PCB_VIA"})
     old = [z for z in b.Zones() if z.GetZoneName().startswith("PWR_")]

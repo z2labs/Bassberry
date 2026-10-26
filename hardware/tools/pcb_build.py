@@ -244,10 +244,8 @@ for ref, c in sorted(comps.items()):
     fp = load_fp(c["fp"])
     fp.SetReference(ref)
     fp.SetValue(c["value"])
-    if c["dnp"]:
-        fp.SetDNP(True); fp.SetExcludedFromBOM(True)
-    elif c["nobom"]:
-        fp.SetExcludedFromBOM(True)
+    fp.SetDNP(c["dnp"])                     # board attributes follow the schematic (DRC parity)
+    fp.SetExcludedFromBOM(c["nobom"])       # (library jumpers / test points carry their own flag)
     if ref == "J101":
         pi_socket_cleanup(fp)
     for pad in fp.Pads():
@@ -475,13 +473,23 @@ def gnd_ties(refs):
             tx = min(max(q.x, eb.GetX()), eb.GetRight()); ty = min(max(q.y, eb.GetY()), eb.GetBottom())
             if abs(pcbnew.ToMM(tx - q.x)) > 1.6 or abs(pcbnew.ToMM(ty - q.y)) > 1.6:
                 continue       # far from the pad: leave it to the pour
-            if tx != q.x and ty != q.y:
-                continue       # pin beyond the pad's end: a diagonal stub would run along the pin row
-            a = (pcbnew.ToMM(q.x), pcbnew.ToMM(q.y)); b_ = (pcbnew.ToMM(tx), pcbnew.ToMM(ty))
-            if not cu.clear("GND", lay, a, b_, 0.125):
+            ps = p.GetSize(pcbnew.F_Cu); hw = min(0.125, pcbnew.ToMM(min(ps.x, ps.y)) / 2)
+            a = (pcbnew.ToMM(q.x), pcbnew.ToMM(q.y)); e = (pcbnew.ToMM(tx), pcbnew.ToMM(ty))
+            if abs(e[0] - a[0]) < 0.05 or abs(e[1] - a[1]) < 0.05:
+                path = [a, e]                              # pin faces the pad: straight in
+            else:
+                # pin beyond the pad's end (row-end GND pins of the HTSSOP): along its own axis to the pad's edge
+                # line, then along that edge to the pad corner - never diagonal across the neighbouring pins
+                bbp = p.GetBoundingBox(); along_x = bbp.GetWidth() > bbp.GetHeight()
+                path = [a, (e[0], a[1]) if along_x else (a[0], e[1]), e]
+            if not all(cu.clear("GND", lay, path[i], path[i + 1], hw) for i in range(len(path) - 1)):
                 continue       # would pass a foreign pad closer than the 0.15 mm clearance
-            t = pcbnew.PCB_TRACK(board); t.SetStart(q); t.SetEnd(pcbnew.VECTOR2I(tx, ty)); t.SetWidth(mm(0.25))
-            t.SetLayer(lay); t.SetNet(netobjs["GND"]); board.Add(t); n += 1
+            for i in range(len(path) - 1):
+                t = pcbnew.PCB_TRACK(board); t.SetStart(pcbnew.VECTOR2I(mm(path[i][0]), mm(path[i][1])))
+                t.SetEnd(pcbnew.VECTOR2I(mm(path[i + 1][0]), mm(path[i + 1][1]))); t.SetWidth(mm(2 * hw))
+                t.SetLayer(lay); t.SetNet(netobjs["GND"]); board.Add(t)
+                cu.add("GND", {lay}, ("seg", path[i], path[i + 1], hw), t)
+            n += 1
     print(f"GND pins tied to their exposed pad: {n}")
 
 

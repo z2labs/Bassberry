@@ -13,7 +13,9 @@ function step($name, [scriptblock]$b) {
   "   exit $LASTEXITCODE" | Out-File -Append -Encoding utf8 $log
 }
 "" | Out-File -Encoding utf8 $log
+Copy-Item $board "$root\hardware\bassberry\route\pre_tidy.kicad_pcb"
 step "1 track_tidy"   { & $py "$tools\track_tidy.py" $board }
+step "1a tidy_guard"  { & $py "$root\hardware\tools\tidy_guard.py" "$root\hardware\bassberry\route\pre_tidy.kicad_pcb" $board }
 step "1b power_pour" { & $py "$root\hardware\tools\power_pour.py" $board }
 step "2 zone fill"    { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(r'$board',b);print('filled')" }
 # walled-in GND pads first (gnd_pad_rescue moves the signal tracks and strips stitching, so it goes before gnd_stitch)
