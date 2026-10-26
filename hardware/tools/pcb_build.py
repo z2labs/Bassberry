@@ -112,7 +112,7 @@ FIXED = {
     "U302": (162.5, 40.0, 180, "B"),          # QFN pins 11-20 (gate drive, LX, BST) face the power stage
     "Q305": (135.0, 14.0, 90, "B"), "R305": (141.0, 14.0, 90, "B"),
     # Pi 5 V buck + back-power diode next to header pins 2/4 (bottom)
-    "U303": (75.0, 80.0, 0, "B"), "Q101": (57.0, 80.0, 90, "B"),
+    "U303": (75.0, 80.0, "face:2:+y", "B"), "L302": (75.0, 88.0, "face:1:-y", "B"), "Q101": (66.0, 78.5, 90, "B"),
     # sub boost
     "U304": (100.0, 50.0, 0, "B"), "L303": (100.0, 60.0, 0, "B"),   # next to amp 2
     # amplifiers (bottom, under the cells), output filters towards their connectors
@@ -132,7 +132,6 @@ PARTNER = {
     "C242": ("U202", "16"), "C243": ("U202", "27"),
     "C302": ("U302", "8"), "C304": ("U302", "23"), "C312": ("Q301", "5"), "C313": ("Q301", "5"),
     "C315": ("R304", "2"), "C316": ("R304", "2"),
-    "L302": ("U303", "2"),       # TPS565208: inductor straight off the SW pin end (pins 1-3 side), not across the package
     "C332": ("U303", "3"), "C333": ("U303", "3"), "C334": ("U303", "3"),
     "C335": ("L302", "2"), "C336": ("L302", "2"), "C337": ("L302", "2"),
     "C340": ("D306", "1"), "C341": ("D306", "1"),
@@ -296,6 +295,12 @@ HARD = {"J101", "BT401", "BT402", "BT403", "J301", "SW501", "SW502", "SW503", "S
 for ref, (x, y, rot, side) in sorted(FIXED.items(), key=lambda kv: kv[0] not in HARD):
     if ref not in fps:
         print("WARNING: fixed ref not on netlist:", ref); continue
+    if isinstance(rot, str) and rot.startswith("face"):
+        # turn the part so the named pin points the given way (the buck SW pin toward its inductor and back)
+        pin, d = rot.split(":")[1], rot.split(":")[2]
+        want = {"+x": (1, 0), "-x": (-1, 0), "+y": (0, 1), "-y": (0, -1)}[d]
+        rot = max((0, 90, 180, 270), key=lambda r: (lambda g: g[1][pin][0] * want[0] + g[1][pin][1] * want[1])(geom(fps[ref], r, side)))
+        print(f"  {ref}: rotation {rot} (pin {pin} toward {d})")
     if ref not in HARD:
         if not place_near(ref, (x, y), side, (rot,)):
             print("WARNING: no room for anchored", ref)
