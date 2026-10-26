@@ -498,9 +498,6 @@ def gnd_dogbones():
                 skipped.append(f"{ref}.{p.GetNumber()}")
     print(f"GND dog-bones: {made}, no room: {' '.join(skipped) if skipped else 'none'}")
 
-
-gnd_dogbones()
-
 # ------------------------------------------------------------ mounting holes (M3 board, M2.5 Pi, M2.5 pedestal)
 def hole(x, y, d, ref):
     fp = load_fp("MountingHole:MountingHole_3.2mm_M3_Pad_Via" if d > 3 else "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via")
@@ -528,6 +525,7 @@ for layer in (pcbnew.F_Cu, pcbnew.F_Mask, pcbnew.B_Cu, pcbnew.B_Mask):
         z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
     board.Add(z)
 add_thermal_vias(board, pcbnew)
+gnd_dogbones()                     # after the holes and the SoC via field exist, so it sees them
 
 # ------------------------------------------------------------ keep-out under the Pi Wi-Fi/BT antenna (all copper layers)
 ko = pcbnew.ZONE(board)
