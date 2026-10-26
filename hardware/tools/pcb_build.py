@@ -419,6 +419,7 @@ def hole(x, y, d, ref):
     fp = load_fp("MountingHole:MountingHole_3.2mm_M3_Pad_Via" if d > 3 else "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via")
     fp.SetReference(ref)
     fp.SetPosition(P(x, y))
+    fp.SetBoardOnly(True)             # mechanical: not in the schematic (DRC schematic parity)
     for p in fp.Pads():
         p.SetNet(netobjs.get("GND"))
     board.Add(fp)
