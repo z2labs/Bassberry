@@ -219,7 +219,32 @@ class Copper:
             flow += f
         if flow == 0:
             return None, f"{fmt(src)} and {fmt(dst)} are not connected by copper"
-        return flow, ""
+        where = ""
+        if flow < amps:
+            # min cut: copper cells still reachable from the source in the residual graph, next to unreachable ones
+            seen = {S}; q = collections.deque([S])
+            while q:
+                u = q.popleft()
+                for w in adj[u]:
+                    if w not in seen and cap[(u, w)] > 1e-9:
+                        seen.add(w); q.append(w)
+            cut = {}
+            for u in seen:
+                if not (isinstance(u, tuple) and len(u) == 3):
+                    continue
+                for w in adj[u]:
+                    if w not in seen:
+                        if isinstance(w, tuple) and len(w) == 3 and w[0] == u[0]:
+                            cut.setdefault(self.layers[u[0]], []).append((x0 + u[1] * H, y0 + u[2] * H))
+                        elif isinstance(w, tuple) and w[0] == "V":
+                            cut.setdefault("via", []).append(vias[w[1]])
+            parts = []
+            for l, pts in cut.items():
+                xs = [p[0] for p in pts]; ys = [p[1] for p in pts]
+                name = l if l == "via" else self.b.GetLayerName(l)
+                parts.append(f"{name} x {min(xs):.1f}-{max(xs):.1f} y {min(ys):.1f}-{max(ys):.1f}")
+            where = "neck: " + "; ".join(parts)
+        return flow, where
 
 
 def check(cu):
@@ -231,7 +256,7 @@ def check(cu):
             rep.add("FAIL", "ampacity", f"{net}: {why}"); continue
         rep.add("PASS" if cap >= amps else "FAIL", "ampacity",
                 f"{net} {fmt(src)} -> {fmt(dst)}: {amps:g} A needed, copper carries {min(cap, amps*1.25):.1f}{'+' if cap >= amps*1.25 else ''} A "
-                f"(IPC-2221 {DT:g} K, pours included, vias {VIA_A} A)")
+                f"(IPC-2221 {DT:g} K, pours included, vias {VIA_A} A)" + (f"  {why}" if why else ""))
     # ---- Pi 5 V: set-point and drop (FET + copper; the ampacity check guarantees at least the IPC 5 A width)
     vout = 0.760 * (1 + parse_value(vals.get("R331", "0")) / parse_value(vals.get("R332", "1")))
     rep.add("PASS" if 5.0 <= vout <= 5.25 else "FAIL", "set-point", f"Pi buck: 0.760*(1+R331/R332) = {vout:.3f} V (5.0-5.25 V)")
