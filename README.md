@@ -11,7 +11,7 @@
   <img src="docs/img/bassberry_hero.png" alt="Bassberry 2.1 render, front three-quarter view" width="90%">
 </p>
 
-> **Status: concept / pre-schematic.** Acoustic design and simulation are done, the PCB is next.
+> **Status: rev 0.1 hardware in progress.** Acoustic design and simulation done, KiCad 10 schematic complete, PCB placed (routing next). See [`hardware/`](hardware/).
 > Everything here will change - issues and ideas are very welcome.
 
 ---
@@ -96,8 +96,8 @@ Please read [`docs/battery.md`](docs/battery.md) first: matching, testing and th
 ## Roadmap
 
 - [x] Concept, architecture, acoustic design and simulation
-- [ ] Schematic (KiCad)
-- [ ] PCB layout, 4-layer, Pi thermal pedestal
+- [x] Schematic (KiCad 10, generated from [`hardware/tools`](hardware/tools))
+- [ ] PCB layout, 4-layer, Pi thermal pedestal (placed, routing next)
 - [ ] 3D-printable enclosure (STEP + STL), gaskets, damping
 - [ ] Linux: dual TAS5805M 2.1 sound card, DSP profiles, supervisor daemon, OLED menu
 - [ ] Prototype measurements vs simulation
@@ -110,7 +110,7 @@ acoustics/   lumped-element simulation, plots, driver comparison
 docs/        architecture, acoustics, BOM, battery guide, images
 render/      Blender (bpy) script that generates the renders
 tools/       helper scripts (banner, ...)
-hardware/    KiCad project (coming)
+hardware/    KiCad 10 project + Python generators
 enclosure/   CAD / STL (coming)
 software/    Linux drivers, DSP profiles, UI (coming)
 ```
