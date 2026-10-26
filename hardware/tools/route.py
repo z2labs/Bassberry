@@ -67,10 +67,13 @@ def widths(board):
 # pass 1 also takes everything that escapes from between power pins (charger QFN, amp bootstrap pins), so the
 # fattened power copper never walls them in
 LOCAL = [f"{PW}CHG_*", "CHG_LED_*", "NTC", f"{PW}CC?", f"{A}AMP?_BST*", f"{A}AMP?_VRDIG", f"{A}AMP?_AVDD", f"{PW}BUCK_*", f"{PW}BOOST_*"]
-HEAVY = [f"{BT}CELL*", "+BATT", "+5V", "+5V_BUCK", f"{PW}BUCK_SW", "VBUS", f"{PW}CHG_VIN", f"{PW}CHG_NODE?", f"{PW}CHG_LX?",
-         "PVDD_SUB", f"{PW}BOOST_SW", f"{PW}BOOST_OUT", f"{A}AMP1_AP", f"{A}AMP1_AN", f"{A}AMP1_BP", f"{A}AMP1_BN",
-         f"{A}AMP2_P", f"{A}AMP2_N", f"{A}SAT_*", f"{A}SUB_*"]
-POWER = LOCAL + ["+3V3", "+3V3_AON", "+3V3_USB"]
+# 1a: high-current nets that never touch a fine-pitch pin - routed alone, outer copper only, vias avoided
+HEAVY = [f"{BT}CELL*", "+5V", "+5V_BUCK", f"{PW}BUCK_SW", f"{PW}BOOST_SW", f"{PW}BOOST_OUT", f"{A}SAT_*", f"{A}SUB_*"]
+# 1b: the high-current nets that start on a 0.4/0.65 mm-pitch pin (charger QFN, amp PVDD/OUT) negotiate together with
+# everything else that escapes from those packages; inner layer and vias expensive so the current stays outside
+POWER = LOCAL + ["+BATT", "VBUS", f"{PW}CHG_VIN", f"{PW}CHG_NODE?", f"{PW}CHG_LX?", "PVDD_SUB",
+                 f"{A}AMP1_AP", f"{A}AMP1_AN", f"{A}AMP1_BP", f"{A}AMP1_BN", f"{A}AMP2_P", f"{A}AMP2_N",
+                 "+3V3", "+3V3_AON", "+3V3_USB"]
 FAST = ["I2S_*", f"{PI}PI_BCLK", f"{PI}PI_LRCLK", f"{PI}PI_DOUT", "USB_DP", "USB_DN", "I2C_*", f"{PI}ID_S?",
         "AMP*_PDN", "PI_*",                                    # everything else that leaves the Pi header
         f"{A}AMP2_SDIN", f"{A}AMP1_SDOUT"]
@@ -78,7 +81,7 @@ PASSES = [
     # 1a: high-current nets alone, outer layers only (In1 closed: 0.5 oz inner copper carries a third), vias avoided
     ("pass1a_heavy", HEAVY, ["-top", "F.Cu:6", "-via", "20000", "-it", "80"]),
     # 1b: everything that escapes from between power pins (QFN, amp bootstrap), the 3V3 rails
-    ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:15", "-via", "6000", "-it", "80"]),
+    ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:40", "-via", "8000", "-it", "80"]),
     ("pass2_fast", FAST, ["-top", "F.Cu:10", "-top", "B.Cu:2", "-via", "2500"]),
     ("pass3_rest", ["*"], ["-top", "F.Cu:4", "-via", "2000"]),
 ]
@@ -144,7 +147,7 @@ def main():
         import_ses(b, ses)
         summary.append((name, len(bad)))
         pcbnew.SaveBoard(BOARD, b)
-        if name == "pass1a_heavy":    # give the power copper its width before the other nets are routed around it
+        if name == "pass1b_local":    # give the power copper its width before the other nets are routed around it
             subprocess.run([sys.executable, os.path.join(HERE, "fatten.py"), BOARD])
         b = pcbnew.LoadBoard(BOARD)
     n = add_thermal_vias(b, pcbnew)
