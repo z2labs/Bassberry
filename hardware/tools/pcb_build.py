@@ -145,7 +145,7 @@ for ref, c in sorted(comps.items()):
     if rot is None:  # Pi socket: pick rotation with header vertical, pin 40 towards the rear, body to the right
         best = None
         for r in (0, 90, 180, 270):
-            fp.SetOrientationDegrees(r); fp.SetPosition(P(0, 0))
+            fp.SetOrientationDegrees(r); fp.SetPosition(pcbnew.VECTOR2I(0, 0))
             pads = {pd.GetNumber(): pd.GetPosition() for pd in fp.Pads()}
             p1, p40 = pads["1"], pads["40"]
             bb = fp.GetBoundingBox(False, False)
