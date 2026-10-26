@@ -71,6 +71,7 @@ POWER = LOCAL + [f"{BT}CELL*", "+BATT", "+5V", "+5V_BUCK", f"{PW}BUCK_SW", "VBUS
          "PVDD_SUB", f"{PW}BOOST_SW", f"{PW}BOOST_OUT", f"{A}AMP1_AP", f"{A}AMP1_AN", f"{A}AMP1_BP", f"{A}AMP1_BN",
          f"{A}AMP2_P", f"{A}AMP2_N", f"{A}SAT_*", f"{A}SUB_*", "+3V3", "+3V3_AON", "+3V3_USB"]
 FAST = ["I2S_*", f"{PI}PI_BCLK", f"{PI}PI_LRCLK", f"{PI}PI_DOUT", "USB_DP", "USB_DN", "I2C_*", f"{PI}ID_S?",
+        "AMP*_PDN", "PI_*",                                    # everything else that leaves the Pi header
         f"{A}AMP2_SDIN", f"{A}AMP1_SDOUT"]
 PASSES = [
     ("pass1_power", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:15", "-via", "6000"]),   # heavy copper stays outside
