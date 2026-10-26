@@ -241,6 +241,8 @@ def repair(b, summary):
         for t in list(b.GetTracks()):
             if t.GetNetname() in rip or t.GetNetname() in stuck:
                 b.Remove(t)
+        pcbnew.SaveBoard(BOARD, b)          # (pcbnew's track list is not iterable from Python after Remove: reload)
+        b = pcbnew.LoadBoard(BOARD)
         print(f"   repair {rnd}: ripped {sorted(rip)}")
         b, s1 = run_pass(b, f"repair{rnd}a", stuck, ["-top", "F.Cu:4", "-via", "1500", "-it", "120"], width)
         if s1 is None:
