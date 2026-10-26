@@ -27,6 +27,7 @@ step "4 via_rescue"   { & $py "$tools\via_rescue.py" $board --net GND }
 step "5 stitch_audit" { & $py "$tools\stitch_audit.py" $board }
 step "6 silk_dfm fix" { & $py "$tools\silk_dfm.py" $board --fix }
 step "6 silk_dfm"     { & $py "$tools\silk_dfm.py" $board }
+step "6b zone refill" { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(r'$board',b);print('refilled after stitching')" }
 step "7 DRC"          { & $cli pcb drc --schematic-parity --severity-all --format json -o "$root\hardware\bassberry\route\drc.json" $board;
                         & $py -c "import json,collections;d=json.load(open(r'$root\hardware\bassberry\route\drc.json'));v=d['violations'];u=d.get('unconnected_items',[]);p=d.get('schematic_parity',[]);c=collections.Counter((x['severity'],x['type']) for x in v);print('violations',len(v),'unconnected',len(u),'parity',len(p));[print(' ',k,n) for k,n in c.most_common()]" }
 foreach ($t in 'twin_check','twin_plug','twin_analog','twin_mech') {

@@ -59,7 +59,9 @@ net = parse(open(os.path.join(PRJ, "bassberry.net"), encoding="utf-8").read())
 comps = {}
 for c in find(find1(net, "components"), "comp"):
     ref = find1(c, "ref")[1]
-    comps[ref] = dict(value=find1(c, "value")[1], fp=(find1(c, "footprint") or [None, ""])[1])
+    props = {find1(p, "name")[1] for p in find(c, "property") if find1(p, "name")}
+    comps[ref] = dict(value=find1(c, "value")[1], fp=(find1(c, "footprint") or [None, ""])[1],
+                      dnp="dnp" in props, nobom="exclude_from_bom" in props)
 pinnet, netobjs, netpins = {}, {}, {}
 for n in find(find1(net, "nets"), "net"):
     name = find1(n, "name")[1]
@@ -156,7 +158,34 @@ def load_fp(fpid):
     fp = pcbnew.FootprintLoad(os.path.join(FPDIR, lib + ".pretty"), name)
     if fp is None:
         raise RuntimeError("footprint not found: " + fpid)
+    fp.SetFPID(pcbnew.LIB_ID(lib, name))       # keep the library nickname (DRC schematic parity compares it)
+    nums = [p.GetNumber() for p in fp.Pads() if p.GetNumber()]
+    if len(nums) != len(set(nums)):
+        fp.SetDuplicatePadNumbersAreJumpers(True)   # tact switch / shell pads with one number are joined inside the part
     return fp
+
+
+def pi_socket_cleanup(fp):
+    """The KiCad face-down socket is drawn on a Pi Zero: its courtyard is the whole Zero and it carries the Zero's two
+    far mounting holes. Only the 2 x 20 header is ours: the courtyard becomes the header outline + 0.5 mm, and only the
+    two holes on the header line stay (shared by every 40-pin Pi; the far pair of the Pi 4/5 are H6/H7)."""
+    pins = [p for p in fp.Pads() if p.GetNumber().isdigit() and 1 <= int(p.GetNumber()) <= 40]
+    xs = [pcbnew.ToMM(p.GetPosition().x) for p in pins]; ys = [pcbnew.ToMM(p.GetPosition().y) for p in pins]
+    long_x = (max(xs) - min(xs)) > (max(ys) - min(ys))
+    axis = sum(ys) / len(ys) if long_x else sum(xs) / len(xs)
+    for p in list(fp.Pads()):
+        if p in pins:
+            continue
+        c = pcbnew.ToMM(p.GetPosition().y if long_x else p.GetPosition().x)
+        if abs(c - axis) > 10:
+            fp.Remove(p)
+    for g in list(fp.GraphicalItems()):
+        if g.GetLayer() in (pcbnew.F_CrtYd, pcbnew.B_CrtYd):
+            fp.Remove(g)
+    r = pcbnew.PCB_SHAPE(fp); r.SetShape(pcbnew.SHAPE_T_RECT)
+    r.SetStart(pcbnew.VECTOR2I(mm(min(xs) - 1.27 - 0.5), mm(min(ys) - 1.27 - 0.5)))
+    r.SetEnd(pcbnew.VECTOR2I(mm(max(xs) + 1.27 + 0.5), mm(max(ys) + 1.27 + 0.5)))
+    r.SetLayer(pcbnew.F_CrtYd); r.SetWidth(mm(0.05)); fp.Add(r)
 
 
 def is_tht(fp):
@@ -215,6 +244,12 @@ for ref, c in sorted(comps.items()):
     fp = load_fp(c["fp"])
     fp.SetReference(ref)
     fp.SetValue(c["value"])
+    if c["dnp"]:
+        fp.SetDNP(True); fp.SetExcludedFromBOM(True)
+    elif c["nobom"]:
+        fp.SetExcludedFromBOM(True)
+    if ref == "J101":
+        pi_socket_cleanup(fp)
     for pad in fp.Pads():
         n = pinnet.get((ref, pad.GetNumber()))
         if n:
@@ -418,6 +453,9 @@ usb_crossover()
 # ------------------------------------------------------------ GND pins tied to the exposed pad (TI / Injoinic layouts):
 # a short stub from every GND pin straight to the IC's own GND exposed pad, so no GND pin depends on the pour finding it
 def gnd_ties(refs):
+    import fatten
+    fatten.CLR = 0.15; fatten.CLR_PAD = 0.15
+    cu = fatten.Copper(board)
     n = 0
     for ref in refs:
         if ref not in where:
@@ -437,6 +475,11 @@ def gnd_ties(refs):
             tx = min(max(q.x, eb.GetX()), eb.GetRight()); ty = min(max(q.y, eb.GetY()), eb.GetBottom())
             if abs(pcbnew.ToMM(tx - q.x)) > 1.6 or abs(pcbnew.ToMM(ty - q.y)) > 1.6:
                 continue       # far from the pad: leave it to the pour
+            if tx != q.x and ty != q.y:
+                continue       # pin beyond the pad's end: a diagonal stub would run along the pin row
+            a = (pcbnew.ToMM(q.x), pcbnew.ToMM(q.y)); b_ = (pcbnew.ToMM(tx), pcbnew.ToMM(ty))
+            if not cu.clear("GND", lay, a, b_, 0.125):
+                continue       # would pass a foreign pad closer than the 0.15 mm clearance
             t = pcbnew.PCB_TRACK(board); t.SetStart(q); t.SetEnd(pcbnew.VECTOR2I(tx, ty)); t.SetWidth(mm(0.25))
             t.SetLayer(lay); t.SetNet(netobjs["GND"]); board.Add(t); n += 1
     print(f"GND pins tied to their exposed pad: {n}")
@@ -506,7 +549,9 @@ def gnd_dogbones(clr_pad=0.5, gaps=(0.35, 0.6, 0.9), only=None):
 
 # ------------------------------------------------------------ mounting holes (M3 board, M2.5 Pi, M2.5 pedestal)
 def hole(x, y, d, ref):
-    fp = load_fp("MountingHole:MountingHole_3.2mm_M3_Pad_Via" if d > 3 else "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via")
+    # M3 board screws: plated ring to GND (no via ring: it collides with neighbouring holes and the edge);
+    # M2.5 Pi / pedestal holes: plain NPTH, the Pi has its own GND through the header
+    fp = load_fp("MountingHole:MountingHole_3.2mm_M3_Pad" if d > 3 else "MountingHole:MountingHole_2.7mm_M2.5")
     fp.SetReference(ref)
     fp.SetPosition(P(x, y))
     fp.SetBoardOnly(True)             # mechanical: not in the schematic (DRC schematic parity)
@@ -538,7 +583,7 @@ if left:                           # second chance for the tight ones: farther o
 # ------------------------------------------------------------ keep-out under the Pi Wi-Fi/BT antenna (all copper layers)
 ko = pcbnew.ZONE(board)
 ko.SetIsRuleArea(True)
-ko.SetDoNotAllowTracks(True); ko.SetDoNotAllowVias(True); ko.SetDoNotAllowPads(True); ko.SetDoNotAllowZoneFills(True)
+ko.SetDoNotAllowTracks(True); ko.SetDoNotAllowVias(True); ko.SetDoNotAllowPads(False); ko.SetDoNotAllowZoneFills(True)
 ko.SetDoNotAllowFootprints(False)
 ls = pcbnew.LSET(); [ls.AddLayer(l) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu)]
 ko.SetLayerSet(ls)
@@ -572,6 +617,8 @@ for c in pj["net_settings"]["classes"]:
         c.update(clearance=0.15, track_width=0.2, via_diameter=0.6, via_drill=0.3)
 pj["board"]["design_settings"]["rules"]["min_through_hole_diameter"] = 0.2   # 0.45/0.2 mm via at the USB-C row (JLC ok)
 pj["board"]["design_settings"]["rules"]["min_via_diameter"] = 0.45
+pj["board"]["design_settings"]["rules"]["min_via_annular_width"] = 0.075     # JLC 4-layer: 0.25/0.15 mm vias allowed
+pj["board"]["design_settings"]["rules"]["min_copper_edge_clearance"] = 0.3   # JLC: 0.3 mm copper to routed edge
 json.dump(pj, open(pro, "w", encoding="utf-8"), indent=2)
 shutil.copy(out, os.path.join(PRJ, "bassberry_placed.kicad_pcb"))   # route.py always starts from this
 json.dump({r: list(v) for r, v in where.items()}, open(os.path.join(PRJ, "placement.json"), "w"), indent=0)

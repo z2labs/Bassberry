@@ -57,15 +57,14 @@ def add_thermal_vias(board, pcbnew):
 
 
 def add_gnd_pours(board, pcbnew):
-    """Solid GND on In2, GND pours on F.Cu and B.Cu (all priority 0, thermal reliefs, islands removed)."""
+    """Solid GND on In2, GND pours on F.Cu and B.Cu (all priority 0, solid pad connection, islands removed)."""
     gnd = board.FindNet("GND")
     for layer in (pcbnew.In2_Cu, pcbnew.F_Cu, pcbnew.B_Cu):
         z = pcbnew.ZONE(board)
         z.SetLayer(layer); z.SetNet(gnd); z.SetAssignedPriority(0)
         z.SetZoneName(f"GND_{board.GetLayerName(layer)}")
         z.SetLocalClearance(pcbnew.FromMM(0.3)); z.SetMinThickness(pcbnew.FromMM(0.25))
-        z.SetPadConnection(pcbnew.ZONE_CONNECTION_THERMAL)
-        z.SetThermalReliefGap(pcbnew.FromMM(0.3)); z.SetThermalReliefSpokeWidth(pcbnew.FromMM(0.5))
+        z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)   # solid: GND pads between routed tracks starve thermal spokes
         z.SetIslandRemovalMode(pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
         ol = z.Outline(); ol.NewOutline()
         for (x, y) in OUTLINE:
