@@ -92,14 +92,15 @@ def main(path):
     b = pcbnew.LoadBoard(path)
     FM = pcbnew.FromMM
     # remove pours from an earlier run
-    for z in list(b.Zones()):
-        if z.GetZoneName().startswith("PWR_"):
-            b.Remove(z)
-    nets = sorted({t.GetNetname() for t in b.GetTracks() if t.GetClass() != "PCB_VIA"})
+    tracks = list(b.GetTracks())
+    nets = sorted({t.GetNetname() for t in tracks if t.GetClass() != "PCB_VIA"})
+    old = [z for z in b.Zones() if z.GetZoneName().startswith("PWR_")]
+    for z in old:
+        b.Remove(z)
     # GND pads that already have their own way down (THT, dog-bone / tie track, IC exposed pad with its via field)
     # need no moat; only the others keep a ring free so the GND pour can still reach them
-    gnd_ends = {(t.GetStart().x, t.GetStart().y) for t in b.GetTracks() if t.GetNetname() == "GND" and t.GetClass() != "PCB_VIA"}
-    gnd_ends |= {(t.GetEnd().x, t.GetEnd().y) for t in b.GetTracks() if t.GetNetname() == "GND" and t.GetClass() != "PCB_VIA"}
+    gnd_ends = {(t.GetStart().x, t.GetStart().y) for t in tracks if t.GetNetname() == "GND" and t.GetClass() != "PCB_VIA"}
+    gnd_ends |= {(t.GetEnd().x, t.GetEnd().y) for t in tracks if t.GetNetname() == "GND" and t.GetClass() != "PCB_VIA"}
     lonely = []
     for fp in b.GetFootprints():
         for p in fp.Pads():
@@ -119,7 +120,7 @@ def main(path):
         for layer in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.B_Cu):     # In1: power that srouter had to take inside
             ps = pcbnew.SHAPE_POLY_SET()
             n = 0
-            for t in b.GetTracks():
+            for t in tracks:
                 if t.GetClass() == "PCB_VIA" or t.GetNetname() != net or t.GetLayer() != layer:
                     continue
                 t.TransformShapeToPolygon(ps, layer, FM(BUFFER), FM(0.05), pcbnew.ERROR_INSIDE)
