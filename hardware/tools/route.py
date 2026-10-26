@@ -107,6 +107,11 @@ def import_ses(board, ses):
 
 def main():
     shutil.copy(PLACED, BOARD)   # always route from the placed board written by pcb_build.py
+    # gate: no pad may be walled in by its neighbours (holes, pads) before the router even starts
+    g = subprocess.run([sys.executable, os.path.join(HERE, "escape_probe.py"), PLACED, "ALL", "0.2"], capture_output=True, text=True)
+    print("escape probe:", g.stdout.strip().splitlines()[-1] if g.stdout.strip() else g.stderr[-300:])
+    if g.returncode != 0:
+        print(g.stdout); sys.exit(1)
     b = pcbnew.LoadBoard(BOARD)
     width = widths(b)
     print("routing widths:", ", ".join(f"{g} {w}" for g, w, c in width))
