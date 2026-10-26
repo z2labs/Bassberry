@@ -10,6 +10,7 @@ Set-Location $root
 & powershell -ExecutionPolicy Bypass -File "$root\hardware\tools\regen_sch.ps1" 2>&1 | Out-File -Append -Encoding utf8 $log
 "== $(Get-Date -Format HH:mm:ss) placement" | Out-File -Append -Encoding utf8 $log
 & $py hardware\tools\pcb_build.py 2>&1 | Select-String -NotMatch "duplicate image" | Out-File -Append -Encoding utf8 $log
+if ($LASTEXITCODE -ne 0) { "== placement FAILED" | Out-File -Append -Encoding utf8 $log; exit 1 }
 $gate = 0
 foreach ($t in 'twin_check', 'twin_plug', 'twin_mech') {
   "== $(Get-Date -Format HH:mm:ss) pre-route $t" | Out-File -Append -Encoding utf8 $log

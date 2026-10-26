@@ -393,37 +393,7 @@ print("courtyard overlaps after placement:", nover)
 # ------------------------------------------------------------ USB-C D+/D- crossover (pre-routed, as USAGE.md asks for
 # critical pairs). Receptacle row order: B6(D+) A7(D-) A6(D+) B7(D-): the D- pads are bridged behind the row on the
 # pad layer, the middle D+ pad drops through a 0.45/0.2 mm via right behind it; srouter does the rest.
-def usb_crossover()
-
-
-# ------------------------------------------------------------ GND pins tied to the exposed pad (TI / Injoinic layouts):
-# a short stub from every GND pin straight to the IC's own GND exposed pad, so no GND pin depends on the pour finding it
-def gnd_ties(refs):
-    n = 0
-    for ref in refs:
-        if ref not in where:
-            continue
-        fp = fps[ref]
-        lay = pcbnew.B_Cu if where[ref][3] == "B" else pcbnew.F_Cu
-        pads = [p for p in fp.Pads() if p.GetNetname() == "GND"]
-        if not pads:
-            continue
-        ep = max(pads, key=lambda p: p.GetBoundingBox().GetWidth() * p.GetBoundingBox().GetHeight())
-        eb = ep.GetBoundingBox()
-        for p in pads:
-            if p is ep or p.GetBoundingBox().Intersects(eb):
-                continue
-            q = p.GetPosition()
-            # nearest point of the EP box
-            tx = min(max(q.x, eb.GetX()), eb.GetRight()); ty = min(max(q.y, eb.GetY()), eb.GetBottom())
-            if abs(pcbnew.ToMM(tx - q.x)) > 1.6 or abs(pcbnew.ToMM(ty - q.y)) > 1.6:
-                continue       # far from the pad: leave it to the pour
-            t = pcbnew.PCB_TRACK(board); t.SetStart(q); t.SetEnd(pcbnew.VECTOR2I(tx, ty)); t.SetWidth(mm(0.25))
-            t.SetLayer(lay); t.SetNet(netobjs["GND"]); board.Add(t); n += 1
-    print(f"GND pins tied to their exposed pad: {n}")
-
-
-gnd_ties(["U201", "U202", "U302"]):
+def usb_crossover():
     if ("J301", "A6") not in padpos:
         return
     lay = pcbnew.B_Cu if where["J301"][3] == "B" else pcbnew.F_Cu
