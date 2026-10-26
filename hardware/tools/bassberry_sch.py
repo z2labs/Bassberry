@@ -179,7 +179,7 @@ pw.flag("VBUS", 20, 60)
 pw.flag("CHG_VIN", 30, 60)
 
 # IP2366 core
-pw.part("bassberry:IP2366", "U2", "IP2366", 170, 120, fp="Package_DFN_QFN:QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm",
+pw.part("bassberry:IP2366", "U2", "IP2366", 170, 120, fp="Package_DFN_QFN:QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm_ThermalVias",
         nets={"VBUS": "VBUS", "VBUSG": "CHG_VBUSG", "VBUSI": "CHG_VIN", "VIO": "CHG_VIN", "CSP1": "CHG_VIN",
               "CSN1": "CHG_CSN1", "PCIN": "CHG_NODEB", "CC1": "CC1", "CC2": "CC2", "DPC": "NC", "DMC": "NC",
               "EN": "CHG_EN", "GPIO20": "CHG_LED_A_R", "GPIO19": "CHG_LED_B_R", "GPIO1": "CHG_LED_COM",

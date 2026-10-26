@@ -13,7 +13,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pcbnew
 from fatten import TARGET
 
-BUFFER = 2.5     # mm around each track of the net
+BUFFER = 2.0     # mm around each track of the net
+GND_MOAT = 1.6   # mm kept free around every GND pad on the layer (pour + a 0.6 mm stitching via fit in)
 PRIO = 5
 
 
@@ -40,7 +41,16 @@ def main(path):
                 n += 1
             if not n:
                 continue
+            # keep the pour away from GND pads on this layer, so the GND pour (and a stitching via) can still reach them
+            moat = pcbnew.SHAPE_POLY_SET()
+            for fp in b.GetFootprints():
+                for p in fp.Pads():
+                    if p.GetNetname() == "GND" and p.IsOnLayer(layer):
+                        p.TransformShapeToPolygon(moat, layer, FM(GND_MOAT), FM(0.05), pcbnew.ERROR_OUTSIDE)
             ps.Simplify()
+            if moat.OutlineCount():
+                moat.Simplify()
+                ps.BooleanSubtract(moat)
             for i in range(ps.OutlineCount()):
                 outline = ps.Outline(i)
                 z = pcbnew.ZONE(b)
