@@ -11,7 +11,7 @@
   <img src="docs/img/bassberry_hero.png" alt="Bassberry 2.1 render, front three-quarter view" width="90%">
 </p>
 
-> **Status: rev 0.1 hardware in progress.** Acoustic design and simulation done, KiCad 10 schematic complete, PCB placed (routing next). See [`hardware/`](hardware/).
+> **Status: rev 0.2 hardware in progress.** Acoustic design and simulation done. KiCad 10 schematic complete, with a HAT+ ID EEPROM so the Pi recognises the board. PCB placed by function and routed with srouter. A 4-layer digital twin verifies it against the datasheets. See [`hardware/`](hardware/).
 > Everything here will change - issues and ideas are very welcome.
 
 ---
@@ -31,10 +31,10 @@ It is the successor of [rfsparkling/RPi_Speaker](https://github.com/rfsparkling/
 | **Drivers** | 2× 2" full-range satellites (sealed) + 1× 3.5" long-throw sub, down-firing, with 2 opposed passive radiators |
 | **Response** | f₋₃ ≈ **64 Hz**, ±0.8 dB 100 Hz – 1 kHz (simulated, with DSP) |
 | **Output** | ≈ **85 dB** broadband, **87 dB** @ 100 Hz, **94–97 dB** midrange @ 1 m (simulated) |
-| **Host** | Every 40-pin Raspberry Pi: 1 A+/B+, 2, 3, 4, 5, Zero / Zero W / Zero 2 W |
+| **Host** | Every 40-pin Raspberry Pi: 1 A+/B+, 2, 3, 4, 5, Zero / Zero W / Zero 2 W - detected as a **HAT+** (ID EEPROM loads the overlay) |
 | **Cooling** | Pi mounted upside down; SoC sits on an aluminium pedestal + gap pad into a 4-layer GND via field. No fan. |
 | **Power** | USB-C PD in (5–20 V), 3S Li-ion buck-boost charging, 5.1 V / 5 A for the Pi, optional 18 V rail for the sub amp |
-| **Battery** | 3× 18650 in snap-in metal clips - new or harvested cells, with balancing and reverse-cell indication |
+| **Battery** | 3× 18650 in snap-in holders with spring metal contacts - new or harvested cells, with balancing and reverse-cell indication |
 | **UI** | 1.3" I2C OLED, power / BT / play / vol− / vol+ buttons, rotary encoder for menus (internet radio, EQ, sources) |
 | **Size** | 230 × 120 × 140 mm |
 
@@ -97,7 +97,7 @@ Please read [`docs/battery.md`](docs/battery.md) first: matching, testing and th
 
 - [x] Concept, architecture, acoustic design and simulation
 - [x] Schematic (KiCad 10, generated from [`hardware/tools`](hardware/tools))
-- [ ] PCB layout, 4-layer, Pi thermal pedestal (placed, routing next)
+- [ ] PCB layout, 4-layer, Pi thermal pedestal (rev 0.2: placed + routed, DRC / twin closure in progress)
 - [ ] 3D-printable enclosure (STEP + STL), gaskets, damping
 - [ ] Linux: dual TAS5805M 2.1 sound card, DSP profiles, supervisor daemon, OLED menu
 - [ ] Prototype measurements vs simulation
