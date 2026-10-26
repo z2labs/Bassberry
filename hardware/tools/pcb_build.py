@@ -92,7 +92,7 @@ for (x, y, d) in HOLES:
 FIXED = {
     "J101": (57.5, 52.5, None, "F"),
     "BT401": (74.5, 51.5, 270, "F"), "BT402": (97.0, 51.5, 90, "F"), "BT403": (119.5, 51.5, 270, "F"),
-    "J301": (141.0, 3.6, 180, "B"),          # USB-C on the bottom, with its ESD, console and charger input
+    "J301": (141.0, None, 0, "B"),           # USB-C on the bottom, mouth to the rear edge (y from EDGE_ALIGN)
     # front UI strip (top), plungers through the lid
     "SW501": (72.0, 104.0, 0, "F"), "SW502": (84.0, 104.0, 0, "F"), "SW503": (96.0, 104.0, 0, "F"),
     "SW504": (108.0, 104.0, 0, "F"), "SW505": (120.0, 104.0, 0, "F"),
@@ -255,6 +255,7 @@ def place_near(ref, tgt, side, rots):
 
 # mechanically fixed (enclosure, Pi, cells, lid controls): exactly where FIXED says. Everything else in FIXED is an
 # anchor: the part goes to the nearest courtyard-free spot around it (holder pegs, holes and neighbours respected).
+EDGE_ALIGN = {"J301": -0.6}   # courtyard front this far over the rear edge (receptacle lip), pads stay inside
 HARD = {"J101", "BT401", "BT402", "BT403", "J301", "SW501", "SW502", "SW503", "SW504", "SW505", "J502", "SW506", "J401"}
 
 # 1) fixed parts. The Pi socket picks its rotation: header vertical, pin 40 to the rear, Pi body to the left.
@@ -265,6 +266,10 @@ for ref, (x, y, rot, side) in sorted(FIXED.items(), key=lambda kv: kv[0] not in 
         if not place_near(ref, (x, y), side, (rot,)):
             print("WARNING: no room for anchored", ref)
         continue
+    if ref in EDGE_ALIGN:
+        g0 = geom(fps[ref], rot, side)
+        y = EDGE_ALIGN[ref] - g0[0][1]
+        print(f"  {ref}: y = {y:.2f} mm (courtyard front at {EDGE_ALIGN[ref]} mm)")
     if rot is None:
         fp = fps[ref]; best = None
         for r in (0, 90, 180, 270):
