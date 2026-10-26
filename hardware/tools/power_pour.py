@@ -101,12 +101,19 @@ def add_vias(b):
                 for dia, drill in ((1.0, 0.5), (0.6, 0.3)):
                     if not hole_ok(p, drill):
                         continue
-                    if not all(inside(own_fill(net, l), p, dia / 2 + 0.05) for l in layers):
-                        continue
                     if not all(cu.clear(net, l, p, p, dia / 2) for l in ALL):
+                        continue
+                    # joined through the net's own pour on every layer, or else by a stub from the via on each layer
+                    stubs = [l for l in layers if not inside(own_fill(net, l), p, dia / 2 + 0.05)]
+                    sw = min(tg[0], 0.8)
+                    if not all(cu.clear(net, l, c, p, sw / 2) for l in stubs):
                         continue
                     nv = pcbnew.PCB_VIA(b); nv.SetPosition(pcbnew.VECTOR2I(FM(p[0]), FM(p[1])))
                     nv.SetWidth(FM(dia)); nv.SetDrill(FM(drill)); nv.SetNet(v.GetNet()); b.Add(nv)
+                    for l in stubs:
+                        st = pcbnew.PCB_TRACK(b); st.SetStart(v.GetPosition()); st.SetEnd(nv.GetPosition())
+                        st.SetWidth(FM(sw)); st.SetLayer(l); st.SetNet(v.GetNet()); b.Add(st)
+                        cu.add(net, {l}, ("seg", c, p, sw / 2), st)
                     cu.add(net, "all", ("circ", p, dia / 2), nv)
                     rec = [p[0], p[1], drill, nv]; allv_net[net].append(rec); vias_all.append(rec)
                     have += amps(drill); made += 1
