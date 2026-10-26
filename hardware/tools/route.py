@@ -112,9 +112,7 @@ def main():
     print("escape probe:", g.stdout.strip().splitlines()[-1] if g.stdout.strip() else g.stderr[-300:])
     if g.returncode != 0:
         print(g.stdout); sys.exit(1)
-    # dog-bone fan-out of the 0.4 mm-pitch charger QFN (USAGE.md allows pre-placed fan-out vias)
-    f = subprocess.run([sys.executable, os.path.join(HERE, "fanout.py"), BOARD, "U302"], capture_output=True, text=True)
-    print(f.stdout.strip())
+    # (fanout.py exists, but straight dog-bones on a 0.4 mm-pitch QFN wall the neighbouring pins in: not used)
     b = pcbnew.LoadBoard(BOARD)
     width = widths(b)
     print("routing widths:", ", ".join(f"{g} {w}" for g, w, c in width))
