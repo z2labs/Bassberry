@@ -92,7 +92,7 @@ for (x, y, d) in HOLES:
 FIXED = {
     "J101": (57.5, 52.5, None, "F"),
     "BT401": (74.5, 51.5, 270, "F"), "BT402": (97.0, 51.5, 90, "F"), "BT403": (119.5, 51.5, 270, "F"),
-    "J301": (141.0, 3.6, 180, "F"),
+    "J301": (141.0, 3.6, 180, "B"),          # USB-C on the bottom, with its ESD, console and charger input
     # front UI strip (top), plungers through the lid
     "SW501": (72.0, 104.0, 0, "F"), "SW502": (84.0, 104.0, 0, "F"), "SW503": (96.0, 104.0, 0, "F"),
     "SW504": (108.0, 104.0, 0, "F"), "SW505": (120.0, 104.0, 0, "F"),
