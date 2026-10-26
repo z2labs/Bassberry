@@ -25,7 +25,7 @@ THERMAL = (18.5, 42.5, 46.0, 64.5)       # SoC thermal pad + via field (both sid
 # Pi 4/5 Wi-Fi/BT antenna at the pin-1 corner (pi_x 0..8, pi_y 35..56): no copper on any layer, starts past header pin 1.
 ANTENNA = (40.0, 78.5, 61.5, 92.0)
 # (x, y, drill): M3 board mounts, M2.5 Pi holes not in the socket footprint, M2.5 pedestal bolts (from below)
-HOLES = [(66.0, 4.5, 3.2), (175.5, 9.0, 3.2), (4.5, 105.5, 3.2), (175.5, 105.5, 3.2), (135.0, 50.0, 3.2),
+HOLES = [(66.0, 4.0, 3.2), (175.5, 9.0, 3.2), (4.5, 105.5, 3.2), (175.5, 105.5, 3.2), (135.0, 50.0, 3.2),
          (8.5, 23.5, 2.7), (8.5, 81.5, 2.7), (21.5, 62.0, 2.7), (43.0, 45.0, 2.7)]
 
 

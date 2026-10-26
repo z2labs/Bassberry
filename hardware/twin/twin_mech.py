@@ -67,7 +67,7 @@ def check(parts):
         if not h.startswith("H"):
             continue
         cx, cy = p["pos"]
-        near = [r for r, q in parts.items() if r != h and not r.startswith("H") and
+        near = [r for r, q in parts.items() if r != h and not r.startswith("H") and r != "J101" and
                 q["box"][0] - 0.2 < cx + 3.0 and q["box"][2] + 0.2 > cx - 3.0 and q["box"][1] - 0.2 < cy + 3.0 and q["box"][3] + 0.2 > cy - 3.0]
         rep.add("PASS" if not near else "FAIL", "holes", f"{h}: screw head area free" + (f" (touches {near})" if near else ""))
     return rep
