@@ -74,7 +74,7 @@ FAST = ["I2S_*", f"{PI}PI_BCLK", f"{PI}PI_LRCLK", f"{PI}PI_DOUT", "USB_DP", "USB
         "AMP*_PDN", "PI_*",                                    # everything else that leaves the Pi header
         f"{A}AMP2_SDIN", f"{A}AMP1_SDOUT"]
 PASSES = [
-    ("pass1_power", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:15", "-via", "6000"]),   # heavy copper stays outside
+    ("pass1_power", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:15", "-via", "6000", "-it", "80"]),   # heavy copper stays outside; the QFN escape needs a longer negotiation
     ("pass2_fast", FAST, ["-top", "F.Cu:10", "-top", "B.Cu:2", "-via", "2500"]),
     ("pass3_rest", ["*"], ["-top", "F.Cu:4", "-via", "2000"]),
 ]
