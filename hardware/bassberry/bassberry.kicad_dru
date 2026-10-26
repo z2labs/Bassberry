@@ -1,0 +1,6 @@
+(version 1)
+
+# srouter USAGE.md: keep pours 0.3 mm from other nets (a general min-clearance rule would also drive the zone filler)
+(rule "Copper pour to other nets 0.3"
+    (condition "A.Type == 'Zone' && A.Net != B.Net")
+    (constraint clearance (min 0.3mm)))

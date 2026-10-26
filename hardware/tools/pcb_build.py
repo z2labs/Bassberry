@@ -19,8 +19,7 @@ from sexpr import parse, find, find1
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRJ = os.path.join(HERE, "..", "bassberry")
 FPDIR = os.environ.get("KICAD_FP", r"C:\Program Files\KiCad\10.0\share\kicad\footprints")
-OX, OY = 50.0, 50.0  # board origin on the sheet
-W, H = 180.0, 110.0
+from board_geom import OX, OY, W, H, NOTCH, OUTLINE, PI_AREA, THERMAL, ANTENNA, HOLES, add_thermal_vias, add_gnd_pours
 EDGE = 1.0           # parts keep this far from the board edge
 GAP = 0.35           # courtyard-to-courtyard gap
 
@@ -47,8 +46,6 @@ board.SetLayerType(pcbnew.In1_Cu, pcbnew.LT_SIGNAL)
 board.SetLayerType(pcbnew.In2_Cu, pcbnew.LT_POWER)
 
 # ------------------------------------------------------------ outline with Pi port notch (rear-left)
-NOTCH = (61.0, 21.0)  # open rear-left corner for the Pi USB/Ethernet block
-OUTLINE = [(0, NOTCH[1]), (NOTCH[0], NOTCH[1]), (NOTCH[0], 0), (W, 0), (W, H), (0, H)]
 for i in range(len(OUTLINE)):
     a, b = OUTLINE[i], OUTLINE[(i + 1) % len(OUTLINE)]
     seg = pcbnew.PCB_SHAPE(board)
@@ -82,16 +79,7 @@ def short(name):
 RAILS = {"GND", "+3V3", "+5V", "+5V_BUCK", "+BATT", "VBUS", "+3V3_AON", "+3V3_USB", "PVDD_SUB", "CHG_VIN"}
 
 # ------------------------------------------------------------ mechanical keep-outs for placement (x0, y0, x1, y1)
-# Face-down Pi, mapped from the Raspberry Pi mechanical drawings (Pi frame: x along 85 mm towards the ports, y across
-# 56 mm towards the header):  board x = pi_y + 5,  board y = 85 - pi_x   (a mirror: the Pi is seen from its back).
-PI_AREA = (4.0, 19.0, 62.0, 86.5)        # Pi 85 x 56 mm body over the top side: only its socket goes there
-# SoC centres: Pi 4 (29.25, 32.5) -> (37.5, 55.75), 15 mm lid; Pi 5 (33.1, 23.0) -> (28.0, 51.9), 17 mm lid. Pad = union + 1 mm.
-THERMAL = (18.5, 42.5, 46.0, 64.5)       # SoC thermal pad + via field (both sides)
-# Pi 4/5 Wi-Fi/BT antenna at the pin-1 corner (pi_x 0..8, pi_y 35..56) -> no copper on any layer, starts past header pin 1.
-ANTENNA = (40.0, 78.5, 61.5, 92.0)
 BLOCK = {"F": [PI_AREA, ANTENNA], "B": [THERMAL, ANTENNA]}
-HOLES = [(66.0, 4.5, 3.2), (175.5, 9.0, 3.2), (4.5, 105.5, 3.2), (175.5, 105.5, 3.2), (135.0, 50.0, 3.2),
-         (8.5, 23.5, 2.7), (8.5, 81.5, 2.7), (21.5, 62.0, 2.7), (43.0, 45.0, 2.7)]
 for (x, y, d) in HOLES:
     r = (3.0 if d > 3 else 2.5) + 0.3
     for s in "FB":
@@ -379,14 +367,7 @@ for layer in (pcbnew.F_Cu, pcbnew.F_Mask, pcbnew.B_Cu, pcbnew.B_Mask):
         z.SetNet(gnd); z.SetZoneName("PI_THERMAL_PAD_" + ("F" if layer == pcbnew.F_Cu else "B")); z.SetAssignedPriority(10)
         z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
     board.Add(z)
-for ix in range(int((THERMAL[2] - THERMAL[0] - 1.0) / 2.0) + 1):
-    for iy in range(int((THERMAL[3] - THERMAL[1] - 1.0) / 2.0) + 1):
-        x, y = THERMAL[0] + 1.0 + ix * 2.0, THERMAL[1] + 1.0 + iy * 2.0
-        if any(math.hypot(x - hx, y - hy) < 4 for (hx, hy, d) in HOLES):
-            continue
-        v = pcbnew.PCB_VIA(board)
-        v.SetPosition(P(x, y)); v.SetDrill(mm(0.3)); v.SetWidth(mm(0.6)); v.SetNet(gnd)
-        board.Add(v)
+add_thermal_vias(board, pcbnew)
 
 # ------------------------------------------------------------ keep-out under the Pi Wi-Fi/BT antenna (all copper layers)
 ko = pcbnew.ZONE(board)
@@ -402,17 +383,7 @@ for (x, y) in [(ANTENNA[0], ANTENNA[1]), (ANTENNA[2], ANTENNA[1]), (ANTENNA[2], 
 board.Add(ko)
 
 # ------------------------------------------------------------ GND: solid In2 plane, pours on F.Cu and B.Cu
-for layer in (pcbnew.In2_Cu, pcbnew.F_Cu, pcbnew.B_Cu):
-    z = pcbnew.ZONE(board)
-    z.SetLayer(layer); z.SetNet(gnd); z.SetAssignedPriority(0)
-    z.SetZoneName(f"GND_{board.GetLayerName(layer)}")
-    z.SetLocalClearance(mm(0.3)); z.SetMinThickness(mm(0.25))
-    z.SetPadConnection(pcbnew.ZONE_CONNECTION_THERMAL)
-    z.SetThermalReliefGap(mm(0.3)); z.SetThermalReliefSpokeWidth(mm(0.5))
-    ol = z.Outline(); ol.NewOutline()
-    for (x, y) in OUTLINE:
-        ol.Append(mm(OX + x), mm(OY + y))
-    board.Add(z)
+add_gnd_pours(board, pcbnew)
 
 # ------------------------------------------------------------ silk text
 t = pcbnew.PCB_TEXT(board)
@@ -425,5 +396,7 @@ filler = pcbnew.ZONE_FILLER(board)
 filler.Fill(board.Zones())
 out = os.path.join(PRJ, "bassberry.kicad_pcb")
 board.Save(out)
+import shutil
+shutil.copy(out, os.path.join(PRJ, "bassberry_placed.kicad_pcb"))   # route.py always starts from this
 json.dump({r: list(v) for r, v in where.items()}, open(os.path.join(PRJ, "placement.json"), "w"), indent=0)
 print("placed", len(where), "footprints ->", out)
