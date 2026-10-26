@@ -120,7 +120,7 @@ def main():
         with open(logf, "w", encoding="utf-8") as fh:      # streamed, so a long pass can be watched
             p = subprocess.run(cmd, stdout=fh, stderr=subprocess.STDOUT, text=True)
         log = open(logf, encoding="utf-8", errors="replace").read()
-        bad = [l for l in log.splitlines() if l.startswith("!")]
+        bad = [l.strip() for l in log.splitlines() if l.strip().startswith("!")]
         print(f"   {name}: exit {p.returncode}, {time.time() - t0:.0f} s, unrouted: {len(bad)}")
         for l in bad[:30]:
             print("   ", l)
