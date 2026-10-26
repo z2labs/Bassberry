@@ -58,6 +58,8 @@ def widths(board):
     for g, w in WISH:
         ds = [d for n, d in small.items() if fnmatch.fnmatchcase(n, g)]
         wc = max(0.2, min([w] + [round(d * 0.95, 2) for d in ds]))
+        if ds and min(ds) < 0.35:      # 0.4 mm pitch QFN pins: two 0.2 mm tracks + 0.15 mm clearance must fit
+            wc = 0.2
         out.append((g, wc, CLR))
     return out
 
