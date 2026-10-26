@@ -571,6 +571,49 @@ def gnd_dogbones(clr_pad=0.5, gaps=(0.35, 0.6, 0.9), only=None):
     print(f"GND dog-bones: {made}, no room: {' '.join(skipped) if skipped else 'none'}")
     return skipped
 
+def gnd_links(only):
+    """last resort for a GND pin with no room for its own via: a short straight or L-shaped track to the nearest GND
+    copper on its layer (another part's GND pad, a dog-bone via, an exposed pad) within 4 mm, clearance-checked"""
+    import fatten
+    fatten.CLR = 0.15; fatten.CLR_PAD = 0.15
+    cu = fatten.Copper(board)
+    targets = []
+    for fp in board.GetFootprints():
+        for p in fp.Pads():
+            if p.GetNetname() == "GND":
+                targets.append((fp.GetReference(), p, (pcbnew.ToMM(p.GetPosition().x), pcbnew.ToMM(p.GetPosition().y))))
+    gv = [(pcbnew.ToMM(v.GetPosition().x), pcbnew.ToMM(v.GetPosition().y)) for v in board.GetTracks()
+          if v.GetClass() == "PCB_VIA" and v.GetNetname() == "GND"]
+    done, fail = [], []
+    for fp in board.GetFootprints():
+        lay = pcbnew.B_Cu if fp.IsFlipped() else pcbnew.F_Cu
+        for p in fp.Pads():
+            key = f"{fp.GetReference()}.{p.GetNumber()}"
+            if key not in only:
+                continue
+            q = (pcbnew.ToMM(p.GetPosition().x), pcbnew.ToMM(p.GetPosition().y))
+            s = p.GetSize(pcbnew.F_Cu); hw = min(0.125, pcbnew.ToMM(min(s.x, s.y)) / 2 - 0.025)
+            cands = [(t[2], t[1]) for t in targets if t[0] != fp.GetReference() and t[1].IsOnLayer(lay)] + [(v, None) for v in gv]
+            cands = sorted((c for c in cands if math.dist(c[0], q) < 4.0), key=lambda c: math.dist(c[0], q))
+            ok = False
+            for (e, _) in cands:
+                for path in ([q, e], [q, (e[0], q[1]), e], [q, (q[0], e[1]), e]):
+                    if all(cu.clear("GND", lay, path[i], path[i + 1], hw) for i in range(len(path) - 1)):
+                        for i in range(len(path) - 1):
+                            if math.dist(path[i], path[i + 1]) < 1e-3:
+                                continue
+                            t = pcbnew.PCB_TRACK(board); t.SetStart(pcbnew.VECTOR2I(mm(path[i][0]), mm(path[i][1])))
+                            t.SetEnd(pcbnew.VECTOR2I(mm(path[i + 1][0]), mm(path[i + 1][1]))); t.SetWidth(mm(2 * hw))
+                            t.SetLayer(lay); t.SetNet(netobjs["GND"]); board.Add(t)
+                            cu.add("GND", {lay}, ("seg", path[i], path[i + 1], hw), t)
+                        ok = True
+                        break
+                if ok:
+                    break
+            (done if ok else fail).append(key)
+    print(f"GND links: {' '.join(done) or 'none'}; still alone (pour / stitching): {' '.join(fail) or 'none'}")
+
+
 # ------------------------------------------------------------ mounting holes (M3 board, M2.5 Pi, M2.5 pedestal)
 def hole(x, y, d, ref):
     # M3 board screws: plated ring to GND (no via ring: it collides with neighbouring holes and the edge);
@@ -602,7 +645,9 @@ for layer in (pcbnew.F_Cu, pcbnew.F_Mask, pcbnew.B_Cu, pcbnew.B_Mask):
 add_thermal_vias(board, pcbnew)
 left = gnd_dogbones()              # after the holes and the SoC via field exist, so it sees them
 if left:                           # second chance for the tight ones: farther out, 0.3 mm escape lane
-    gnd_dogbones(clr_pad=0.3, gaps=(0.35, 0.6, 0.9, 1.2, 1.6), only=set(left))
+    left = gnd_dogbones(clr_pad=0.3, gaps=(0.35, 0.6, 0.9, 1.2, 1.6), only=set(left))
+if left:
+    gnd_links(set(left))
 
 # ------------------------------------------------------------ keep-out under the Pi Wi-Fi/BT antenna (all copper layers)
 ko = pcbnew.ZONE(board)

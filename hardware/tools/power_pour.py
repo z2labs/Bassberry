@@ -188,18 +188,31 @@ def main(path):
     b = pcbnew.LoadBoard(path)
     FM = pcbnew.FromMM
     # remove pours from an earlier run
-    # duplicate vias (two tools dropping one on the same spot) -> keep one
-    seen, dup = set(), []
-    for v in list(b.GetTracks()):
-        if v.GetClass() == "PCB_VIA":
-            k = (v.GetNetname(), round(pcbnew.ToMM(v.GetPosition().x), 2), round(pcbnew.ToMM(v.GetPosition().y), 2))
-            if k in seen:
-                dup.append(v)
-            seen.add(k)
+    # (near-)duplicate vias of one net (two tools dropping one on almost the same spot, hole to hole < 0.25 mm):
+    # keep the first, re-point the tracks that ended on the other one
+    alltr = list(b.GetTracks())
+    vs = [v for v in alltr if v.GetClass() == "PCB_VIA"]
+    kept, dup = [], []
+    for v in vs:
+        p = v.GetPosition()
+        twin = next((k for k in kept if k.GetNetname() == v.GetNetname() and
+                     pcbnew.ToMM((k.GetPosition() - p).EuclideanNorm()) < (pcbnew.ToMM(k.GetDrillValue()) + pcbnew.ToMM(v.GetDrillValue())) / 2 + 0.25), None)
+        if twin is None:
+            kept.append(v); continue
+        dup.append(v)
+        for t in alltr:
+            if t.GetClass() == "PCB_VIA" or t.GetNetname() != v.GetNetname():
+                continue
+            if t.GetStart() == p:
+                t.SetStart(twin.GetPosition())
+            if t.GetEnd() == p:
+                t.SetEnd(twin.GetPosition())
     for v in dup:
         b.Remove(v)
     if dup:
-        print(f"power_pour: {len(dup)} duplicate vias removed")
+        print(f"power_pour: {len(dup)} near-duplicate vias merged")
+        pcbnew.SaveBoard(path, b)                 # pcbnew's track list is stale after Remove: reload
+        b = pcbnew.LoadBoard(path)
     tracks = list(b.GetTracks())
     nets = sorted({t.GetNetname() for t in tracks if t.GetClass() != "PCB_VIA"})
     old = [z for z in b.Zones() if z.GetZoneName().startswith("PWR_")]

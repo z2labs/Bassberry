@@ -97,8 +97,20 @@ def main(before, after):
         n.SetWidth(FM(w)); n.SetLayer(t.GetLayer()); n.SetNet(p.GetNet()); b.Add(n)
         cu.add(p.GetNetname(), {t.GetLayer()}, ("seg", c, q, w / 2), n)
         fixed += 1
+    # tidy leftovers: a segment with a free end carries nothing - remove it
+    out = os.path.join(tempfile.gettempdir(), "tidy_guard_dangling.json")
     if fixed:
         pcbnew.SaveBoard(after, b)
+    subprocess.run([CLI, "pcb", "drc", "--format", "json", "--severity-all", "-o", out, after], capture_output=True)
+    dang = [i.get("uuid") for v in json.load(open(out, encoding="utf-8")).get("violations", [])
+            if v["type"] == "track_dangling" for i in v["items"]]
+    b = pcbnew.LoadBoard(after)
+    rm = [t for t in b.GetTracks() if t.m_Uuid.AsString() in dang and t.GetClass() == "PCB_TRACK"]
+    for t in rm:
+        b.Remove(t)
+    if rm:
+        pcbnew.SaveBoard(after, b)
+        print(f"tidy_guard: {len(rm)} dangling segments removed")
     print(f"tidy_guard: {len(new)} connections lost by the tidy, {fixed} re-joined" + (f"; left: {left}" if left else ""))
     return 0 if not left else 1
 
