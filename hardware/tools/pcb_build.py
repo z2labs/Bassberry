@@ -68,7 +68,7 @@ def short(name):
 # (x, y, rot, side) for mechanically fixed parts; everything else is grid-placed by sheet below.
 FIXED = {
     # Raspberry Pi face-down socket: header along the left edge, matching the 3D model
-    "J101": (8.5, 58.0, 90, "F"),
+    "J101": (8.5, 52.5, None, "F"),  # header centre; rotation chosen automatically (pin 40 to the rear)
     # 3S cells (clips), cells run front-to-back
     "BT401": (81.0, 18.0, 0, "F"), "BT402": (81.0, 82.0, 0, "F"),
     "BT403": (100.0, 82.0, 0, "F"), "BT404": (100.0, 18.0, 0, "F"),
@@ -81,16 +81,16 @@ FIXED = {
     "SW506": (160.0, 98.0, 0, "F"),
     "J502": (90.0, 104.0, 0, "F"),
     # speaker connectors (bottom, towards the acoustic chambers)
-    "J201": (12.0, 102.0, 0, "B"), "J202": (168.0, 102.0, 0, "B"), "J203": (90.0, 70.0, 0, "B"),
+    "J201": (12.0, 102.0, 0, "B"), "J202": (168.0, 102.0, 0, "B"), "J203": (97.0, 92.0, 0, "B"),
     # BMS module pads + NTC + fuse near the cells (bottom)
-    "J401": (100.0, 95.0, 90, "B"), "J402": (130.0, 92.0, 0, "B"), "F401": (140.0, 85.0, 0, "B"),
+    "J401": (115.0, 103.0, 0, "B"), "J402": (80.0, 104.0, 0, "B"), "F401": (132.0, 100.0, 0, "B"),
 }
 REGIONS = {  # sheet -> (x0, y0, x1, y1, side) for automatic placement
-    "pi": (8.0, 24.0, 66.0, 36.0, "B"),
-    "audio": (6.0, 38.0, 72.0, 96.0, "B"),
-    "power": (128.0, 9.0, 177.0, 84.0, "B"),
-    "battery": (72.0, 98.0, 126.0, 109.0, "B"),
-    "ui": (128.0, 86.0, 178.0, 109.0, "B"),
+    "pi": (8.0, 23.0, 64.0, 43.0, "B"),
+    "audio": (66.0, 8.0, 128.0, 86.0, "B"),
+    "power": (130.0, 9.0, 177.0, 84.0, "B"),
+    "battery": (130.0, 86.0, 160.0, 96.0, "B"),
+    "ui": (6.0, 73.0, 64.0, 96.0, "B"),
 }
 
 # which sheet each ref belongs to: read from the netlist (sheetpath)
@@ -138,10 +138,30 @@ for ref, c in sorted(comps.items()):
         w, h = pcbnew.ToMM(bb.GetWidth()) + 1.0, pcbnew.ToMM(bb.GetHeight()) + 1.0
         if cx + w > x1:
             cx, cy, rowh = x0, cy + rowh, 0.0
+        if cy + h > y1:
+            print(f"WARNING: region '{sh}' overflow at {ref}")
         x, y, rot = cx + w / 2, cy + h / 2, 0
         cursor[sh] = [cx + w, cy, max(rowh, h)]
-    fp.SetPosition(P(x, y))
-    fp.SetOrientationDegrees(rot)
+    if rot is None:  # Pi socket: pick rotation with header vertical, pin 40 towards the rear, body to the right
+        best = None
+        for r in (0, 90, 180, 270):
+            fp.SetOrientationDegrees(r); fp.SetPosition(P(0, 0))
+            pads = {pd.GetNumber(): pd.GetPosition() for pd in fp.Pads()}
+            p1, p40 = pads["1"], pads["40"]
+            bb = fp.GetBoundingBox(False, False)
+            vertical = abs(p1.x - p40.x) < abs(p1.y - p40.y)
+            rear = p40.y < p1.y
+            right = bb.GetCenter().x > (p1.x + p40.x) / 2
+            score = vertical * 4 + rear * 2 + right
+            if best is None or score > best[0]:
+                best = (score, r, (p1.x + p40.x) / 2, (p1.y + p40.y) / 2)
+        rot = best[1]
+        print("Pi socket rotation", rot, "score", best[0])
+        fp.SetOrientationDegrees(rot)
+        fp.SetPosition(pcbnew.VECTOR2I(int(mm(OX + x) - best[2]), int(mm(OY + y) - best[3])))
+    else:
+        fp.SetPosition(P(x, y))
+        fp.SetOrientationDegrees(rot)
     if side == "B":
         fp.Flip(fp.GetPosition(), pcbnew.FLIP_DIRECTION_LEFT_RIGHT if hasattr(pcbnew, "FLIP_DIRECTION_LEFT_RIGHT") else False)
     placed.append(ref)
@@ -158,12 +178,16 @@ def hole(x, y, d=3.2, pad=6.0, ref="H"):
 
 for i, (x, y) in enumerate([(66, 4.5), (175.5, 9), (4.5, 105.5), (175.5, 105.5), (4.5, 26)]):
     hole(x, y, ref=f"H{i+1}")
-hole(26.0, 49.0, d=2.7, ref="H6")
-hole(44.0, 49.0, d=2.7, ref="H7")
+# Pi B+/2/3/4/5 holes not covered by the Zero footprint (58 x 49 mm pattern), M2.5
+hole(57.5, 23.5, d=2.7, ref="H6")
+hole(57.5, 81.5, d=2.7, ref="H7")
+# aluminium pedestal bolts (from the bottom into the block)
+hole(30.0, 58.0, d=2.7, ref="H8")
+hole(44.0, 58.0, d=2.7, ref="H9")
 
 # ------------------------------------------------------------ Pi SoC thermal pad: exposed copper + via field (GND)
 gnd = netobjs.get("GND")
-PAD = (22.0, 36.0, 48.0, 62.0)
+PAD = (24.0, 45.0, 50.0, 71.0)  # Pi 4/5 SoC region (verify against Pi mechanical drawings)
 for layer in (pcbnew.F_Cu, pcbnew.F_Mask):
     z = pcbnew.ZONE(board)
     z.SetLayer(layer)
@@ -177,7 +201,7 @@ for layer in (pcbnew.F_Cu, pcbnew.F_Mask):
 for ix in range(13):
     for iy in range(13):
         x, y = PAD[0] + 1.0 + ix * 2.0, PAD[1] + 1.0 + iy * 2.0
-        if math.hypot(x - 26.0, y - 49.0) < 4 or math.hypot(x - 44.0, y - 49.0) < 4:
+        if math.hypot(x - 30.0, y - 58.0) < 4 or math.hypot(x - 44.0, y - 58.0) < 4:
             continue
         v = pcbnew.PCB_VIA(board)
         v.SetPosition(P(x, y)); v.SetDrill(mm(0.3)); v.SetWidth(mm(0.6)); v.SetNet(gnd)
