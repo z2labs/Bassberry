@@ -21,7 +21,7 @@ PRJ = os.path.join(HERE, "..", "bassberry")
 FPDIR = os.environ.get("KICAD_FP", r"C:\Program Files\KiCad\10.0\share\kicad\footprints")
 from board_geom import OX, OY, W, H, NOTCH, OUTLINE, PI_AREA, THERMAL, ANTENNA, HOLES, add_thermal_vias, add_gnd_pours
 EDGE = 1.0           # parts keep this far from the board edge
-GAP = 0.35           # courtyard-to-courtyard gap
+GAP = 0.6            # courtyard-to-courtyard gap (room for a 0.2 mm escape track + 2 x 0.15 mm clearance)
 
 
 def mm(v):
