@@ -2,12 +2,13 @@
 
 track_tidy straightens and merges segments; when it moves a segment that ran *through* a pad (srouter's pad entry),
 the pad can end up next to its own track instead of on it (seen on R106 +3V3). This compares the KiCad DRC
-unconnected list before and after the tidy and, for every pad that lost its track, adds the shortest straight stub from
+unconnected list before and after the tidy and, for every pad that lost its track (or two pieces of a track that no
+longer meet), adds the shortest straight stub from
 the pad centre to that track (same layer, width = min(track width, pad narrow side)), if it clears all other copper.
 
 usage: kicad-python tidy_guard.py before.kicad_pcb after.kicad_pcb      (after is modified in place)
 """
-import sys, os, json, subprocess, tempfile, re
+import sys, os, json, subprocess, tempfile, re, math
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pcbnew
 import fatten
@@ -44,18 +45,34 @@ def main(before, after):
         objs = [byid.get(x[0]) for x in u]
         pads = [o for o in objs if isinstance(o, pcbnew.PAD)]
         trks = [o for o in objs if o is not None and o.GetClass() == "PCB_TRACK"]
-        if len(pads) != 1 or len(trks) != 1:
+
+        def seg(t):
+            return (mm(t.GetStart().x), mm(t.GetStart().y)), (mm(t.GetEnd().x), mm(t.GetEnd().y))
+
+        def foot(c, t):
+            a, e = seg(t)
+            dx, dy = e[0] - a[0], e[1] - a[1]
+            L = dx * dx + dy * dy
+            k = 0 if L == 0 else max(0, min(1, ((c[0] - a[0]) * dx + (c[1] - a[1]) * dy) / L))
+            return (a[0] + k * dx, a[1] + k * dy)
+        if len(pads) == 1 and len(trks) == 1:
+            p, t = pads[0], trks[0]
+            c = (mm(p.GetPosition().x), mm(p.GetPosition().y))
+            s = p.GetSize(pcbnew.F_Cu)
+            w = min(mm(t.GetWidth()), mm(min(s.x, s.y)))
+            ok_layer = p.IsOnLayer(t.GetLayer())
+        elif len(trks) == 2 and trks[0].GetLayer() == trks[1].GetLayer():
+            # two pieces of one track no longer meet: join the nearest end of one to the other
+            t0, t1 = trks
+            cands = [(c, t1) for c in seg(t0)] + [(c, t0) for c in seg(t1)]
+            c, t = min(cands, key=lambda ct: math.dist(ct[0], foot(ct[0], ct[1])))
+            w = min(mm(t0.GetWidth()), mm(t1.GetWidth()))
+            p = t0
+            ok_layer = True
+        else:
             left.append(" | ".join(x[3] for x in u)); continue
-        p, t = pads[0], trks[0]
-        c = (mm(p.GetPosition().x), mm(p.GetPosition().y))
-        a, e = (mm(t.GetStart().x), mm(t.GetStart().y)), (mm(t.GetEnd().x), mm(t.GetEnd().y))
-        dx, dy = e[0] - a[0], e[1] - a[1]
-        L = dx * dx + dy * dy
-        k = 0 if L == 0 else max(0, min(1, ((c[0] - a[0]) * dx + (c[1] - a[1]) * dy) / L))
-        q = (a[0] + k * dx, a[1] + k * dy)
-        s = p.GetSize(pcbnew.F_Cu)
-        w = min(mm(t.GetWidth()), mm(min(s.x, s.y)))
-        if not p.IsOnLayer(t.GetLayer()) or not cu.clear(p.GetNetname(), t.GetLayer(), c, q, w / 2):
+        q = foot(c, t)
+        if not ok_layer or not cu.clear(p.GetNetname(), t.GetLayer(), c, q, w / 2):
             left.append(" | ".join(x[3] for x in u)); continue
         n = pcbnew.PCB_TRACK(b); n.SetStart(pcbnew.VECTOR2I(FM(c[0]), FM(c[1]))); n.SetEnd(pcbnew.VECTOR2I(FM(q[0]), FM(q[1])))
         n.SetWidth(FM(w)); n.SetLayer(t.GetLayer()); n.SetNet(p.GetNet()); b.Add(n)
