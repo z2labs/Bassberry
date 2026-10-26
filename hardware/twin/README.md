@@ -10,7 +10,7 @@ Raspberry Pi drawings, HAT design guide). Every table names its source. It is ne
 |---|---|---|---|
 | 1 | `twin_check.py` | `.kicad_pcb` pad→net map (or the `.net` before layout) + `spec_bassberry.py` | every function lands where its datasheet says: Pi header roles, HAT ID rules, the back-power diode topology, TAS5805M PBTL ties / BST caps / ADR addresses, the IP2366 fig. 9 circuit, BAT_NUM/VSET/PSET values, buck/boost dividers, cells and BMS order, USB, supervisor pins |
 | 2 | `twin_plug.py` | board geometry + Pi drawings | the Pi is fitted **face down** to the 58 × 49 mm hole pattern, then each Pi pin is joined to whatever pad is physically under it and the Pi signals of layer 1 are re-checked through that join; port block over the open corner, Pi 4 and Pi 5 SoC lids on the thermal pad, antenna in the keep-out, nothing under the Pi |
-| 3 | `twin_analog.py` | the routed copper | max-flow ampacity of each high-current path between the pads where the current really enters and leaves (IPC-2221, 20 K rise, vias 1.5 A each), Pi 5 V IR drop at 5 A, set-points, TAS5805M PVDD window, LDO dissipation at a 20 V PD contract |
+| 3 | `twin_analog.py` | the routed copper incl. zone fills | rasterised (0.2 mm) max-flow ampacity of each high-current path through tracks, pads and power pours on all layers, between the pads where the current really enters and leaves (IPC-2221, 20 K rise, vias 1.5 A each); Pi 5 V set-point and IR drop at 5 A, boost set-point, TAS5805M PVDD window, LDO dissipation (USB side at a 20 V PD contract) |
 | 4 | `twin_mech.py` | board geometry | 18650 holders (axis, contact spacing, side by side, series links at the same end, clear of the Pi), USB-C at the rear edge, lid controls in the front strip, speaker connectors on the acoustic side, screw heads free |
 
 ## Run
@@ -34,8 +34,17 @@ Exit code: `0` clean, `1` FAIL, `2` missing input, `3` self-test failed.
   charger gate drive swap, buck VIN/SW swap, boost FB/EN swap, BMS B1/B2 swap, a cell holder reversed, USB D+/D- swap,
   supervisor I2C swap, both amps on one I2C address, wrong buck divider, BAT_NUM for 4 cells, missing PBTL tie, an extra load on ID_SD.
 * Layer 2: socket rows swapped, Pi plugged one pin off.
-* Layer 3: a battery link necked to 0.25 mm, the parallel vias of the Pi 5 V path removed, a buck divider giving 6 V.
-* Layer 4: a cell holder turned 90°, a holder reversed, a lid button on the bottom.
+* Layer 3: a battery link necked to 0.25 mm without its pour, a buck divider giving 6.1 V.
+* Layer 4: a cell holder turned 90°, a holder reversed, a lid button on the bottom, the USB-C turned round.
+
+## What it found (rev 0.2)
+
+* **USB-C turned 180°** (contact pads over the board edge) - layer 4 now checks the pad row position.
+* **USB LDO overload at a 20 V PD contract:** HT7533-1 (24 V / 250 mW) at 20 V x 15 mA = 250 mW → replaced by a
+  Torex XC6216B332PR (28 V / 500 mW).
+* **Power copper too thin** where srouter had to route a power net at the width of its smallest pad → `fatten.py`
+  and `power_pour.py` (see the hardware README), checked by the layer-3 max-flow.
+* The Pi socket footprint and the face-down mapping are correct pin by pin (layer 2); both Pi 4 and Pi 5 SoC lids sit on the thermal pad.
 
 ## Physical list (not provable from copper)
 
