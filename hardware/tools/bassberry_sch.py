@@ -266,7 +266,7 @@ r.C("C37", "22u 10V", "+5V_BUCK", "GND", C1206)
 pw.flag("+5V_BUCK", 180, 330)
 
 # sub boost (optional) MT3608, ~17 V
-pw.text("Sub PVDD boost (optional): Vout = 0.6*(1+R41/R42) = 17.1 V. JP1 selects PVDD_SUB = +BATT (default) or boost.", 200, 290)
+pw.text("Sub PVDD boost (optional): Vout = 0.6*(1+R41/R42) = 17.1 V. R44 (fitted) feeds PVDD_SUB from +BATT, R45 instead from the boost.", 200, 290)
 pw.part("Regulator_Switching:MT3608", "U4", "MT3608", 230, 330, fp="Package_TO_SOT_SMD:SOT-23-6",
         nets={"IN": "+BATT", "EN": "BOOST_EN", "GND": "GND", "SW": "BOOST_SW", "FB": "BOOST_FB"})
 r = Row(pw, 255, 320, 10.16)
@@ -278,9 +278,9 @@ r.R("R42", "2k2 1%", "BOOST_FB", "GND", R0603)
 r.C("C40", "22u 25V", "BOOST_OUT", "GND", C1210)
 r.C("C41", "22u 25V", "BOOST_OUT", "GND", C1210)
 r.R("R43", "100k", "BOOST_EN", "GND", R0603)
-pw.part("Jumper:SolderJumper_3_Bridged12", "JP1", "PVDD_SUB select", 360, 330,
-        fp="Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm",
-        nets={"1": "+BATT", "2": "PVDD_SUB", "3": "BOOST_OUT"})
+# PVDD_SUB select: R44 0R fitted = battery (default), R45 0R fitted instead = boost. 2512 links carry the sub amp current.
+pw.R("R44", "0R 2512 (PVDD_SUB = battery)", 350, 320, "+BATT", "PVDD_SUB", "Resistor_SMD:R_2512_6332Metric")
+pw.R("R45", "DNP 0R 2512 (PVDD_SUB = boost)", 365, 320, "BOOST_OUT", "PVDD_SUB", "Resistor_SMD:R_2512_6332Metric", dnp=True)
 pw.flag("PVDD_SUB", 375, 330)
 
 # always-on 3V3 (supervisor) and USB-side 3V3 (CH340, ESD)

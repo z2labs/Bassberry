@@ -112,7 +112,7 @@ FIXED = {
     # Pi 5 V buck + back-power diode next to header pins 2/4 (bottom)
     "U303": (75.0, 80.0, 0, "B"), "L302": (75.0, 90.0, 0, "B"), "Q101": (66.0, 78.5, 90, "B"),
     # sub boost
-    "U304": (100.0, 50.0, 0, "B"), "L303": (100.0, 60.0, 0, "B"), "JP301": (113.0, 45.0, 0, "B"),   # next to amp 2
+    "U304": (100.0, 50.0, 0, "B"), "L303": (100.0, 60.0, 0, "B"),   # next to amp 2
     # amplifiers (bottom, under the cells), output filters towards their connectors
     "U201": (82.0, 30.0, 0, "B"), "U202": (112.0, 30.0, 0, "B"),
     "C234": (82.0, 10.0, 0, "B"), "C244": (112.0, 10.0, 0, "B"),

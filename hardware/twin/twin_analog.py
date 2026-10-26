@@ -62,7 +62,7 @@ FLOWS = [   # (net, source pads, sink pads, A): where the current enters and lea
     ("/battery/CELL2", T("BT402", "1"), T("BT403", "2"), 6.0),
     ("+BATT", T("F401", "2"), T("U303", "3"), 2.8),                       # Pi buck input at 9 V, 5.1 V / 5 A
     ("+BATT", T("F401", "2"), T("U201", "15", "16", "27", "28"), 2.5),    # amp 1 PVDD
-    ("+BATT", T("F401", "2"), T("JP301", "1"), 2.5),                      # amp 2 PVDD via the select jumper
+    ("+BATT", T("F401", "2"), T("R344", "1"), 2.5),                       # amp 2 PVDD via the 0R select link
     ("+BATT", T("R304", "2"), T("F401", "2"), 3.5),                       # charging current into the pack
     ("+5V_BUCK", T("L302", "2"), T("Q101", "5"), 5.0),
     ("+5V", T("Q101", "1", "2", "3"), T("J101", "2", "4"), 5.0),
@@ -73,7 +73,7 @@ FLOWS = [   # (net, source pads, sink pads, A): where the current enters and lea
     ("/power/CHG_LX1", T("Q301", "1", "2", "3"), T("L301", "1"), 3.5),
     ("/power/CHG_LX2", T("L301", "2"), T("Q303", "1", "2", "3"), 3.5),
     ("/power/CHG_NODEC", T("Q303", "5"), T("R304", "1"), 3.5),
-    ("PVDD_SUB", T("JP301", "2"), T("U202", "15", "16", "27", "28"), 2.5),
+    ("PVDD_SUB", T("R344", "2"), T("U202", "15", "16", "27", "28"), 2.5),
     ("/audio/AMP2_P", T("U202", "26", "23"), T("L205", "1"), 3.0),
     ("/audio/AMP2_N", T("U202", "17", "20"), T("L206", "1"), 3.0),
     ("/audio/SUB_P", T("L205", "2"), T("J203", "1"), 3.0), ("/audio/SUB_N", T("L206", "2"), T("J203", "2"), 3.0),

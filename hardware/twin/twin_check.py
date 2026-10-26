@@ -8,14 +8,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from twin_common import Board, Netlist, Nodes, Report, parse_value, parse_cap
 import spec_bassberry as S
 
-BRIDGED = {"JP201": ("1", "2"), "JP301": ("1", "2")}   # [KICAD] SolderJumper_3_Bridged12: copper bridge 1-2
+BRIDGED = {"JP201": ("1", "2")}   # [KICAD] SolderJumper_3_Bridged12: copper bridge 1-2
 
 
 def conductor(ref, val, pp):
     """DC-merged two-terminal parts: 0 Ohm links and bridged solder jumpers (fuses are NOT merged: 'thru' checks them)."""
     out = []
     v = val.split()[0] if val.split() else ""
-    if ref.startswith("R") and v in ("0R", "0") and len(pp) == 2:
+    if ref.startswith("R") and v in ("0R", "0") and len(pp) == 2:      # 'DNP 0R ...' is not fitted, not merged
         out.append(tuple(pp.values()))
     if ref in BRIDGED:
         a, b = BRIDGED[ref]

@@ -143,7 +143,7 @@ A = [
     *[("gnd", [U(p) for p in ("DGND1", "DGND5", "AGND", "PGND19", "PGND24", "PAD")], f"{r} grounds + PowerPAD")
       for r, U in (("U201", U1), ("U202", U2))],
     ("same", [U1("PVDD15"), U1("PVDD16"), U1("PVDD27"), U1("PVDD28"), ("F401", "2")], "amp 1 PVDD = fused battery"),
-    ("same", [U2("PVDD15"), U2("PVDD16"), U2("PVDD27"), U2("PVDD28"), ("JP301", "2")], "amp 2 PVDD = PVDD_SUB select"),
+    ("same", [U2("PVDD15"), U2("PVDD16"), U2("PVDD27"), U2("PVDD28"), ("F401", "2")], "amp 2 PVDD = battery through the fitted 0R link (default)"),
     ("pullup", U1("ADR"), U1("DVDD"), 15000, "amp 1 ADR 15 k to DVDD -> I2C 0x2D"),
     ("pullup", U2("ADR"), U2("DVDD"), 47000, "amp 2 ADR 47 k to DVDD -> I2C 0x2E"),
     *[("cap", U(a), U(b), 0.22e-6, 0.1, f"{r} {a} bootstrap 0.22 uF") for r, U in (("U201", U1), ("U202", U2))
@@ -214,8 +214,7 @@ A = [
     ("ratio", ("U304", "FB"), ("D306", "K"), 0.6, 16.0, 18.5, "Vout = 0.6*(1+Rtop/Rbot), below TAS PVDD max"),
     ("same", [("U304", "EN"), MCU("PC0")], "boost EN from supervisor PC0"),
     ("pulldown", ("U304", "EN"), 100000, "boost EN default off"),
-    ("same", [("JP301", "1"), ("F401", "2")], "PVDD_SUB jumper pad 1 = battery"),
-    ("same", [("JP301", "3"), ("D306", "K")], "PVDD_SUB jumper pad 3 = boost output"),
+    ("thru", ("D306", "K"), "R345", U2("PVDD15"), "boost output -> unfitted 0R link -> amp 2 PVDD (fit instead of R344)"),
     # ================= LDOs [DS-HT75]
     ("same", [("U305", "VIN"), ("F401", "2")], "always-on LDO from the fused battery"),
     ("same", [("U305", "VOUT"), MCU("VDD")], "always-on 3V3 -> supervisor VDD"),
