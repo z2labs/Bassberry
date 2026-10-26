@@ -89,9 +89,10 @@ def main():
         cmd = [SR, "-de", dsn, "-do", ses, "-rules", rj, "-report", rep] + args
         print(">>", " ".join(cmd), flush=True)
         t0 = time.time()
-        p = subprocess.run(cmd, capture_output=True, text=True)
-        log = (p.stdout or "") + (p.stderr or "")
-        open(os.path.join(OUT, name + ".log"), "w", encoding="utf-8").write(log)
+        logf = os.path.join(OUT, name + ".log")
+        with open(logf, "w", encoding="utf-8") as fh:      # streamed, so a long pass can be watched
+            p = subprocess.run(cmd, stdout=fh, stderr=subprocess.STDOUT, text=True)
+        log = open(logf, encoding="utf-8", errors="replace").read()
         bad = [l for l in log.splitlines() if l.startswith("!")]
         print(f"   {name}: exit {p.returncode}, {time.time() - t0:.0f} s, unrouted: {len(bad)}")
         for l in bad[:30]:
