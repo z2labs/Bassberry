@@ -110,7 +110,7 @@ def check(path, pads_override=None):
         return rep, None
 
     def ports_on_board(F):
-        return sum(on_board(*F(PORT_BLOCK[0] + i, PORT_BLOCK[1] + j)) for i in range(0, 26, 2) for j in range(0, 57, 4))
+        return sum(on_board(*F(PORT_BLOCK[0] + i, PORT_BLOCK[1] + j)) for i in range(0, 23, 2) for j in range(1, 56, 3))
     err, F = min(cands, key=lambda c: (ports_on_board(c[1]), c[0]))
     rep.add("PASS", "holes", f"Pi hole pattern found, face down (max error {err:.3f} mm); orientation chosen by the enclosure: ports over the open corner")
     # ---- pin by pin: what pad is physically under Pi pin n
@@ -127,7 +127,7 @@ def check(path, pads_override=None):
             ("" if not wrong else f"  MISMATCH {wrong[:8]}"))
     # ---- mechanics
     pts = [(PORT_BLOCK[0] + i * 1.0, PORT_BLOCK[1] + j * 1.0) for i in range(int(PORT_BLOCK[2] - PORT_BLOCK[0]) + 1)
-           for j in range(int(PORT_BLOCK[3] - PORT_BLOCK[1]) + 1)]
+           for j in range(1, int(PORT_BLOCK[3] - PORT_BLOCK[1]))]          # jack bodies stay inside the 56 mm width
     hit = [F(*p) for p in pts if on_board(*F(*p))]
     rep.add("PASS" if not hit else "FAIL", "ports", "USB/Ethernet block hangs over the open corner (no board under it)" +
             ("" if not hit else f"  {len(hit)} sample points on the board, e.g. {tuple(round(v, 1) for v in hit[0])}"))
