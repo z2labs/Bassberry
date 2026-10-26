@@ -21,7 +21,7 @@ C1206 = "Capacitor_SMD:C_1206_3216Metric"
 C1210 = "Capacitor_SMD:C_1210_3225Metric"
 CP_10x10 = "Capacitor_SMD:CP_Elec_10x10.5"
 JST2 = "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical"
-IND_PWR = "Inductor_SMD:L_Bourns_SRR1260"
+IND_PWR = "Inductor_SMD:L_Changjiang_FXL1050"
 
 GLOBAL = {"I2C_SDA", "I2C_SCL", "I2S_BCLK", "I2S_LRCLK", "I2S_DOUT", "AMP_PDN", "PI_IRQ",
           "PI_SHUTDOWN_REQ", "PI_POWEROFF", "PI_TXD", "PI_RXD", "PVDD_SUB", "+3V3_AON",
@@ -94,7 +94,7 @@ def tas(sheet, ref, n, x, y, pvdd, adr_val, sdin, sdout, outs):
     sheet.part("Amplifier_Audio:TAS5805MPWP", ref, "TAS5805M", x, y, fp="Package_SO:HTSSOP-28-1EP_4.4x9.7mm_P0.65mm_EP2.85x5.4mm_ThermalVias", nets=nets)
     b = 10 * n
     r = Row(sheet, x - 45, y - 50, 10.16)
-    r.C(f"C{b+1}", "1u", "+3V3", "GND", C0603)
+    r.C(f"C{b+1}", "4u7", "+3V3", "GND", C0603)
     r.C(f"C{b+2}", "100n", "+3V3", "GND", C0603)
     r.C(f"C{b+3}", "1u", f"AMP{n}_VRDIG", "GND", C0603)
     r.C(f"C{b+4}", "1u", f"AMP{n}_AVDD", "GND", C0603)
@@ -125,7 +125,7 @@ au.part("Jumper:SolderJumper_3_Bridged12", "JP1", "U2 SDIN: Pi / U1 SDOUT", 60, 
 filt = [("L1", "AMP1_AP", "SAT_L_P"), ("L2", "AMP1_AN", "SAT_L_N"), ("L3", "AMP1_BP", "SAT_R_P"), ("L4", "AMP1_BN", "SAT_R_N")]
 r = Row(au, 200, 60, 12.7)
 for ref, a, b in filt:
-    r.L(ref, "10u 3A shielded", a, b, "Inductor_SMD:L_Bourns_SRR1005")
+    r.L(ref, "10u 3A shielded", a, b, "Inductor_SMD:L_Changjiang_FXL1040")
 r = Row(au, 200, 80, 12.7)
 for i, (_, _, b) in enumerate(filt):
     r.C(f"C{40+i}", "680n 50V", b, "GND", C0805)
@@ -155,7 +155,7 @@ pw.part("Power_Protection:USBLC6-2SC6", "U1", "USBLC6-2SC6", 45, 140, fp="Packag
         nets={"1": "USB_DP", "6": "USB_DP", "3": "USB_DN", "4": "USB_DN", "5": "+3V3_USB", "2": "GND"})
 pw.part("Device:D_TVS", "D1", "SMAJ24A", 75, 140, fp="Diode_SMD:D_SMA", nets={"1": "VBUS", "2": "GND"})
 pw.flag("VBUS", 20, 60)
-pw.flag("GND", 30, 60)
+pw.flag("CHG_VIN", 30, 60)
 
 # IP2366 core
 pw.part("bassberry:IP2366", "U2", "IP2366", 170, 120, fp="Package_DFN_QFN:QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm",
@@ -319,15 +319,14 @@ ui.part("Connector_Generic:Conn_01x04", "J2", "OLED 1.3in I2C (GND VCC SCL SDA)"
         nets={"1": "GND", "2": "+3V3", "3": "I2C_SCL", "4": "I2C_SDA"})
 # USB serial console
 ui.part("Interface_USB:CH340C", "U2", "CH340C", 110, 210, fp="Package_SO:SOIC-16_3.9x9.9mm_P1.27mm",
-        nets={"VCC": "+3V3_USB", "V3": "+3V3_USB", "GND": "GND", "UD+": "USB_DP", "UD-": "USB_DN", "R232": "GND",
+        nets={"VCC": "+3V3_USB", "V3": "CH340_V3", "GND": "GND", "UD+": "USB_DP", "UD-": "USB_DN", "R232": "GND",
               "TXD": "CON_TXD", "RXD": "CON_RXD", "~{CTS}": "NC", "~{DSR}": "NC", "~{RI}": "NC", "~{DCD}": "NC",
               "~{DTR}": "NC", "~{RTS}": "NC"})
 r = Row(ui, 160, 210, 10.16)
 r.R("R10", "1k", "CON_TXD", "PI_RXD", R0603)
 r.R("R11", "1k", "PI_TXD", "CON_RXD", R0603)
 r.C("C10", "100n", "+3V3_USB", "GND", C0603)
-ui.flag("+3V3_AON", 60, 175)
-ui.flag("+3V3_USB", 75, 175)
+r.R("R12", "0R (V3=VCC for 3V3 op.)", "CH340_V3", "+3V3_USB", R0603)
 
 P.write()
 print("schematics written to", os.path.abspath(OUT))

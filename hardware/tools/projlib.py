@@ -65,4 +65,4 @@ def write_lib(path):
     open(path, "w", encoding="utf-8").write(dump(lib) + "\n")
     d = os.path.dirname(path)
     open(os.path.join(d, "sym-lib-table"), "w", encoding="utf-8").write(
-        '(sym_lib_table\n\t(version 7)\n\t(lib (name "bassberry") (type "KiCad") (uri "${KIPRJMOD}/bassberry.kicad_sym") (options "") (descr "Bassberry project symbols"))\n)\n')
+        '(sym_lib_table\n\t(version 7)\n\t(lib (name "bassberry") (type "KiCad") (uri "${KIPRJMOD}/bassberry.kicad_sym") (options "") (descr "Bassberry project symbols"))\n\t(lib (name "MCU_WCH_RiscV") (type "KiCad") (uri "${KICAD10_SYMBOL_DIR}/MCU_WCH_RiscV.kicad_sym") (options "") (descr "WCH RISC-V MCUs"))\n)\n')
