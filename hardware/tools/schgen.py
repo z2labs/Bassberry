@@ -3,7 +3,7 @@
 Every symbol pin gets a net label (local or global) or a power symbol at its
 connection point, so no wires are needed and the netlist is exact by construction.
 """
-import os, uuid
+import os, re, uuid
 from sexpr import Sym, dump
 from kilib import get_symbol, pins, pin_abs
 
@@ -37,6 +37,7 @@ class Sheet:
     # ---------------------------------------------------------- symbols
     def part(self, lib_id, ref, value, x, y, rot=0, fp="", nets=None, props=None, mirror=False, dnp=False):
         x, y = snap(x, 2.54), snap(y, 2.54)
+        ref = self.renum(ref)
         sym = get_symbol(lib_id)
         if lib_id not in self.lib_ids:
             self.lib_ids.append(lib_id)
@@ -86,6 +87,13 @@ class Sheet:
             else:
                 self.label(net, px, py, out)
         return uid
+
+    def renum(self, ref):
+        """Unique references across sheets: sheet page n -> numbers (n-1)*100 + k."""
+        m = re.match(r"^([A-Z]+)(\d+)(.*)$", ref)
+        if ref.startswith("#") or not m or self.page < 2:
+            return ref
+        return f"{m.group(1)}{(self.page - 1) * 100 + int(m.group(2))}{m.group(3)}"
 
     def _outward(self, pin_angle, rot, mirror):
         a = pin_angle

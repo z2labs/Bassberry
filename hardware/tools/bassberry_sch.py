@@ -262,14 +262,14 @@ pw.part("Jumper:SolderJumper_3_Bridged12", "JP1", "PVDD_SUB select", 360, 330,
 pw.flag("PVDD_SUB", 375, 330)
 
 # always-on 3V3 (supervisor) and USB-side 3V3 (CH340, ESD)
-pw.part("Regulator_Linear:HT75xx-1-SOT89", "U5", "HT7533-1", 80, 400, fp="Package_TO_SOT_SMD:SOT-89-3",
+pw.part("Regulator_Linear:HT75xx-1-SOT89", "U5", "HT7533-1", 80, 375, fp="Package_TO_SOT_SMD:SOT-89-3",
         nets={"VIN": "+BATT", "VOUT": "+3V3_AON", "GND": "GND"})
-pw.part("Regulator_Linear:HT75xx-1-SOT89", "U6", "HT7533-1", 160, 400, fp="Package_TO_SOT_SMD:SOT-89-3",
+pw.part("Regulator_Linear:HT75xx-1-SOT89", "U6", "HT7533-1", 160, 375, fp="Package_TO_SOT_SMD:SOT-89-3",
         nets={"VIN": "VBUS", "VOUT": "+3V3_USB", "GND": "GND"})
-r = Row(pw, 100, 420, 10.16)
+r = Row(pw, 100, 392, 10.16)
 r.C("C50", "1u 25V", "+BATT", "GND", C0603)
 r.C("C51", "1u", "+3V3_AON", "GND", C0603)
-r = Row(pw, 180, 420, 10.16)
+r = Row(pw, 180, 392, 10.16)
 r.C("C52", "1u 35V", "VBUS", "GND", C0603)
 r.C("C53", "1u", "+3V3_USB", "GND", C0603)
 
@@ -315,7 +315,7 @@ for i, (net, name) in enumerate((("BTN_PWR", "POWER"), ("BTN_BT", "BT"), ("BTN_P
     ui.part("Switch:SW_Push", f"SW{i+1}", name, 210, 60 + i * 12.7, fp="Button_Switch_SMD:SW_SPST_TL3342", nets={"1": net, "2": "GND"})
 ui.part("Device:RotaryEncoder_Switch", "SW6", "EC11 encoder + push", 280, 70, fp="Rotary_Encoder:RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm",
         nets={"A": "ENC_A", "B": "ENC_B", "C": "GND", "S1": "ENC_SW", "S2": "GND"})
-ui.part("Connector_Generic:Conn_01x04", "J2", "OLED 1.3in I2C (GND VCC SCL SDA)", 280, 120, fp="Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical",
+ui.part("Connector_Generic:Conn_01x04", "J2", "OLED 1.3in I2C (GND VCC SCL SDA)", 280, 120, fp="Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Horizontal",
         nets={"1": "GND", "2": "+3V3", "3": "I2C_SCL", "4": "I2C_SDA"})
 # USB serial console
 ui.part("Interface_USB:CH340C", "U2", "CH340C", 110, 210, fp="Package_SO:SOIC-16_3.9x9.9mm_P1.27mm",
