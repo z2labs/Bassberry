@@ -122,8 +122,23 @@ class Copper:
         return polys, vias, pth, pads
 
     def flow(self, net, src, dst, amps):
+        """max-flow, first inside a window around the source and sink pads (copper outside it is ignored, so the
+        result can only be lower than the true one: conservative), widened step by step only if that is not enough"""
+        res = None
+        for margin in (6.0, 15.0, None):
+            res = self._flow(net, src, dst, amps, margin)
+            if res[0] is None or res[0] >= amps:
+                return res
+        return res
+
+    def _flow(self, net, src, dst, amps, margin):
         pcbnew = self.pcbnew
-        polys, vias, pth, pads = self.net_copper(net)
+        if not hasattr(self, "_nc"):
+            self._nc = {}
+        key = (net, tuple(sorted(self.drop_zones)), tuple(sorted(self.width_override.items())))
+        if key not in self._nc:
+            self._nc = {key: self.net_copper(net)}      # cache one net (polys are simplified in place below)
+        polys, vias, pth, pads = self._nc[key]
         for rp in src + dst:
             if rp not in pads:
                 return None, f"pad {rp[0]}.{rp[1]} is not on {net}"
@@ -135,6 +150,10 @@ class Copper:
                 bb = polys[l].BBox()
                 x0 = min(x0, pcbnew.ToMM(bb.GetX())); y0 = min(y0, pcbnew.ToMM(bb.GetY()))
                 x1 = max(x1, pcbnew.ToMM(bb.GetRight())); y1 = max(y1, pcbnew.ToMM(bb.GetBottom()))
+        if margin is not None:
+            tb = [b for rp in src + dst for b in pads[rp]]
+            x0 = max(x0, min(b[0] for b in tb) - margin); y0 = max(y0, min(b[1] for b in tb) - margin)
+            x1 = min(x1, max(b[2] for b in tb) + margin); y1 = min(y1, max(b[3] for b in tb) + margin)
         nx, ny = int((x1 - x0) / H) + 1, int((y1 - y0) / H) + 1
         cells = set()
         outer = {pcbnew.F_Cu: True, pcbnew.B_Cu: True, pcbnew.In1_Cu: False, pcbnew.In2_Cu: False}
@@ -147,6 +166,7 @@ class Copper:
             bb = ps.BBox()
             i0 = max(0, int((pcbnew.ToMM(bb.GetX()) - x0) / H) - 1); i1 = min(nx, int((pcbnew.ToMM(bb.GetRight()) - x0) / H) + 2)
             j0 = max(0, int((pcbnew.ToMM(bb.GetY()) - y0) / H) - 1); j1 = min(ny, int((pcbnew.ToMM(bb.GetBottom()) - y0) / H) + 2)
+            i0, j0 = max(i0, 0), max(j0, 0)
             for i in range(i0, i1):
                 xx = pcbnew.FromMM(x0 + i * H)
                 for j in range(j0, j1):
