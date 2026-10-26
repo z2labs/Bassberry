@@ -82,12 +82,16 @@ def short(name):
 RAILS = {"GND", "+3V3", "+5V", "+5V_BUCK", "+BATT", "VBUS", "+3V3_AON", "+3V3_USB", "PVDD_SUB", "CHG_VIN"}
 
 # ------------------------------------------------------------ mechanical keep-outs for placement (x0, y0, x1, y1)
-PI_AREA = (3.0, 19.0, 61.5, 107.0)       # face-down Pi body over the top side: only its socket goes there
-THERMAL = (16.0, 48.0, 42.0, 74.0)       # SoC thermal pad + via field (both sides)
-ANTENNA = (44.0, 72.0, 61.0, 88.0)       # Pi Wi-Fi/BT antenna: no copper on any layer (verify vs Pi drawing)
+# Face-down Pi, mapped from the Raspberry Pi mechanical drawings (Pi frame: x along 85 mm towards the ports, y across
+# 56 mm towards the header):  board x = pi_y + 5,  board y = 85 - pi_x   (a mirror: the Pi is seen from its back).
+PI_AREA = (4.0, 19.0, 62.0, 86.5)        # Pi 85 x 56 mm body over the top side: only its socket goes there
+# SoC centres: Pi 4 (29.25, 32.5) -> (37.5, 55.75), 15 mm lid; Pi 5 (33.1, 23.0) -> (28.0, 51.9), 17 mm lid. Pad = union + 1 mm.
+THERMAL = (18.5, 42.5, 46.0, 64.5)       # SoC thermal pad + via field (both sides)
+# Pi 4/5 Wi-Fi/BT antenna at the pin-1 corner (pi_x 0..8, pi_y 35..56) -> no copper on any layer, starts past header pin 1.
+ANTENNA = (40.0, 78.5, 61.5, 92.0)
 BLOCK = {"F": [PI_AREA, ANTENNA], "B": [THERMAL, ANTENNA]}
 HOLES = [(66.0, 4.5, 3.2), (175.5, 9.0, 3.2), (4.5, 105.5, 3.2), (175.5, 105.5, 3.2), (135.0, 50.0, 3.2),
-         (8.5, 23.5, 2.7), (8.5, 81.5, 2.7), (22.0, 61.0, 2.7), (36.0, 61.0, 2.7)]
+         (8.5, 23.5, 2.7), (8.5, 81.5, 2.7), (21.5, 62.0, 2.7), (43.0, 45.0, 2.7)]
 for (x, y, d) in HOLES:
     r = (3.0 if d > 3 else 2.5) + 0.3
     for s in "FB":
@@ -95,10 +99,11 @@ for (x, y, d) in HOLES:
 
 # ------------------------------------------------------------ placement plan
 # fixed: ref -> (x, y, rot, side). Cells alternate so the series links are short:
+#   (Keystone 1042 pad 1 = '+'; rot 270 puts pad 1 at the rear)
 #   BT401 '+' rear / '-' front (CELL0 -> BMS B- at the front), BT402 '-' rear, BT403 '+' rear (CELL3 -> fuse -> charger).
 FIXED = {
     "J101": (57.5, 52.5, None, "F"),
-    "BT401": (74.5, 50.0, 90, "F"), "BT402": (97.0, 50.0, 270, "F"), "BT403": (119.5, 50.0, 90, "F"),
+    "BT401": (74.5, 50.0, 270, "F"), "BT402": (97.0, 50.0, 90, "F"), "BT403": (119.5, 50.0, 270, "F"),
     "J301": (141.0, 3.6, 180, "F"),
     # front UI strip (top), plungers through the lid
     "SW501": (72.0, 104.0, 0, "F"), "SW502": (84.0, 104.0, 0, "F"), "SW503": (96.0, 104.0, 0, "F"),
@@ -107,7 +112,7 @@ FIXED = {
     # BMS module wire pads under the front of the cells, fuse at the rear next to cell 3 '+'
     "J401": (96.0, 97.0, 0, "B"), "F401": (128.0, 8.0, 90, "B"), "J402": (136.0, 97.0, 0, "B"),
     # speaker connectors (bottom, cables to the chambers)
-    "J201": (52.0, 28.0, 90, "B"), "J202": (172.0, 62.0, 90, "B"), "J203": (150.0, 62.0, 0, "B"),
+    "J201": (46.0, 28.0, 90, "B"), "J202": (172.0, 62.0, 90, "B"), "J203": (150.0, 62.0, 0, "B"),
     # charger power stage (bottom, rear right, next to USB-C): HS/LS pairs either side of L301
     "L301": (163.0, 24.0, 0, "B"),
     "Q301": (150.5, 16.0, 90, "B"), "Q302": (150.5, 27.0, 90, "B"),
@@ -374,10 +379,10 @@ for layer in (pcbnew.F_Cu, pcbnew.F_Mask, pcbnew.B_Cu, pcbnew.B_Mask):
         z.SetNet(gnd); z.SetZoneName("PI_THERMAL_PAD_" + ("F" if layer == pcbnew.F_Cu else "B")); z.SetAssignedPriority(10)
         z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
     board.Add(z)
-for ix in range(13):
-    for iy in range(13):
+for ix in range(int((THERMAL[2] - THERMAL[0] - 1.0) / 2.0) + 1):
+    for iy in range(int((THERMAL[3] - THERMAL[1] - 1.0) / 2.0) + 1):
         x, y = THERMAL[0] + 1.0 + ix * 2.0, THERMAL[1] + 1.0 + iy * 2.0
-        if math.hypot(x - 22.0, y - 61.0) < 4 or math.hypot(x - 36.0, y - 61.0) < 4:
+        if any(math.hypot(x - hx, y - hy) < 4 for (hx, hy, d) in HOLES):
             continue
         v = pcbnew.PCB_VIA(board)
         v.SetPosition(P(x, y)); v.SetDrill(mm(0.3)); v.SetWidth(mm(0.6)); v.SetNet(gnd)
@@ -412,7 +417,7 @@ for layer in (pcbnew.In2_Cu, pcbnew.F_Cu, pcbnew.B_Cu):
 # ------------------------------------------------------------ silk text
 t = pcbnew.PCB_TEXT(board)
 t.SetText("BASSBERRY 2.1  rev 0.2  Z2Labs  CERN-OHL-S-2.0")
-t.SetPosition(P(150.0, 60.0)); t.SetLayer(pcbnew.F_SilkS)
+t.SetPosition(P(156.0, 75.0)); t.SetLayer(pcbnew.F_SilkS)
 t.SetTextSize(pcbnew.VECTOR2I(mm(1.5), mm(1.5)))
 board.Add(t)
 
