@@ -33,13 +33,18 @@ Reference designators are numbered per sheet: 1xx Pi, 2xx audio, 3xx power, 4xx 
 ```powershell
 powershell -File hardware\tools\regen_sch.ps1                       # schematic, ERC, netlist
 & $py hardware\tools\pcb_build.py                                   # outline, placement, zones -> bassberry_placed.kicad_pcb
-& $py hardware\tools\route.py                                       # srouter: escape gate, 3 passes, fatten after pass 1
+& $py hardware\tools\route.py                                       # srouter: escape gate, trunks + 3 passes, fatten
 powershell -File hardware\tools\postroute.ps1                       # track_tidy, fill, gnd_stitch, via_rescue, stitch_audit,
                                                                      # silk_dfm, DRC --schematic-parity, digital twin 1-4
 ```
 
 Routing follows `srouter/docs/USAGE.md`: GND is never routed (In2 plane + F/B pours, stitched afterwards).
-* **Pass 1a** - the high-current nets alone, on the outer copper only (In1 closed: 0.5 oz inner copper would need 3x the
+* **Pass 0 (trunks)** - srouter gives a net one width that must fit its smallest pad, so a battery rail that also touches a
+  0.3 mm amplifier pin would be 0.2 mm end to end. `route.py` therefore splits each high-current net on a scratch copy:
+  the small pads go to a dummy net, and srouter joins only the big pads (holders, fuse, 2512 links, inductors, MOSFET tabs,
+  connectors) at the widest width they allow (up to 1.6 mm). The later passes join the small pads to that trunk at their own
+  width: the neck-down happens only in the last millimetres before a fine-pitch pin.
+* **Pass 1a** - the rest of the high-current nets alone, on the outer copper only (In1 closed: 0.5 oz inner copper would need 3x the
   width), vias strongly avoided. srouter routes a net with one width that has to fit its smallest pad, so `fatten.py` then
   widens that copper wherever the clearance allows (necking only next to small pads, keeping a 0.5 mm escape lane around
   every foreign pad) and adds parallel vias at its layer changes.
@@ -47,7 +52,8 @@ Routing follows `srouter/docs/USAGE.md`: GND is never routed (In2 plane + F/B po
 * **Pass 2** - I2S, I2C, USB D+/D- (crossover under the receptacle pre-routed), HAT ID, every other Pi header net.
 * **Pass 3** - the rest.
 * **Post** (`postroute.ps1`, the USAGE.md order): track_tidy, `power_pour.py` (a priority-5 copper pour hugging every
-  high-current track, filled only into free space), zone fill, gnd_stitch, via_rescue, stitch_audit, silk_dfm, DRC with
+  high-current track on F.Cu, In1.Cu and B.Cu, filled only into free space, plus ceil(I / 1.5 A) parallel vias at every
+  layer change of a high-current net), zone fill, gnd_stitch, via_rescue, stitch_audit, silk_dfm, zone refill, DRC with
   schematic parity, digital twin 1-4. `full_flow.ps1` runs everything unattended.
 * Gates: `escape_probe.py` (no pad walled in before routing), the pre-route twin layers 1/2/4.
 
