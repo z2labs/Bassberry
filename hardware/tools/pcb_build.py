@@ -448,9 +448,9 @@ gnd_ties(["U201", "U202", "U302"])
 # ------------------------------------------------------------ GND dog-bones (USAGE.md: fan-out vias may be placed before
 # routing). Every SMD GND pad gets its own 0.6/0.3 mm via to the In2 plane right next to it, so no GND pad depends on a
 # pour finding a way in between the routed tracks later. The via keeps 0.5 mm from foreign pads (their escape lane).
-def gnd_dogbones():
+def gnd_dogbones(clr_pad=0.5, gaps=(0.35, 0.6, 0.9), only=None):
     import fatten
-    fatten.CLR = 0.2; fatten.CLR_PAD = 0.5
+    fatten.CLR = 0.2; fatten.CLR_PAD = clr_pad
     cu = fatten.Copper(board)
     vias_xy = [(pcbnew.ToMM(v.GetPosition().x), pcbnew.ToMM(v.GetPosition().y)) for v in board.GetTracks() if v.GetClass() == "PCB_VIA"]
     made, skipped = 0, []
@@ -467,6 +467,11 @@ def gnd_dogbones():
         for p in gpads:
             if p is big and fp.GetPadCount() > 8:
                 continue                       # IC exposed pads have their own thermal vias
+            if only is not None and f"{ref}.{p.GetNumber()}" not in only:
+                continue
+            if any(t.GetNetname() == "GND" and t.GetClass() != "PCB_VIA" and
+                   (t.GetStart() == p.GetPosition()) for t in board.GetTracks()):
+                continue                       # already has a dog-bone / tie
             q = (pcbnew.ToMM(p.GetPosition().x), pcbnew.ToMM(p.GetPosition().y))
             bb = p.GetBoundingBox(); hw, hh = pcbnew.ToMM(bb.GetWidth()) / 2, pcbnew.ToMM(bb.GetHeight()) / 2
             # prefer pointing away from the part body
@@ -474,7 +479,7 @@ def gnd_dogbones():
             dirs = sorted([(1, 0), (-1, 0), (0, 1), (0, -1), (0.707, 0.707), (-0.707, 0.707), (0.707, -0.707), (-0.707, -0.707)],
                           key=lambda d: -(d[0] * out[0] + d[1] * out[1]))
             done = False
-            for gap in (0.35, 0.6, 0.9):
+            for gap in gaps:
                 for d in dirs:
                     r = (abs(d[0]) * hw + abs(d[1]) * hh) + gap + 0.3
                     v = (q[0] + d[0] * r, q[1] + d[1] * r)
@@ -497,6 +502,7 @@ def gnd_dogbones():
             if not done:
                 skipped.append(f"{ref}.{p.GetNumber()}")
     print(f"GND dog-bones: {made}, no room: {' '.join(skipped) if skipped else 'none'}")
+    return skipped
 
 # ------------------------------------------------------------ mounting holes (M3 board, M2.5 Pi, M2.5 pedestal)
 def hole(x, y, d, ref):
@@ -525,7 +531,9 @@ for layer in (pcbnew.F_Cu, pcbnew.F_Mask, pcbnew.B_Cu, pcbnew.B_Mask):
         z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
     board.Add(z)
 add_thermal_vias(board, pcbnew)
-gnd_dogbones()                     # after the holes and the SoC via field exist, so it sees them
+left = gnd_dogbones()              # after the holes and the SoC via field exist, so it sees them
+if left:                           # second chance for the tight ones: farther out, 0.3 mm escape lane
+    gnd_dogbones(clr_pad=0.3, gaps=(0.35, 0.6, 0.9, 1.2, 1.6), only=set(left))
 
 # ------------------------------------------------------------ keep-out under the Pi Wi-Fi/BT antenna (all copper layers)
 ko = pcbnew.ZONE(board)
