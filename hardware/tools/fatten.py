@@ -4,7 +4,8 @@ srouter routes every net with one width, and that width must fit the smallest pa
 warns 'track will wall the pad in - neck down'): the battery rail touches a 0.25 mm QFN pin, so it is routed thin.
 This step gives the current back: every segment of a high-current net is widened to its target width wherever the
 clearance to all other copper allows (it necks down on its own next to small pads), and every via of such a net
-gets parallel vias until the layer change carries the current (1.5 A per 0.6/0.3 mm via).
+first grows to 1.0/0.5 mm where it clears, then gets parallel vias until the layer change carries the current
+(1.5 A per 0.3 mm of drill, the barrel cross-section scales with the drill).
 It runs between pass 1 and pass 2, so the later passes see the wide copper as fixed obstacles.
 
 usage: kicad-python fatten.py board.kicad_pcb [--dry]
@@ -161,45 +162,58 @@ def main(path, dry=False):
     # ---- parallel vias at layer changes
     for v in [x for x in b.GetTracks() if x.GetClass() == "PCB_VIA" and target(x.GetNetname())]:
         net = v.GetNetname(); wt, amps = target(net)
-        need = math.ceil(amps / VIA_A)
+        need = amps
         c = (mm(v.GetPosition().x), mm(v.GetPosition().y))
-        mates = [x for x in b.GetTracks() if x.GetClass() == "PCB_VIA" and x.GetNetname() == net and
+        allv = [x for x in b.GetTracks() if x.GetClass() == "PCB_VIA"]
+        mates = [x for x in allv if x.GetNetname() == net and
                  math.hypot(mm(x.GetPosition().x) - c[0], mm(x.GetPosition().y) - c[1]) < 2.5]
         layers = {t.GetLayer() for t in b.GetTracks() if t.GetClass() != "PCB_VIA" and t.GetNetname() == net and
                   min(math.hypot(mm(t.GetStart().x) - c[0], mm(t.GetStart().y) - c[1]), math.hypot(mm(t.GetEnd().x) - c[0], mm(t.GetEnd().y) - c[1])) < 0.05}
-        have = len(mates)
-        for r in (1.1, 1.7, 2.3):
+        cap = lambda d: VIA_A * d / 0.3                       # barrel cross-section pi * d * t scales with the drill
+
+        def holes_ok(p, d, skip=None):
+            return all(math.hypot(mm(x.GetPosition().x) - p[0], mm(x.GetPosition().y) - p[1]) >
+                       (d + mm(x.GetDrillValue())) / 2 + 0.3 for x in allv if x is not skip)
+        have = sum(cap(mm(x.GetDrillValue())) for x in mates)
+        # the via itself first: 1.0 / 0.5 mm where it clears (2.5 A)
+        if have < need and mm(v.GetDrillValue()) < 0.45 and holes_ok(c, 0.5, skip=v) and \
+                all(cu.clear(net, l, c, c, 0.5) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu)):
+            have += cap(0.5) - cap(mm(v.GetDrillValue()))
+            if not dry:
+                v.SetWidth(FM(1.0)); v.SetDrill(FM(0.5))
+            cu.add(net, "all", ("circ", c, 0.5), v); vias_added += 1
+        for r in (1.1, 1.4, 1.7, 2.0, 2.3, 2.8):
             if have >= need:
                 break
-            for k in range(8):
+            for k in range(16):
                 if have >= need:
                     break
-                ang = math.radians(45 * k + (22.5 if r == 1.7 else 0))
+                ang = math.radians(22.5 * k)
                 p = (c[0] + r * math.cos(ang), c[1] + r * math.sin(ang))
-                if not inside(p, VIA_D / 2 + EDGE):
-                    continue
-                ok = all(cu.clear(net, l, p, p, VIA_D / 2) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu))
-                ok = ok and all(math.hypot(mm(x.GetPosition().x) - p[0], mm(x.GetPosition().y) - p[1]) > VIA_D + 0.25
-                                for x in b.GetTracks() if x.GetClass() == "PCB_VIA")
                 sw = min(wt, 1.0)
-                ok = ok and all(cu.clear(net, l, c, p, sw / 2) for l in layers)
-                if not ok:
-                    continue
-                if not dry:
-                    nv = pcbnew.PCB_VIA(b); nv.SetPosition(pcbnew.VECTOR2I(FM(p[0]), FM(p[1])))
-                    nv.SetWidth(FM(VIA_D)); nv.SetDrill(FM(VIA_HOLE)); nv.SetNet(v.GetNet()); b.Add(nv)
-                    for l in layers:
-                        s = pcbnew.PCB_TRACK(b); s.SetStart(v.GetPosition()); s.SetEnd(nv.GetPosition())
-                        s.SetWidth(FM(sw)); s.SetLayer(l); s.SetNet(v.GetNet()); b.Add(s)
-                        cu.add(net, {l}, ("seg", c, p, sw / 2), s)
-                    cu.add(net, "all", ("circ", p, VIA_D / 2), nv)
-                have += 1; vias_added += 1
+                for vd, vh in ((1.0, 0.5), (VIA_D, VIA_HOLE)):
+                    if not inside(p, vd / 2 + EDGE) or not holes_ok(p, vh):
+                        continue
+                    ok = all(cu.clear(net, l, p, p, vd / 2) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu))
+                    ok = ok and all(cu.clear(net, l, c, p, sw / 2) for l in layers)
+                    if not ok:
+                        continue
+                    if not dry:
+                        nv = pcbnew.PCB_VIA(b); nv.SetPosition(pcbnew.VECTOR2I(FM(p[0]), FM(p[1])))
+                        nv.SetWidth(FM(vd)); nv.SetDrill(FM(vh)); nv.SetNet(v.GetNet()); b.Add(nv); allv.append(nv)
+                        for l in layers:
+                            s_ = pcbnew.PCB_TRACK(b); s_.SetStart(v.GetPosition()); s_.SetEnd(nv.GetPosition())
+                            s_.SetWidth(FM(sw)); s_.SetLayer(l); s_.SetNet(v.GetNet()); b.Add(s_)
+                            cu.add(net, {l}, ("seg", c, p, sw / 2), s_)
+                    cu.add(net, "all", ("circ", p, vd / 2), nv if not dry else None)
+                    have += cap(vh); vias_added += 1
+                    break
     if not dry:
         pcbnew.SaveBoard(path, b)
     for net, ws in sorted(report.items()):
         wt = target(net)[0]
         print(f"  {net:22s} {len(ws):3d} seg, at target {sum(1 for w in ws if w >= wt - 0.01):3d}, min {min(ws):.2f} mm (target {wt})")
-    print(f"fatten: {widened} segments widened, {vias_added} parallel vias added")
+    print(f"fatten: {widened} segments widened, {vias_added} vias enlarged or added in parallel")
 
 
 if __name__ == "__main__":
