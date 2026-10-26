@@ -444,6 +444,63 @@ def gnd_ties(refs):
 
 gnd_ties(["U201", "U202", "U302"])
 
+
+# ------------------------------------------------------------ GND dog-bones (USAGE.md: fan-out vias may be placed before
+# routing). Every SMD GND pad gets its own 0.6/0.3 mm via to the In2 plane right next to it, so no GND pad depends on a
+# pour finding a way in between the routed tracks later. The via keeps 0.5 mm from foreign pads (their escape lane).
+def gnd_dogbones():
+    import fatten
+    fatten.CLR = 0.2; fatten.CLR_PAD = 0.5
+    cu = fatten.Copper(board)
+    vias_xy = [(pcbnew.ToMM(v.GetPosition().x), pcbnew.ToMM(v.GetPosition().y)) for v in board.GetTracks() if v.GetClass() == "PCB_VIA"]
+    made, skipped = 0, []
+    for fp in board.GetFootprints():
+        ref = fp.GetReference()
+        if ref.startswith("H") or ref in ("J101",):
+            continue
+        lay = pcbnew.B_Cu if fp.IsFlipped() else pcbnew.F_Cu
+        gpads = [p for p in fp.Pads() if p.GetNetname() == "GND" and p.GetAttribute() == pcbnew.PAD_ATTRIB_SMD]
+        if not gpads:
+            continue
+        big = max(fp.Pads(), key=lambda p: p.GetBoundingBox().GetWidth() * p.GetBoundingBox().GetHeight())
+        cx, cy = pcbnew.ToMM(fp.GetPosition().x), pcbnew.ToMM(fp.GetPosition().y)
+        for p in gpads:
+            if p is big and fp.GetPadCount() > 8:
+                continue                       # IC exposed pads have their own thermal vias
+            q = (pcbnew.ToMM(p.GetPosition().x), pcbnew.ToMM(p.GetPosition().y))
+            bb = p.GetBoundingBox(); hw, hh = pcbnew.ToMM(bb.GetWidth()) / 2, pcbnew.ToMM(bb.GetHeight()) / 2
+            # prefer pointing away from the part body
+            out = (q[0] - cx, q[1] - cy)
+            dirs = sorted([(1, 0), (-1, 0), (0, 1), (0, -1), (0.707, 0.707), (-0.707, 0.707), (0.707, -0.707), (-0.707, -0.707)],
+                          key=lambda d: -(d[0] * out[0] + d[1] * out[1]))
+            done = False
+            for gap in (0.35, 0.6, 0.9):
+                for d in dirs:
+                    r = (abs(d[0]) * hw + abs(d[1]) * hh) + gap + 0.3
+                    v = (q[0] + d[0] * r, q[1] + d[1] * r)
+                    if any(math.hypot(v[0] - a, v[1] - b_) < 0.6 + 0.3 for a, b_ in vias_xy):
+                        continue
+                    if not all(cu.clear("GND", l, v, v, 0.3) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.B_Cu)):
+                        continue
+                    if not cu.clear("GND", lay, q, v, 0.15):
+                        continue
+                    ox, oy = OX, OY
+                    t = pcbnew.PCB_TRACK(board); t.SetStart(p.GetPosition()); t.SetEnd(pcbnew.VECTOR2I(mm(v[0]), mm(v[1])))
+                    t.SetWidth(mm(0.3)); t.SetLayer(lay); t.SetNet(netobjs["GND"]); board.Add(t)
+                    via = pcbnew.PCB_VIA(board); via.SetPosition(pcbnew.VECTOR2I(mm(v[0]), mm(v[1])))
+                    via.SetWidth(mm(0.6)); via.SetDrill(mm(0.3)); via.SetNet(netobjs["GND"]); board.Add(via)
+                    cu.add("GND", {lay}, ("seg", q, v, 0.15), t); cu.add("GND", "all", ("circ", v, 0.3), via)
+                    vias_xy.append(v); made += 1; done = True
+                    break
+                if done:
+                    break
+            if not done:
+                skipped.append(f"{ref}.{p.GetNumber()}")
+    print(f"GND dog-bones: {made}, no room: {' '.join(skipped) if skipped else 'none'}")
+
+
+gnd_dogbones()
+
 # ------------------------------------------------------------ mounting holes (M3 board, M2.5 Pi, M2.5 pedestal)
 def hole(x, y, d, ref):
     fp = load_fp("MountingHole:MountingHole_3.2mm_M3_Pad_Via" if d > 3 else "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via")

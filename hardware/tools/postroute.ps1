@@ -20,8 +20,8 @@ step "2 zone fill"    { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pc
 $env:SROUTER = if ($env:SROUTER) { $env:SROUTER } else { "C:\Users\RF\Documents\GitHub\srouter-feat\target\release\srouter.exe" }
 $orph = & $py "$tools\via_rescue.py" $board --net GND --dry 2>&1 | Select-String "remaining orphan: (\S+)" | ForEach-Object { $_.Matches[0].Groups[1].Value.TrimEnd(',') } | Sort-Object -Unique
 "== 2b walled-in GND pads: $($orph -join ' ')" | Out-File -Append -Encoding utf8 $log
-if ($orph) { step "2c gnd_pad_rescue" { & $py "$tools\gnd_pad_rescue.py" $board @orph --grow 3 --layers "F.Cu:1,In1.Cu:2,B.Cu:1.5" }
-             step "2d zone fill"      { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(r'$board',b);print('filled')" } }
+# (gnd_pad_rescue is not used: it re-routes the ripped nets at srouter's single width, which would undo the power copper;
+#  GND pads get their own dog-bone vias before routing instead - pcb_build.py gnd_dogbones)
 step "3 gnd_stitch"   { & $py "$tools\gnd_stitch.py" $board }
 step "4 via_rescue"   { & $py "$tools\via_rescue.py" $board --net GND }
 step "5 stitch_audit" { & $py "$tools\stitch_audit.py" $board }
