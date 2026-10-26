@@ -23,7 +23,7 @@ CP_10x10 = "Capacitor_SMD:CP_Elec_10x10.5"
 JST2 = "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical"
 IND_PWR = "Inductor_SMD:L_Changjiang_FXL1050"
 
-GLOBAL = {"I2C_SDA", "I2C_SCL", "I2S_BCLK", "I2S_LRCLK", "I2S_DOUT", "AMP_PDN", "PI_IRQ",
+GLOBAL = {"I2C_SDA", "I2C_SCL", "I2S_BCLK", "I2S_LRCLK", "I2S_DOUT", "AMP_PDN", "AMP2_PDN", "PI_IRQ",
           "PI_SHUTDOWN_REQ", "PI_POWEROFF", "PI_TXD", "PI_RXD",
           "USB_DP", "USB_DN", "PI_PWR_EN", "BOOST_EN", "CHG_LED_A", "CHG_LED_B", "CHG_LED_COM", "NTC"}
 
@@ -51,10 +51,10 @@ pi_nets = {
     "6": "GND", "9": "GND", "14": "GND", "20": "GND", "25": "GND", "30": "GND", "34": "GND", "39": "GND",
     "3": "I2C_SDA", "5": "I2C_SCL", "27": "ID_SD", "28": "ID_SC",
     "12": "PI_BCLK", "35": "PI_LRCLK", "40": "PI_DOUT", "38": "NC",
-    "7": "AMP_PDN", "11": "PI_IRQ", "15": "PI_SHUTDOWN_REQ", "13": "PI_POWEROFF",
+    "7": "AMP_PDN", "29": "AMP2_PDN", "11": "PI_IRQ", "15": "PI_SHUTDOWN_REQ", "13": "PI_POWEROFF",
     "8": "PI_TXD", "10": "PI_RXD",
 }
-for n in ("32", "33", "36", "16", "18", "22", "37", "29", "31", "26", "24", "21", "19", "23"):
+for n in ("32", "33", "36", "16", "18", "22", "37", "31", "26", "24", "21", "19", "23"):
     pi_nets[n] = "NC"
 pi.part("Connector:Raspberry_Pi_4", "J1", "RPi 40-pin (face-down socket)", 160, 120,
         fp="Module:Raspberry_Pi_Zero_Socketed_THT_FaceDown_MountingHoles", nets=pi_nets)
@@ -97,14 +97,14 @@ pi.R("R9", "47k 1%", 140, 325, "ZVD_G", "GND", R0603)
 # =====================================================================  Audio
 au = P.child("audio", "audio.kicad_sch", "Audio: 2x TAS5805M (stereo BTL + sub PBTL)", GLOBAL)
 au.text("U2 sub amp: PBTL. OUT_A+/OUT_A- and OUT_B+/OUT_B- paralleled pre-filter (verify vs TI datasheet PBTL section).", 30, 22)
-au.text("ADR resistor sets each amp's I2C address (different values for U1/U2, verify table in datasheet).", 30, 28)
+au.text("ADR pull-up to DVDD sets the I2C address (TAS5805M datasheet table 7-5): U1 15k -> 0x2D, U2 47k -> 0x2E.", 30, 28)
 
 
-def tas(sheet, ref, n, x, y, pvdd, adr_val, sdin, sdout, outs):
+def tas(sheet, ref, n, x, y, pvdd, adr_val, sdin, sdout, outs, pdn):
     nets = {
         "1": "GND", "5": "GND", "14": "GND", "19": "GND", "24": "GND", "29": "GND",
         "2": "+3V3", "15": pvdd, "16": pvdd, "27": pvdd, "28": pvdd,
-        "12": "AMP_PDN", "3": f"AMP{n}_ADR", "11": "I2C_SCL", "10": "I2C_SDA",
+        "12": pdn, "3": f"AMP{n}_ADR", "11": "I2C_SCL", "10": "I2C_SDA",
         "6": "I2S_LRCLK", "7": "I2S_BCLK", "8": sdin, "9": sdout,
         "4": f"AMP{n}_VRDIG", "13": f"AMP{n}_AVDD",
         "25": f"AMP{n}_BSTAP", "22": f"AMP{n}_BSTAN", "18": f"AMP{n}_BSTBP", "21": f"AMP{n}_BSTBN",
@@ -132,10 +132,12 @@ def tas(sheet, ref, n, x, y, pvdd, adr_val, sdin, sdout, outs):
 
 
 tas(au, "U1", 1, 110, 95, "+BATT", "15k", "I2S_DOUT", "AMP1_SDOUT",
-    {"26": "AMP1_AP", "23": "AMP1_AN", "17": "AMP1_BP", "20": "AMP1_BN"})
+    {"26": "AMP1_AP", "23": "AMP1_AN", "17": "AMP1_BP", "20": "AMP1_BN"}, "AMP_PDN")
 tas(au, "U2", 2, 110, 215, "PVDD_SUB", "47k", "AMP2_SDIN", "NC",
-    {"26": "AMP2_P", "23": "AMP2_P", "17": "AMP2_N", "20": "AMP2_N"})
-au.R("R1", "10k", 60, 150, "+3V3", "AMP_PDN", R0603)
+    {"26": "AMP2_P", "23": "AMP2_P", "17": "AMP2_N", "20": "AMP2_N"}, "AMP2_PDN")
+# PDN pull-downs: amps stay in shutdown until the Linux driver (one PDN GPIO per codec: GPIO4, GPIO5) wakes them
+au.R("R1", "10k", 60, 150, "AMP_PDN", "GND", R0603)
+au.R("R2", "10k", 72, 150, "AMP2_PDN", "GND", R0603)
 au.part("Jumper:SolderJumper_3_Bridged12", "JP1", "U2 SDIN: Pi / U1 SDOUT", 60, 175,
         fp="Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm",
         nets={"1": "I2S_DOUT", "2": "AMP2_SDIN", "3": "AMP1_SDOUT"})
@@ -295,13 +297,13 @@ r.C("C53", "1u", "+3V3_USB", "GND", C0603)
 
 # =====================================================================  Battery
 bt = P.child("battery", "battery.kicad_sch", "Battery: 3S 18650 clips, BMS module, protection", GLOBAL)
-bt.text("3x 18650 in Keystone 54 clips. Balancing + protection by an off-the-shelf 3S BMS module (B-, B1, B2, B+, P-).", 25, 22)
+bt.text("3x 18650 in Keystone 1042 snap-in holders (spring contacts; pad 1 = +). Balancing + protection: off-the-shelf 3S BMS module (B-, B1, B2, B+, P-).", 25, 22)
 bt.text("Reverse-cell LED lights only when a cell is inserted backwards. P- of the BMS = board GND.", 25, 28)
 cells = [("CELL0", "CELL1"), ("CELL1", "CELL2"), ("CELL2", "CELL3")]
 for i, (neg, pos) in enumerate(cells):
     x = 50 + i * 60
-    bt.part("Connector_Generic:Conn_01x01", f"BT{2*i+1}", f"cell {i+1} +", x, 70, fp="Battery:BatteryClip_Keystone_54_D16-19mm", nets={"1": pos})
-    bt.part("Connector_Generic:Conn_01x01", f"BT{2*i+2}", f"cell {i+1} -", x, 90, fp="Battery:BatteryClip_Keystone_54_D16-19mm", nets={"1": neg})
+    bt.part("Device:Battery_Cell", f"BT{i+1}", f"18650 cell {i+1} (Keystone 1042)", x, 80, fp="Battery:BatteryHolder_Keystone_1042_1x18650",
+            nets={"1": pos, "2": neg})
     bt.part("Device:LED", f"D{i+1}", "LED red 0603 (reverse cell)", x + 25, 80, rot=90, fp="LED_SMD:LED_0603_1608Metric",
             nets={"1": pos, "2": f"REV{i+1}"})
     bt.R(f"R{i+1}", "2k2", x + 35, 80, f"REV{i+1}", neg, R0603)

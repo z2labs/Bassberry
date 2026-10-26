@@ -1,0 +1,26 @@
+########################################################################
+# Bassberry 2.1 - HAT+ ID EEPROM settings (raspberrypi/utils eeptools format)
+#
+#   eepmake bassberry_eeprom.txt bassberry.eep
+#   sudo eepflash.sh -w -f=bassberry.eep -t=24c32 -a=50     (bridge JP101 first)
+#
+# The Pi firmware reads this at boot from ID_SD/ID_SC (GPIO0/1), sees a HAT+,
+# loads /boot/firmware/overlays/bassberry.dtbo and, on a Pi 5, allows 5 A
+# back-powered operation (current_supply).
+########################################################################
+
+# fixed per board revision (uuid5(URL, "https://github.com/z2labs/Bassberry/hat/rev0.2"))
+product_uuid bbbacfaf-be5c-5772-b8ce-dc426963fba0
+
+# 16 bit product id / version (0x0002 = hardware rev 0.2)
+product_id 0x0b21
+product_ver 0x0002
+
+vendor "Z2Labs"
+product "Bassberry 2.1 speaker"
+
+# the board back-powers the Pi through the 5 V header pins: 5.1 V / 5 A buck
+current_supply 5000
+
+# device tree overlay to load (software/overlay/bassberry-overlay.dts)
+dt_blob "bassberry"

@@ -1,0 +1,78 @@
+// Bassberry 2.1 - device tree overlay (loaded automatically from the HAT+ EEPROM: dt_blob "bassberry")
+//
+// Build:   dtc -@ -I dts -O dtb -o bassberry.dtbo bassberry-overlay.dts
+// Install: sudo cp bassberry.dtbo /boot/firmware/overlays/
+//
+// Hardware (hardware/bassberry, sheet "audio"):
+//   U201 TAS5805M  stereo BTL (satellites)  I2C1 0x2D (ADR 15k to DVDD), PDN = GPIO4 (pin 7)
+//   U202 TAS5805M  mono PBTL  (sub)         I2C1 0x2E (ADR 47k to DVDD), PDN = GPIO5 (pin 29)
+//   I2S: Pi is clock master, BCLK GPIO18 (pin 12), LRCLK GPIO19 (pin 35), DOUT GPIO21 (pin 40)
+//   Both amps receive the same stereo stream; U202's DSP sums L+R and low-passes (crossover in the DSP profile).
+//   Supervisor MCU (CH32V003) is planned as an I2C slave at 0x42 on the same bus (power latch, buttons, encoder).
+//
+// STATUS: draft, not yet tested on hardware. The mainline tas5805m driver loads a DSP
+// register file /lib/firmware/tas5805m_dsp_<ti,dsp-config-name>.bin (see software/dsp/, to come).
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835";
+
+	fragment@0 {
+		target = <&i2s_clk_producer>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@1 {
+		target = <&i2c1>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			bb_amp_sat: tas5805m@2d {
+				#sound-dai-cells = <0>;
+				compatible = "ti,tas5805m";
+				reg = <0x2d>;
+				pdn-gpios = <&gpio 4 0>;
+				ti,dsp-config-name = "bassberry_sat";
+				sound-name-prefix = "Sat";
+				status = "okay";
+			};
+
+			bb_amp_sub: tas5805m@2e {
+				#sound-dai-cells = <0>;
+				compatible = "ti,tas5805m";
+				reg = <0x2e>;
+				pdn-gpios = <&gpio 5 0>;
+				ti,dsp-config-name = "bassberry_sub";
+				sound-name-prefix = "Sub";
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@2 {
+		target-path = "/";
+		__overlay__ {
+			bb_sound: sound {
+				compatible = "simple-audio-card";
+				simple-audio-card,name = "Bassberry";
+				simple-audio-card,format = "i2s";
+				simple-audio-card,bitclock-master = <&bb_cpu>;
+				simple-audio-card,frame-master = <&bb_cpu>;
+				status = "okay";
+
+				bb_cpu: simple-audio-card,cpu {
+					sound-dai = <&i2s_clk_producer>;
+				};
+				simple-audio-card,codec {
+					sound-dai = <&bb_amp_sat>, <&bb_amp_sub>;
+				};
+			};
+		};
+	};
+};
