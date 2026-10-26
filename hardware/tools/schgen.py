@@ -209,7 +209,7 @@ class Project:
                                 [Sym("stroke"), [Sym("width"), 0.1524], [Sym("type"), Sym("solid")]],
                                 [Sym("fill"), [Sym("color"), 0, 0, 0, 0.0]],
                                 [Sym("uuid"), sh.sheet_uuid],
-                                [Sym("property"), "Sheetname", sh.title, [Sym("at"), x, y - 0.7, 0],
+                                [Sym("property"), "Sheetname", sh.name, [Sym("at"), x, y - 0.7, 0],
                                  [Sym("effects"), font(), [Sym("justify"), Sym("left"), Sym("bottom")]]],
                                 [Sym("property"), "Sheetfile", sh.filename, [Sym("at"), x, y + 30.6, 0],
                                  [Sym("effects"), font(), [Sym("justify"), Sym("left"), Sym("top")]]],

@@ -328,7 +328,7 @@ for _round in range(6):
     todo = left
 
 # 3) leftovers (no partner placed): sheet regions
-REGION = {"raspberry pi (mounted face-down) + hat id": (64, 60, 100, 75), "battery": (100, 80, 128, 95)}
+REGION = {}
 for ref in todo:
     print("NOTE: free placement for", ref)
     fp, side = fps[ref], side_for(ref)
