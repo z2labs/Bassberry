@@ -1,0 +1,61 @@
+{
+  "enclosure_outer_mm": [
+    230,
+    120,
+    140
+  ],
+  "sat": {
+    "driver": "CE54N-4",
+    "fs_hz": 168.9,
+    "Qts": 0.58,
+    "Vb_l": 0.2,
+    "fc_hz": 209.6,
+    "Qtc": 0.71
+  },
+  "sub": {
+    "driver": "ND91-4",
+    "fs_hz": 74.1,
+    "Vb_l": 1.5,
+    "pr": "2x DMA70-PR",
+    "fb_hz": 56.9
+  },
+  "crossover_hz": 180.0,
+  "sat_trim_db": -9.6,
+  "system": {
+    "f_minus3_hz": 64.34910583533073,
+    "f_minus6_hz": 56.90103236107216,
+    "f_minus10_hz": 51.094666830632484,
+    "ripple_100_1k_db": 0.76
+  },
+  "max_spl_db_1m_nominal_pvdd": {
+    "50": 74.1,
+    "60": 81.3,
+    "80": 84.6,
+    "100": 87.0,
+    "150": 90.7,
+    "300": 94.7,
+    "1000": 97.2
+  },
+  "max_spl_db_1m_low_batt": {
+    "60": 81.3,
+    "100": 87.0,
+    "1000": 96.1
+  },
+  "flat_max_spl_db_1m": 85.3,
+  "max_spl_db_1m_without_sub_boost": {
+    "60": 78.0,
+    "100": 83.6,
+    "150": 87.0
+  },
+  "limiter_by_band": {
+    "40": "sub_xmax",
+    "60": "sub_xmax",
+    "80": "sub_xmax",
+    "120": "sub_voltage",
+    "200": "sat_xmax",
+    "500": "sat_voltage",
+    "1000": "sat_voltage"
+  },
+  "sub_raw_spl_2v83_100hz": 75.6,
+  "sat_raw_spl_2v83_1khz": 82.9
+}

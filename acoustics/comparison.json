@@ -1,0 +1,44 @@
+[
+  {
+    "config": "A  reference",
+    "sat": "TEBM35C10-4",
+    "sub": "ND91-4",
+    "drivers_cost": 82,
+    "f3": 64,
+    "sat_trim_db": -6.8,
+    "flat_max": 85.4,
+    "max60": 81.3,
+    "max100": 87.0,
+    "max1k": 93.6,
+    "sat_fc": 203.1,
+    "sat_qtc": 1.13
+  },
+  {
+    "config": "B  budget sats",
+    "sat": "CE54N-4",
+    "sub": "ND91-4",
+    "drivers_cost": 77,
+    "f3": 64,
+    "sat_trim_db": -9.6,
+    "flat_max": 85.3,
+    "max60": 81.3,
+    "max100": 87.0,
+    "max1k": 97.2,
+    "sat_fc": 209.6,
+    "sat_qtc": 0.71
+  },
+  {
+    "config": "C  budget all",
+    "sat": "CE54N-4",
+    "sub": "PC83-4",
+    "drivers_cost": 64,
+    "f3": 74,
+    "sat_trim_db": -7.5,
+    "flat_max": 79.5,
+    "max60": 74.0,
+    "max100": 79.6,
+    "max1k": 97.2,
+    "sat_fc": 209.6,
+    "sat_qtc": 0.71
+  }
+]
