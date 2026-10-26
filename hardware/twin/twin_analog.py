@@ -1,8 +1,8 @@
 """Layer 3: the drawn copper against the currents and voltages it has to carry.
 
 Ampacity is checked as a max-flow through the real copper of each high-current net - tracks, pads AND zone fills
-(power pours) on every layer, rasterised at 0.2 mm, layers joined by vias (1.5 A each: 0.3 mm drill, 25 um barrel,
-conservative) and by plated through-holes - between the pads where the current really enters and leaves (FLOWS).
+(power pours) on every layer, rasterised at 0.2 mm, layers joined by vias (1.5 A per 0.3 mm drill, 25 um barrel,
+conservative; scaled with the drill, since the barrel cross-section is pi * d * t) and by plated through-holes - between the pads where the current really enters and leaves (FLOWS).
 Each copper cell carries k_layer * 0.2 mm, where k_layer = I / W_IPC(I, layer) is the current per mm of width that
 IPC-2221 allows at the design current for a 20 K rise (1 oz outer = 35 um, 0.5 oz inner = 17.5 um, JLC 4-layer).
 The 1 mm around a source or sink pad is the pad-entry neck: a component pin's own width is the part maker's rating.
@@ -91,7 +91,7 @@ class Copper:
             if t.GetNetname() != net:
                 continue
             if t.GetClass() == "PCB_VIA":
-                vias.append((mm(t.GetPosition().x), mm(t.GetPosition().y)))
+                vias.append((mm(t.GetPosition().x), mm(t.GetPosition().y), mm(t.GetDrillValue())))
             else:
                 w0 = t.GetWidth()
                 if net in self.width_override:
@@ -176,12 +176,12 @@ class Copper:
                     if (li, ci + di, cj + dj) in cells:
                         return (li, ci + di, cj + dj)
             return None
-        for k, (vx, vy) in enumerate(vias):
+        for k, (vx, vy, vd) in enumerate(vias):
             ci, cj = cell_of(vx, vy)
             for li in range(len(self.layers)):
                 c = near(li, ci, cj)
                 if c:
-                    edge(("V", k), c, VIA_A)
+                    edge(("V", k), c, VIA_A * vd / 0.3)   # barrel cross-section pi*d*t scales with the drill
         for k, (vx, vy) in enumerate(pth):
             ci, cj = cell_of(vx, vy)
             for li in range(len(self.layers)):
@@ -237,7 +237,7 @@ class Copper:
                         if isinstance(w, tuple) and len(w) == 3 and w[0] == u[0]:
                             cut.setdefault(self.layers[u[0]], []).append((x0 + u[1] * H, y0 + u[2] * H))
                         elif isinstance(w, tuple) and w[0] == "V":
-                            cut.setdefault("via", []).append(vias[w[1]])
+                            cut.setdefault("via", []).append(vias[w[1]][:2])
             parts = []
             for l, pts in cut.items():
                 xs = [p[0] for p in pts]; ys = [p[1] for p in pts]
@@ -256,7 +256,7 @@ def check(cu):
             rep.add("FAIL", "ampacity", f"{net}: {why}"); continue
         rep.add("PASS" if cap >= amps else "FAIL", "ampacity",
                 f"{net} {fmt(src)} -> {fmt(dst)}: {amps:g} A needed, copper carries {min(cap, amps*1.25):.1f}{'+' if cap >= amps*1.25 else ''} A "
-                f"(IPC-2221 {DT:g} K, pours included, vias {VIA_A} A)" + (f"  {why}" if why else ""))
+                f"(IPC-2221 {DT:g} K, pours included, vias {VIA_A} A per 0.3 mm drill)" + (f"  {why}" if why else ""))
     # ---- Pi 5 V: set-point and drop (FET + copper; the ampacity check guarantees at least the IPC 5 A width)
     vout = 0.760 * (1 + parse_value(vals.get("R331", "0")) / parse_value(vals.get("R332", "1")))
     rep.add("PASS" if 5.0 <= vout <= 5.25 else "FAIL", "set-point", f"Pi buck: 0.760*(1+R331/R332) = {vout:.3f} V (5.0-5.25 V)")

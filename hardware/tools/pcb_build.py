@@ -364,6 +364,14 @@ for _round in range(6):
             left.append(ref); continue
         fp, side = fps[ref], side_for(ref)
         geoms = {r: geom(fp, r, side) for r in (0, 90, 180, 270)}
+        # the IC whose pin is the target: a part goes on the outward side of that pin (TI/Injoinic layouts: the
+        # inductor and caps sit off the pin end, never across the package, where the copper would have to squeeze
+        # between the other pins)
+        own = next((r for (r, n), xy in padpos.items() if xy == tgt and r != ref), None)
+        outward = None
+        if own and len(fps[own].Pads()) >= 6:
+            ox_, oy_ = where[own][0], where[own][1]
+            outward = (tgt[0] - ox_, tgt[1] - oy_)
         best = None
         for ring in range(0, 120):
             rad = ring * 0.5
@@ -382,6 +390,8 @@ for _round in range(6):
                     # cost: distance from the partner to the pad on the shared net (orients caps correctly)
                     mine = [g[1][pn] for (rr, pn), n in pinnet.items() if rr == ref and (n in nets or not nets) and pn in g[1]]
                     d = min((math.hypot(px + cx - tgt[0], py + cy - tgt[1]) for px, py in mine), default=rad)
+                    if outward and (cx - tgt[0]) * outward[0] + (cy - tgt[1]) * outward[1] < 0:
+                        d += 2.0
                     if best is None or d < best[0]:
                         best = (d, cx, cy, r)
             if best is not None and ring > 2 and rad > best[0] + 1.5:

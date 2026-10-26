@@ -18,18 +18,19 @@ from fatten import TARGET
 BUFFER = 2.0     # mm around each track of the net
 GND_MOAT = 1.0   # mm kept free around a GND pad that has no via of its own yet (gnd_stitch / via_rescue reach it later)
 VIA_A = 1.5      # A per 0.6/0.3 mm via (same figure as the layer-3 twin)
-PRIO = 5
+PRIO = 5        # 5..9 by current: above the GND pours (0), below the SoC thermal pad (10)
+SPLIT = 1.0     # mm a pour keeps from another high-current net's track on the same layer
 
 
 def add_vias(b):
-    """every layer change of a high-current net gets ceil(I / 1.5 A) vias: the extra ones go inside the net's own
-    filled pour on each layer the via joins, clear of every other net on all four layers."""
+    """every layer change of a high-current net must carry its current (1.5 A per 0.3 mm of drill, the same figure as the
+    layer-3 twin): first the via itself grows to 1.0/0.5 mm where it clears, then parallel vias (1.0/0.5 or 0.6/0.3 mm)
+    go inside the net's own filled pour on each layer the via joins, clear of every other net on all four layers."""
     FM, mm = pcbnew.FromMM, pcbnew.ToMM
     fatten.CLR = 0.2; fatten.CLR_PAD = 0.2
     cu = fatten.Copper(b)
     outline = pcbnew.SHAPE_POLY_SET(); b.GetBoardPolygonOutlines(outline, True)
     keep = [z for z in b.Zones() if z.GetIsRuleArea()]
-    allv = [(mm(v.GetPosition().x), mm(v.GetPosition().y)) for v in b.GetTracks() if v.GetClass() == "PCB_VIA"]
     fills = {}
 
     def own_fill(net, layer):
@@ -52,39 +53,61 @@ def add_vias(b):
     vias = [v for v in b.GetTracks() if v.GetClass() == "PCB_VIA"]
     allv_net = {}
     for v in vias:
-        allv_net.setdefault(v.GetNetname(), []).append((mm(v.GetPosition().x), mm(v.GetPosition().y)))
+        allv_net.setdefault(v.GetNetname(), []).append([mm(v.GetPosition().x), mm(v.GetPosition().y), mm(v.GetDrillValue()), v])
+    amps = lambda d: VIA_A * d / 0.3                  # barrel cross-section pi * d * t scales with the drill
+    ALL = (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu)
+
+    def hole_ok(p, d, skip=None):
+        # 0.25 mm hole to hole (JLC) to every via, any net
+        for vv in vias_all:
+            if vv[3] is skip:
+                continue
+            if math.hypot(p[0] - vv[0], p[1] - vv[1]) < (d + vv[2]) / 2 + 0.25 + 0.05:
+                return False
+        return True
+    vias_all = [x for lst in allv_net.values() for x in lst]
     for v in vias:
         net = v.GetNetname(); tg = fatten.target(net)
         if not tg:
             continue
-        need = math.ceil(tg[1] / VIA_A)
+        need = tg[1]
         c = (mm(v.GetPosition().x), mm(v.GetPosition().y))
         layers = {t.GetLayer() for t in b.GetTracks() if t.GetClass() != "PCB_VIA" and t.GetNetname() == net and
                   (t.GetStart() == v.GetPosition() or t.GetEnd() == v.GetPosition())}
         if len(layers) < 2:
             continue
-        have = sum(1 for (x, y) in allv_net.get(net, []) if math.hypot(x - c[0], y - c[1]) < 2.6)
-        for r in (0.9, 1.25, 1.6, 2.0, 2.5):
+        near = [x for x in allv_net.get(net, []) if math.hypot(x[0] - c[0], x[1] - c[1]) < 2.6]
+        have = sum(amps(x[2]) for x in near)
+        # 1) a bigger barrel in place: 1.0 / 0.5 mm (2.5 A) if it clears everything
+        me = next(x for x in allv_net[net] if x[3] is v)
+        if have < need and me[2] < 0.45 and hole_ok(c, 0.5, skip=v) and \
+                all(cu.clear(net, l, c, c, 0.5) for l in ALL):
+            v.SetWidth(FM(1.0)); v.SetDrill(FM(0.5)); have += amps(0.5) - amps(me[2]); me[2] = 0.5
+            cu.add(net, "all", ("circ", c, 0.5), v); made += 1
+        # 2) parallel vias inside the net's own pour on every layer this via joins
+        for r in (0.9, 1.25, 1.6, 2.0, 2.5, 3.0, 3.5):
             if have >= need:
                 break
-            for k in range(16):
+            for k in range(24):
                 if have >= need:
                     break
-                a = 2 * math.pi * k / 16
-                p = (c[0] + r * math.cos(a), c[1] + r * math.sin(a))
-                if any(math.hypot(p[0] - x, p[1] - y) < 0.9 for (x, y) in allv):
-                    continue
+                ang = 2 * math.pi * k / 24
+                p = (c[0] + r * math.cos(ang), c[1] + r * math.sin(ang))
                 if not inside(outline, p, 0.8) or any(z.Outline().Contains(pcbnew.VECTOR2I(FM(p[0]), FM(p[1]))) for z in keep):
                     continue
-                if not all(inside(own_fill(net, l), p, 0.4) for l in layers):
-                    continue
-                if not all(cu.clear(net, l, p, p, 0.3) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu)):
-                    continue
-                nv = pcbnew.PCB_VIA(b); nv.SetPosition(pcbnew.VECTOR2I(FM(p[0]), FM(p[1])))
-                nv.SetWidth(FM(0.6)); nv.SetDrill(FM(0.3)); nv.SetNet(v.GetNet()); b.Add(nv)
-                cu.add(net, "all", ("circ", p, 0.3), nv)
-                allv.append(p); allv_net.setdefault(net, []).append(p)
-                have += 1; made += 1
+                for dia, drill in ((1.0, 0.5), (0.6, 0.3)):
+                    if not hole_ok(p, drill):
+                        continue
+                    if not all(inside(own_fill(net, l), p, dia / 2 + 0.05) for l in layers):
+                        continue
+                    if not all(cu.clear(net, l, p, p, dia / 2) for l in ALL):
+                        continue
+                    nv = pcbnew.PCB_VIA(b); nv.SetPosition(pcbnew.VECTOR2I(FM(p[0]), FM(p[1])))
+                    nv.SetWidth(FM(dia)); nv.SetDrill(FM(drill)); nv.SetNet(v.GetNet()); b.Add(nv)
+                    cu.add(net, "all", ("circ", p, dia / 2), nv)
+                    rec = [p[0], p[1], drill, nv]; allv_net[net].append(rec); vias_all.append(rec)
+                    have += amps(drill); made += 1
+                    break
     return made
 
 
@@ -125,10 +148,12 @@ def main(path):
                 continue
             lonely.append(p)
     made = 0
+    power_nets = {n for n in nets if fatten.target(n)}
     for net in nets:
         if not any(fnmatch.fnmatchcase(net, g) for g, w, a in TARGET):
             continue
         ni = b.FindNet(net)
+        prio = PRIO + min(4, int(fatten.target(net)[1] // 1.5))   # where two pours still meet, the bigger current wins
         for layer in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.B_Cu):     # In1: power that srouter had to take inside
             ps = pcbnew.SHAPE_POLY_SET()
             n = 0
@@ -144,13 +169,18 @@ def main(path):
             for p in lonely:
                 if p.IsOnLayer(layer):
                     p.TransformShapeToPolygon(moat, layer, FM(GND_MOAT), FM(0.05), pcbnew.ERROR_OUTSIDE)
+            # share the room with the other high-current nets on this layer: never closer than SPLIT to their tracks,
+            # so two neighbouring pours split the gap between them instead of one eating the other's corridor
+            for t in tracks:
+                if t.GetClass() != "PCB_VIA" and t.GetLayer() == layer and t.GetNetname() != net and t.GetNetname() in power_nets:
+                    t.TransformShapeToPolygon(moat, layer, FM(SPLIT), FM(0.05), pcbnew.ERROR_OUTSIDE)
             ps.Simplify()
             if moat.OutlineCount():
                 moat.Simplify()
                 ps.BooleanSubtract(moat)
             for i in range(ps.OutlineCount()):
                 z = pcbnew.ZONE(b)
-                z.SetLayer(layer); z.SetNet(ni); z.SetAssignedPriority(PRIO)
+                z.SetLayer(layer); z.SetNet(ni); z.SetAssignedPriority(prio)
                 z.SetZoneName(f"PWR_{net.split('/')[-1]}_{b.GetLayerName(layer)}_{i}")
                 z.SetLocalClearance(FM(0.25)); z.SetMinThickness(FM(0.25))
                 z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
@@ -160,7 +190,7 @@ def main(path):
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
     nv = add_vias(b)
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
-    print(f"power_pour: {nv} parallel vias added")
+    print(f"power_pour: {nv} vias enlarged or added in parallel")
     pcbnew.SaveBoard(path, b)
     print(f"power_pour: {made} zones on {len([n for n in nets if any(fnmatch.fnmatchcase(n, g) for g, w, a in TARGET)])} nets")
 
