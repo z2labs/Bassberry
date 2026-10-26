@@ -211,50 +211,71 @@ def run_pass(b, name, only, args, width):
     return b, stuck_nets(logf)
 
 
-def repair(b, summary):
+def rip_up(stuck):
+    """(own process) rip the small-signal nets within RIP mm of the stuck nets' pads, and the stuck nets themselves"""
     import fnmatch
-    width = widths(b)
+    b = pcbnew.LoadBoard(BOARD)
     protected = lambda n: (not n or n in NO_RIP or any(fnmatch.fnmatchcase(n, g) for g in HEAVY + POWER))
+    segs = []
+    for t in b.GetTracks():
+        a = (t.GetPosition() if t.GetClass() == "PCB_VIA" else t.GetStart())
+        e = (t.GetPosition() if t.GetClass() == "PCB_VIA" else t.GetEnd())
+        segs.append((t.GetNetname(), pcbnew.ToMM(a.x), pcbnew.ToMM(a.y), pcbnew.ToMM(e.x), pcbnew.ToMM(e.y)))
+    rip = set()
+    for fp in b.GetFootprints():
+        for p in fp.Pads():
+            if p.GetNetname() not in stuck:
+                continue
+            cx, cy = pcbnew.ToMM(p.GetPosition().x), pcbnew.ToMM(p.GetPosition().y)
+            reach = RIP + pcbnew.ToMM(max(p.GetSize(pcbnew.F_Cu).x, p.GetSize(pcbnew.F_Cu).y)) / 2
+            for (n, ax, ay, ex, ey) in segs:
+                if n in stuck or protected(n):
+                    continue
+                L = (ex - ax) ** 2 + (ey - ay) ** 2
+                k = 0 if L == 0 else max(0, min(1, ((cx - ax) * (ex - ax) + (cy - ay) * (ey - ay)) / L))
+                if ((ax + k * (ex - ax) - cx) ** 2 + (ay + k * (ey - ay) - cy) ** 2) ** 0.5 < reach:
+                    rip.add(n)
+    for t in list(b.GetTracks()):
+        if t.GetNetname() in rip or t.GetNetname() in stuck:
+            b.Remove(t)
+    pcbnew.SaveBoard(BOARD, b)
+    return sorted(rip)
+
+
+def sub(*args):
+    """run one step of the repair in a fresh pcbnew process (pcbnew's track list goes stale in a long-lived one)"""
+    out = os.path.join(OUT, "repair_step.json")
+    if os.path.exists(out):
+        os.remove(out)
+    p = subprocess.run([sys.executable, os.path.abspath(__file__)] + list(args) + [out], capture_output=True, text=True)
+    if p.returncode != 0 or not os.path.exists(out):
+        print("   repair step failed:", args[0], p.stderr[-800:])
+        return None
+    return json.load(open(out))
+
+
+def repair(summary):
     stuck = stuck_nets(os.path.join(OUT, "pass3_rest.log"))
+    args = ["-top", "F.Cu:4", "-via", "1500", "-it", "120"]
     for rnd in range(1, 4):
         if not stuck:
             break
         print(f"   repair {rnd}: stuck {stuck}")
-        rip = set()
-        for fp in b.GetFootprints():
-            for p in fp.Pads():
-                if p.GetNetname() not in stuck:
-                    continue
-                c = p.GetPosition()
-                for t in b.GetTracks():
-                    n = t.GetNetname()
-                    if n in stuck or protected(n):
-                        continue
-                    a = (t.GetPosition() if t.GetClass() == "PCB_VIA" else t.GetStart())
-                    e = (t.GetPosition() if t.GetClass() == "PCB_VIA" else t.GetEnd())
-                    ax, ay, ex, ey, cx, cy = (pcbnew.ToMM(v) for v in (a.x, a.y, e.x, e.y, c.x, c.y))
-                    L = (ex - ax) ** 2 + (ey - ay) ** 2
-                    k = 0 if L == 0 else max(0, min(1, ((cx - ax) * (ex - ax) + (cy - ay) * (ey - ay)) / L))
-                    d = ((ax + k * (ex - ax) - cx) ** 2 + (ay + k * (ey - ay) - cy) ** 2) ** 0.5
-                    if d < RIP + pcbnew.ToMM(max(p.GetSize(pcbnew.F_Cu).x, p.GetSize(pcbnew.F_Cu).y)) / 2:
-                        rip.add(n)
-        for t in list(b.GetTracks()):
-            if t.GetNetname() in rip or t.GetNetname() in stuck:
-                b.Remove(t)
-        pcbnew.SaveBoard(BOARD, b)          # (pcbnew's track list is not iterable from Python after Remove: reload)
-        b = pcbnew.LoadBoard(BOARD)
-        print(f"   repair {rnd}: ripped {sorted(rip)}")
-        b, s1 = run_pass(b, f"repair{rnd}a", stuck, ["-top", "F.Cu:4", "-via", "1500", "-it", "120"], width)
+        rip = sub("--rip", json.dumps(stuck))
+        if rip is None:
+            break
+        print(f"   repair {rnd}: ripped {rip}")
+        s1 = sub("--pass", f"repair{rnd}a", json.dumps(stuck), json.dumps(args))
         if s1 is None:
             break
-        b, s2 = run_pass(b, f"repair{rnd}b", sorted(rip), ["-top", "F.Cu:4", "-via", "1500", "-it", "120"], width) if rip else (b, [])
+        s2 = sub("--pass", f"repair{rnd}b", json.dumps(rip), json.dumps(args)) if rip else []
         if s2 is None:
             break
         stuck = sorted(set(s1) | set(s2))
         summary.append((f"repair{rnd}", len(stuck)))
+        print(f"   repair {rnd}: left {stuck}")
     if stuck:
         print("   repair: still unrouted", stuck)
-    return b
 
 
 def main():
@@ -295,7 +316,9 @@ def main():
         if name in ("pass0_trunk", "pass1b_local"):    # give the power copper its width before the rest is routed around it
             subprocess.run([sys.executable, os.path.join(HERE, "fatten.py"), BOARD])
         b = pcbnew.LoadBoard(BOARD)
-    b = repair(b, summary)
+    pcbnew.SaveBoard(BOARD, b)
+    repair(summary)
+    b = pcbnew.LoadBoard(BOARD)
     n = add_thermal_vias(b, pcbnew)
     print("SoC via field restored:", n)
     if not any(z.GetZoneName().startswith("GND_") for z in b.Zones()):
@@ -306,4 +329,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1 and sys.argv[1] == "--rip":
+        json.dump(rip_up(json.loads(sys.argv[2])), open(sys.argv[3], "w"))
+    elif len(sys.argv) > 1 and sys.argv[1] == "--pass":
+        bb = pcbnew.LoadBoard(BOARD)
+        _, left = run_pass(bb, sys.argv[2], json.loads(sys.argv[3]), json.loads(sys.argv[4]), widths(bb))
+        if left is not None:
+            json.dump(left, open(sys.argv[5], "w"))
+    else:
+        main()
