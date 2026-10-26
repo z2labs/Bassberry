@@ -573,7 +573,7 @@ def gnd_dogbones(clr_pad=0.5, gaps=(0.35, 0.6, 0.9), only=None):
 
 def gnd_links(only):
     """last resort for a GND pin with no room for its own via: a short straight or L-shaped track to the nearest GND
-    copper on its layer (another part's GND pad, a dog-bone via, an exposed pad) within 4 mm, clearance-checked"""
+    copper on its layer (another part's GND pad, a dog-bone via, an exposed pad) within 6 mm, clearance-checked"""
     import fatten
     fatten.CLR = 0.15; fatten.CLR_PAD = 0.15
     cu = fatten.Copper(board)
@@ -594,7 +594,7 @@ def gnd_links(only):
             q = (pcbnew.ToMM(p.GetPosition().x), pcbnew.ToMM(p.GetPosition().y))
             s = p.GetSize(pcbnew.F_Cu); hw = min(0.125, pcbnew.ToMM(min(s.x, s.y)) / 2 - 0.025)
             cands = [(t[2], t[1]) for t in targets if t[0] != fp.GetReference() and t[1].IsOnLayer(lay)] + [(v, None) for v in gv]
-            cands = sorted((c for c in cands if math.dist(c[0], q) < 4.0), key=lambda c: math.dist(c[0], q))
+            cands = sorted((c for c in cands if math.dist(c[0], q) < 6.0), key=lambda c: math.dist(c[0], q))
             ok = False
             for (e, _) in cands:
                 for path in ([q, e], [q, (e[0], q[1]), e], [q, (q[0], e[1]), e]):
