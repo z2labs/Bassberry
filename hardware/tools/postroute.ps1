@@ -10,6 +10,7 @@ $log   = "$root\hardware\bassberry\route\postroute.log"
 function step($name, [scriptblock]$b) { "== $name  $(Get-Date -Format HH:mm:ss)" | Tee-Object -Append $log; & $b 2>&1 | Select-String -NotMatch "duplicate image handler" | Tee-Object -Append $log; "   exit $LASTEXITCODE" | Tee-Object -Append $log }
 "" | Set-Content $log
 step "1 track_tidy"   { & $py "$tools\track_tidy.py" $board }
+step "1b power_pour" { & $py "$root\hardware\tools\power_pour.py" $board }
 step "2 zone fill"    { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(r'$board',b);print('filled')" }
 step "3 gnd_stitch"   { & $py "$tools\gnd_stitch.py" $board }
 step "4 via_rescue"   { & $py "$tools\via_rescue.py" $board --net GND }

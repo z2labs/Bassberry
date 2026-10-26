@@ -14,7 +14,7 @@ Prices are rough single-unit estimates (October 2026) and will change. *(tbc)* =
 | 5.1 V / 5 A buck | TI TPS565208 (SOT-23-6) + 4.7 µH | 1 | enough for a Pi 5 |
 | 17 V boost (optional) | MT3608 + SS34 | 1 | footprint present, can stay unfitted (PVDD_SUB jumper) |
 | Supervisor MCU | WCH CH32V003 | 1 | costs a few cents, handles buttons, encoder and power latch |
-| USB-UART | WCH CH340 class | 1 | serial console over the same USB-C port |
+| USB-UART | WCH CH340C + Torex XC6216B332PR (28 V LDO from VBUS) | 1 + 1 | serial console over the same USB-C port |
 | Display | 1.3" I2C OLED module, 4-pin | 1 | everywhere, ≈ 2–3 |
 | Encoder | EC11 with push switch | 1 | |
 | Buttons | 6 × 6 mm tact switches | 5 | |
