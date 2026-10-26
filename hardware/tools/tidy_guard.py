@@ -69,6 +69,25 @@ def main(before, after):
             w = min(mm(t0.GetWidth()), mm(t1.GetWidth()))
             p = t0
             ok_layer = True
+        elif len(trks) == 2:
+            # pieces on two layers: the layer change went missing - a via at the nearest end of one, and a stub
+            # on the other layer from its nearest end to that via
+            t0, t1 = trks
+            e0, e1 = seg(t0), seg(t1)
+            a, bpt = min(((x, y) for x in e0 for y in e1), key=lambda xy: math.dist(*xy))
+            if math.dist(a, bpt) > 2.0 or not all(cu.clear(t0.GetNetname(), l, bpt, bpt, 0.3) for l in
+                                                     (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu)) \
+                    or not cu.clear(t0.GetNetname(), t0.GetLayer(), a, bpt, mm(t0.GetWidth()) / 2):
+                left.append(" | ".join(x[3] for x in u)); continue
+            v = pcbnew.PCB_VIA(b); v.SetPosition(pcbnew.VECTOR2I(FM(bpt[0]), FM(bpt[1])))
+            v.SetWidth(FM(0.6)); v.SetDrill(FM(0.3)); v.SetNet(t0.GetNet()); b.Add(v)
+            cu.add(t0.GetNetname(), "all", ("circ", bpt, 0.3), v)
+            if math.dist(a, bpt) > 1e-3:
+                n = pcbnew.PCB_TRACK(b); n.SetStart(pcbnew.VECTOR2I(FM(a[0]), FM(a[1]))); n.SetEnd(pcbnew.VECTOR2I(FM(bpt[0]), FM(bpt[1])))
+                n.SetWidth(t0.GetWidth()); n.SetLayer(t0.GetLayer()); n.SetNet(t0.GetNet()); b.Add(n)
+                cu.add(t0.GetNetname(), {t0.GetLayer()}, ("seg", a, bpt, mm(t0.GetWidth()) / 2), n)
+            fixed += 1
+            continue
         else:
             left.append(" | ".join(x[3] for x in u)); continue
         q = foot(c, t)
