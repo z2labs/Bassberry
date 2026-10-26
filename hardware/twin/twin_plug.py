@@ -38,7 +38,7 @@ def pi_pin(n):
     return x, y
 
 
-PORT_BLOCK = (63.0, 0.0, 88.0, 56.0)               # Pi 4/5 USB + Ethernet bodies (drawing: from ~66.8 mm, overhang 3 mm)
+PORT_BLOCK = (66.0, 0.0, 88.0, 56.0)   # Pi 4/5 RJ45 + USB bodies: drawing ~66.8 mm (Pi 4), 66.9 mm (Pi 5) to the 3 mm overhang
 SOCS = {"Pi 4 SoC": ((29.25, 32.5), 15.0), "Pi 5 SoC": ((33.1, 23.0), 17.0)}
 ANT = (0.0, 35.0, 8.0, 56.0)                      # antenna corner (pin-1 end, header side)
 
