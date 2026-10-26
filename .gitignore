@@ -2,3 +2,13 @@ __pycache__/
 *.pyc
 render/out/
 *.blend1
+hardware/_datasheets/
+hardware/bassberry/route/*.dsn
+hardware/bassberry/route/*.ses
+hardware/bassberry/route/probe*
+hardware/bassberry/route/route_std*
+hardware/bassberry/plots/
+hardware/bassberry/*-backups/
+hardware/bassberry/_pcb_*.pdf
+hardware/bassberry/fp-info-cache
+hardware/bassberry/*.kicad_prl
