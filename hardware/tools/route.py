@@ -78,9 +78,13 @@ POWER = LOCAL + ["+BATT", "VBUS", f"{PW}CHG_VIN", f"{PW}CHG_NODE?", f"{PW}CHG_LX
 FAST = ["I2S_*", f"{PI}PI_BCLK", f"{PI}PI_LRCLK", f"{PI}PI_DOUT", "USB_DP", "USB_DN", "I2C_*", f"{PI}ID_S?",
         "AMP*_PDN", "PI_*",                                    # everything else that leaves the Pi header
         f"{A}AMP2_SDIN", f"{A}AMP1_SDOUT"]
+# amplifier outputs: pin -> inductor -> connector on the parts side only - a via in a 2-3 A speaker path is a neck
+AMP_OUT = [f"{A}AMP1_AP", f"{A}AMP1_AN", f"{A}AMP1_BP", f"{A}AMP1_BN", f"{A}AMP2_P", f"{A}AMP2_N", f"{A}SAT_*", f"{A}SUB_*"]
 PASSES = [
     # 1a: high-current nets alone, outer layers only (In1 closed: 0.5 oz inner copper carries a third), vias avoided
     ("pass1a_heavy", HEAVY, ["-top", "F.Cu:6", "-via", "20000", "-it", "80"]),
+    # 1a2: speaker paths alone, In1 closed, vias nearly forbidden (whatever cannot be done on one layer is left to 1b)
+    ("pass1a2_amp", AMP_OUT, ["-top", "F.Cu:20", "-via", "60000", "-it", "80"]),
     # 1b: everything that escapes from between power pins (QFN, amp bootstrap), the 3V3 rails
     ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:40", "-via", "8000", "-it", "80"]),
     ("pass2_fast", FAST, ["-top", "F.Cu:10", "-top", "B.Cu:2", "-via", "2500"]),
@@ -123,7 +127,7 @@ def import_ses(board, ses):
 # 2512 links, inductors, MOSFET tabs, connectors) at the widest width those pads allow. The SES goes back into the real
 # board on the real net, and the later passes join the small pads to that trunk at their own width: a neck-down
 # that happens only at the last millimetres before a fine-pitch pin.
-TRUNK_MAX = 1.6      # mm, widest trunk asked from the router (fatten.py and the pours widen further)
+TRUNK_MAX = 2.4      # mm, widest trunk asked from the router (= the battery-link target; fatten.py and the pours widen further)
 TRUNK_MIN = 0.5      # mm, a trunk narrower than this is no trunk
 
 
@@ -295,7 +299,7 @@ def main():
             name, dsn, ses, rep, rj = trunk_pass(b)
         else:
             dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
-            export_dsn(b, dsn, ("In2.Cu", "In1.Cu") if name == "pass1a_heavy" else ("In2.Cu",))
+            export_dsn(b, dsn, ("In2.Cu", "In1.Cu") if name in ("pass1a_heavy", "pass1a2_amp") else ("In2.Cu",))
             json.dump(rules(only, width), open(rj, "w"), indent=1)
         cmd = [SR, "-de", dsn, "-do", ses, "-rules", rj, "-report", rep] + args
         print(">>", " ".join(cmd), flush=True)
