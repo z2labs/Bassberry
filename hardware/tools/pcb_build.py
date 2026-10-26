@@ -136,6 +136,7 @@ PARTNER = {
     "C350": ("U305", "2"), "C351": ("U305", "3"), "C352": ("U306", "2"), "C353": ("U306", "3"),
     "C501": ("U501", "9"), "C502": ("U501", "9"), "C510": ("U502", "16"),
     "D301": ("J301", "A4"), "R106": ("J101", "11"),
+    "R344": ("U202", "16"), "R345": ("U202", "27"),        # PVDD_SUB select links next to amp 2
 }
 SIDE_TOP = set()  # everything not FIXED goes to the bottom (JP101/TP101 too: flashing is a one-off, from below)
 
