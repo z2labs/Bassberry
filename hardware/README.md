@@ -38,10 +38,18 @@ powershell -File hardware\tools\postroute.ps1                       # track_tidy
                                                                      # silk_dfm, DRC --schematic-parity, digital twin 1-4
 ```
 
-Routing follows `srouter/docs/USAGE.md`: GND is never routed (planes + pours, stitched afterwards); pass 1 routes power and
-everything that escapes from between power pins, pass 2 the fast nets (I2S, I2C, USB, HAT ID), pass 3 the rest.
-srouter routes a net with one width that has to fit its smallest pad, so `fatten.py` widens the high-current copper after
-pass 1 (necking only next to small pads, keeping an escape lane around foreign pads) and adds parallel vias at their layer changes.
+Routing follows `srouter/docs/USAGE.md`: GND is never routed (In2 plane + F/B pours, stitched afterwards).
+* **Pass 1a** - the high-current nets alone, on the outer copper only (In1 closed: 0.5 oz inner copper would need 3x the
+  width), vias strongly avoided. srouter routes a net with one width that has to fit its smallest pad, so `fatten.py` then
+  widens that copper wherever the clearance allows (necking only next to small pads, keeping a 0.5 mm escape lane around
+  every foreign pad) and adds parallel vias at its layer changes.
+* **Pass 1b** - everything that escapes from between power pins (the IP2366 QFN, the amp bootstrap pins) and the 3V3 rails.
+* **Pass 2** - I2S, I2C, USB D+/D- (crossover under the receptacle pre-routed), HAT ID, every other Pi header net.
+* **Pass 3** - the rest.
+* **Post** (`postroute.ps1`, the USAGE.md order): track_tidy, `power_pour.py` (a priority-5 copper pour hugging every
+  high-current track, filled only into free space), zone fill, gnd_stitch, via_rescue, stitch_audit, silk_dfm, DRC with
+  schematic parity, digital twin 1-4. `full_flow.ps1` runs everything unattended.
+* Gates: `escape_probe.py` (no pad walled in before routing), the pre-route twin layers 1/2/4.
 
 ## Digital twin
 
