@@ -1,0 +1,5 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "bassberry") (type "KiCad") (uri "${KIPRJMOD}/bassberry.kicad_sym") (options "") (descr "Bassberry project symbols"))
+	(lib (name "MCU_WCH_RiscV") (type "KiCad") (uri "${KICAD10_SYMBOL_DIR}/MCU_WCH_RiscV.kicad_sym") (options "") (descr "WCH RISC-V MCUs"))
+)
