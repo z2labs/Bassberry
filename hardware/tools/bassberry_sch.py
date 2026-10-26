@@ -4,13 +4,13 @@ Writes hardware/bassberry/*.kicad_sch
 """
 import os, sys
 sys.path.insert(0, os.path.dirname(__file__))
-from schgen import Project
+from schgen import Project, PROJECT_RAILS
 from kilib import PROJECT_LIBS
 from projlib import write_lib
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "bassberry")
 os.makedirs(OUT, exist_ok=True)
-write_lib(os.path.join(OUT, "bassberry.kicad_sym"))
+write_lib(os.path.join(OUT, "bassberry.kicad_sym"), PROJECT_RAILS)
 PROJECT_LIBS["bassberry"] = os.path.join(OUT, "bassberry.kicad_sym")
 P = Project(OUT)
 
@@ -24,8 +24,8 @@ JST2 = "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical"
 IND_PWR = "Inductor_SMD:L_Changjiang_FXL1050"
 
 GLOBAL = {"I2C_SDA", "I2C_SCL", "I2S_BCLK", "I2S_LRCLK", "I2S_DOUT", "AMP_PDN", "PI_IRQ",
-          "PI_SHUTDOWN_REQ", "PI_POWEROFF", "PI_TXD", "PI_RXD", "PVDD_SUB", "+3V3_AON",
-          "USB_DP", "USB_DN", "+3V3_USB", "PI_PWR_EN", "BOOST_EN", "CHG_LED_A", "CHG_LED_B", "CHG_LED_COM", "NTC"}
+          "PI_SHUTDOWN_REQ", "PI_POWEROFF", "PI_TXD", "PI_RXD",
+          "USB_DP", "USB_DN", "PI_PWR_EN", "BOOST_EN", "CHG_LED_A", "CHG_LED_B", "CHG_LED_COM", "NTC"}
 
 
 class Row:
@@ -69,11 +69,30 @@ r = Row(pi, 60, 225, 12.7)
 r.C("C1", "100u 6.3V", "+5V", "GND", C1210)
 r.C("C2", "10u", "+5V", "GND", C0805)
 r.C("C3", "100n", "+3V3", "GND", C0603)
-pi.part("Memory_EEPROM:24LC32", "U1", "24C32 (HAT ID)", 250, 200, fp="Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+# ---- HAT+ ID EEPROM (raspberrypi/hats designguide.md, eeprom-circuit.png): 24C32-class, 16-bit addressing, 0x50,
+# ID_SD/ID_SC carry nothing else, 3k9 pull-ups, WP 1k pull-up = write-protected; bridge JP1 (or short TP1-GND) to flash.
+pi.text("HAT+ ID EEPROM @0x50 (CAT24C32). Write: bridge JP1, then eepflash.sh -w -t=24c32 -a=50 -f=bassberry.eep", 200, 180)
+pi.part("Memory_EEPROM:24LC32", "U1", "CAT24C32WI-GT3", 250, 200, fp="Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
         nets={"VCC": "+3V3", "GND": "GND", "SDA": "ID_SD", "SCL": "ID_SC", "A0": "GND", "A1": "GND", "A2": "GND", "WP": "ID_WP"})
 pi.part("Jumper:SolderJumper_2_Open", "JP1", "EEPROM write enable", 290, 200, fp="Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm",
         nets={"1": "ID_WP", "2": "GND"})
-pi.R("R7", "10k", 290, 225, "+3V3", "ID_WP", R0603)
+pi.part("Connector:TestPoint", "TP1", "ID_WP", 305, 200, fp="TestPoint:TestPoint_Pad_D1.5mm", nets={"1": "ID_WP"})
+pi.R("R7", "1k", 290, 225, "+3V3", "ID_WP", R0603)
+pi.C("C4", "100n", 270, 225, "+3V3", "GND", C0603)
+
+# ---- back-powering safety diode (designguide.md "Back powering", zvd-circuit.png): PFET + matched dual PNP.
+# Q1 drain = board 5 V in (+5V_BUCK), source = Pi 5 V. Q2A diode-connected (E on input, B=C -> 10k), Q2B E on Pi 5 V,
+# C -> gate + 47k: if the Pi side is higher (Pi's own PSU plugged in), Q2B pulls the gate up and Q1 blocks.
+pi.text("Back-power ideal diode (HAT design guide): +5V_BUCK -> +5V (Pi). 5 A rated: DMP3013SFV instead of DMG2305UX.", 40, 250)
+pi.part("Transistor_FET:DMP3013SFV", "Q1", "DMP3013SFV", 120, 275, fp="Package_SON:Diodes_PowerDI3333-8",
+        nets={"D": "+5V_BUCK", "S": "+5V", "G": "ZVD_G"})
+QD = "Transistor_BJT:DMMT5401"
+pi.part(QD, "Q2", "DMMT5401", 100, 300, unit=1, fp="Package_TO_SOT_SMD:SOT-23-6",
+        nets={"E1": "+5V_BUCK", "B1": "ZVD_B", "C1": "ZVD_B"})
+pi.part(QD, "Q2", "DMMT5401", 140, 300, unit=2, fp="Package_TO_SOT_SMD:SOT-23-6", mirror=True,
+        nets={"E2": "+5V", "B2": "ZVD_B", "C2": "ZVD_G"})
+pi.R("R8", "10k 1%", 100, 325, "ZVD_B", "GND", R0603)
+pi.R("R9", "47k 1%", 140, 325, "ZVD_G", "GND", R0603)
 
 # =====================================================================  Audio
 au = P.child("audio", "audio.kicad_sch", "Audio: 2x TAS5805M (stereo BTL + sub PBTL)", GLOBAL)
@@ -225,23 +244,23 @@ r.C("C16", "22u 35V", "+BATT", "GND", C1210)
 r.CP("C17", "220u 35V polymer", "+BATT", "GND", CP_10x10)
 
 # 5.1 V / 5 A buck for the Pi (TPS565208, VIN 4.5-17 V)
-pw.text("Pi 5V buck: Vout = 0.76*(1+R31/R32) = 5.14 V. EN driven by supervisor (PI_PWR_EN).", 30, 290)
+pw.text("Pi 5V buck (+5V_BUCK, feeds the Pi through the back-power ideal diode on the Pi sheet): Vout = 0.76*(1+R31/R32) = 5.14 V. EN driven by supervisor (PI_PWR_EN).", 30, 290)
 pw.part("Regulator_Switching:TPS565208", "U3", "TPS565208", 80, 330, fp="Package_TO_SOT_SMD:SOT-23-6",
         nets={"VIN": "+BATT", "EN": "PI_PWR_EN", "GND": "GND", "SW": "BUCK_SW", "VBST": "BUCK_BST", "VFB": "BUCK_FB"})
 r = Row(pw, 110, 320, 10.16)
 r.C("C30", "100n", "BUCK_BST", "BUCK_SW", C0603)
-r.L("L2", "4u7 7A", "BUCK_SW", "+5V", "Inductor_SMD:L_Changjiang_FXL1040")
-r.R("R31", "57k6 1%", "+5V", "BUCK_FB", R0603)
+r.L("L2", "4u7 7A", "BUCK_SW", "+5V_BUCK", "Inductor_SMD:L_Changjiang_FXL1040")
+r.R("R31", "57k6 1%", "+5V_BUCK", "BUCK_FB", R0603)
 r.R("R32", "10k 1%", "BUCK_FB", "GND", R0603)
-r.C("C31", "47p", "+5V", "BUCK_FB", C0603)
+r.C("C31", "47p", "+5V_BUCK", "BUCK_FB", C0603)
 r.R("R33", "100k", "PI_PWR_EN", "GND", R0603)
 r = Row(pw, 110, 350, 10.16)
 r.C("C32", "10u 25V", "+BATT", "GND", C1206)
 r.C("C33", "10u 25V", "+BATT", "GND", C1206)
 r.C("C34", "100n 50V", "+BATT", "GND", C0603)
-r.C("C35", "22u 10V", "+5V", "GND", C1206)
-r.C("C36", "22u 10V", "+5V", "GND", C1206)
-r.C("C37", "22u 10V", "+5V", "GND", C1206)
+r.C("C35", "22u 10V", "+5V_BUCK", "GND", C1206)
+r.C("C36", "22u 10V", "+5V_BUCK", "GND", C1206)
+r.C("C37", "22u 10V", "+5V_BUCK", "GND", C1206)
 
 # sub boost (optional) MT3608, ~17 V
 pw.text("Sub PVDD boost (optional): Vout = 0.6*(1+R41/R42) = 17.1 V. JP1 selects PVDD_SUB = +BATT (default) or boost.", 200, 290)

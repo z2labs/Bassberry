@@ -10,6 +10,9 @@ from kilib import get_symbol, pins, pin_abs
 NS = uuid.UUID("6c1f5b9e-2b1e-4c55-9b7a-b455b3e77a21")
 PROJECT = "bassberry"
 POWER_SYMS = {"GND": "power:GND", "+3V3": "power:+3V3", "+5V": "power:+5V", "+BATT": "power:+BATT", "VBUS": "power:VBUS"}
+# project power symbols (bassberry.kicad_sym, cloned from power:+3V3): rails are never labels
+PROJECT_RAILS = ("+3V3_AON", "+3V3_USB", "+5V_BUCK", "PVDD_SUB")
+POWER_SYMS.update({r: f"bassberry:{r}" for r in PROJECT_RAILS})
 FLAGS = []
 
 
@@ -35,18 +38,18 @@ class Sheet:
         self.path = None  # set by Project
 
     # ---------------------------------------------------------- symbols
-    def part(self, lib_id, ref, value, x, y, rot=0, fp="", nets=None, props=None, mirror=False, dnp=False):
+    def part(self, lib_id, ref, value, x, y, rot=0, fp="", nets=None, props=None, mirror=False, dnp=False, unit=1):
         x, y = snap(x, 2.54), snap(y, 2.54)
         ref = self.renum(ref)
         sym = get_symbol(lib_id)
         if lib_id not in self.lib_ids:
             self.lib_ids.append(lib_id)
         nets = nets or {}
-        uid = U(self.filename, ref)
+        uid = U(self.filename, ref) if unit == 1 else U(self.filename, ref, "unit", unit)
         node = [Sym("symbol"), [Sym("lib_id"), lib_id], [Sym("at"), x, y, rot]]
         if mirror:
             node.append([Sym("mirror"), Sym("y")])
-        node += [[Sym("unit"), 1], [Sym("exclude_from_sim"), Sym("no")], [Sym("in_bom"), Sym("yes")],
+        node += [[Sym("unit"), unit], [Sym("exclude_from_sim"), Sym("no")], [Sym("in_bom"), Sym("yes")],
                  [Sym("on_board"), Sym("yes")], [Sym("dnp"), Sym("yes" if dnp else "no")],
                  [Sym("uuid"), uid]]
         hidden_ref = ref.startswith("#")
@@ -56,7 +59,7 @@ class Sheet:
         node.append(self._prop("Datasheet", "~", x, y, hide=True))
         for k, v in (props or {}).items():
             node.append(self._prop(k, v, x, y, hide=True))
-        plist = pins(sym)
+        plist = pins(sym, unit)
         seen = set()
         for p in plist:
             if p["number"] in seen:
@@ -64,7 +67,7 @@ class Sheet:
             seen.add(p["number"])
             node.append([Sym("pin"), p["number"], [Sym("uuid"), U(self.filename, ref, "pin", p["number"])]])
         node.append([Sym("instances"), [Sym("project"), PROJECT,
-                     [Sym("path"), self.path, [Sym("reference"), ref], [Sym("unit"), 1]]]])
+                     [Sym("path"), self.path, [Sym("reference"), ref], [Sym("unit"), unit]]]])
         self.items.append(node)
         # connections
         done = set()

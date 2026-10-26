@@ -59,9 +59,25 @@ IP2366 = ic_symbol(
     w=25.4, nc=(40, 1, 2, 3, 4))
 
 
-def write_lib(path):
+def rail_symbol(name, template="power:+3V3"):
+    """Global power symbol for a project rail, cloned from KiCad's power:+3V3 (same graphics, power_in pin)."""
+    from kilib import get_symbol
+    old = template.split(":")[1]
+
+    def sub(x):
+        if isinstance(x, list):
+            return [sub(i) for i in x]
+        if isinstance(x, str) and not isinstance(x, Sym):
+            return x.replace(old, name) if (x == old or x.startswith(old + "_") or f'"{old}"' in x or x == template) else x
+        return x
+    s = sub(get_symbol(template))
+    s[1] = name
+    return s
+
+
+def write_lib(path, rails=()):
     lib = [Sym("kicad_symbol_lib"), [Sym("version"), 20241209], [Sym("generator"), "bassberry_projlib"],
-           [Sym("generator_version"), "1.0"], IP2366]
+           [Sym("generator_version"), "1.0"], IP2366] + [rail_symbol(r) for r in rails]
     open(path, "w", encoding="utf-8").write(dump(lib) + "\n")
     d = os.path.dirname(path)
     open(os.path.join(d, "sym-lib-table"), "w", encoding="utf-8").write(
