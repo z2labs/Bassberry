@@ -233,10 +233,38 @@ def put(ref, x, y, rot, side):
         padpos[(ref, n)] = (px + x, py + y)
 
 
+def place_near(ref, tgt, side, rots):
+    """spiral search from tgt for a courtyard-free spot; returns True if placed"""
+    fp = fps[ref]
+    geoms = {r: geom(fp, r, side) for r in rots}
+    for ring in range(0, 160):
+        rad = ring * 0.5
+        k = 1 if ring == 0 else max(8, int(2 * math.pi * rad / 0.5))
+        for i in range(k):
+            cx = round((tgt[0] + rad * math.cos(2 * math.pi * i / k)) * 4) / 4
+            cy = round((tgt[1] + rad * math.sin(2 * math.pi * i / k)) * 4) / 4
+            for r, g in geoms.items():
+                bx = g[0]
+                if free((bx[0] + cx, bx[1] + cy, bx[2] + cx, bx[3] + cy), side):
+                    put(ref, cx, cy, r, side)
+                    if rad > 0:
+                        print(f"  {ref}: moved {rad:.1f} mm from its anchor to stay courtyard-free")
+                    return True
+    return False
+
+
+# mechanically fixed (enclosure, Pi, cells, lid controls): exactly where FIXED says. Everything else in FIXED is an
+# anchor: the part goes to the nearest courtyard-free spot around it (holder pegs, holes and neighbours respected).
+HARD = {"J101", "BT401", "BT402", "BT403", "J301", "SW501", "SW502", "SW503", "SW504", "SW505", "J502", "SW506", "J401"}
+
 # 1) fixed parts. The Pi socket picks its rotation: header vertical, pin 40 to the rear, Pi body to the left.
-for ref, (x, y, rot, side) in FIXED.items():
+for ref, (x, y, rot, side) in sorted(FIXED.items(), key=lambda kv: kv[0] not in HARD):
     if ref not in fps:
         print("WARNING: fixed ref not on netlist:", ref); continue
+    if ref not in HARD:
+        if not place_near(ref, (x, y), side, (rot,)):
+            print("WARNING: no room for anchored", ref)
+        continue
     if rot is None:
         fp = fps[ref]; best = None
         for r in (0, 90, 180, 270):
@@ -341,6 +369,8 @@ for s in "FB":
     for i in range(len(rs)):
         for j in range(i + 1, len(rs)):
             a, b = rs[i], rs[j]
+            if owner[s][i].split("(")[0] == owner[s][j].split("(")[0]:
+                continue
             if a[0] < b[2] and a[2] > b[0] and a[1] < b[3] and a[3] > b[1]:
                 nover += 1
                 print(f"  overlap {s}: {owner[s][i]} x {owner[s][j]}")
