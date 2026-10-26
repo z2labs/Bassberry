@@ -18,7 +18,7 @@ step "1b power_pour" { & $py "$root\hardware\tools\power_pour.py" $board }
 step "2 zone fill"    { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(r'$board',b);print('filled')" }
 # walled-in GND pads first (gnd_pad_rescue moves the signal tracks and strips stitching, so it goes before gnd_stitch)
 $env:SROUTER = if ($env:SROUTER) { $env:SROUTER } else { "C:\Users\RF\Documents\GitHub\srouter-feat\target\release\srouter.exe" }
-$orph = & $py "$tools\via_rescue.py" $board --net GND --dry 2>&1 | Select-String "remaining orphan: (\S+)" | ForEach-Object { $_.Matches[0].Groups[1].Value } | Sort-Object -Unique
+$orph = & $py "$tools\via_rescue.py" $board --net GND --dry 2>&1 | Select-String "remaining orphan: (\S+)" | ForEach-Object { $_.Matches[0].Groups[1].Value.TrimEnd(',') } | Sort-Object -Unique
 "== 2b walled-in GND pads: $($orph -join ' ')" | Out-File -Append -Encoding utf8 $log
 if ($orph) { step "2c gnd_pad_rescue" { & $py "$tools\gnd_pad_rescue.py" $board @orph --grow 3 --layers "F.Cu:1,In1.Cu:2,B.Cu:1.5" }
              step "2d zone fill"      { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(r'$board',b);print('filled')" } }
