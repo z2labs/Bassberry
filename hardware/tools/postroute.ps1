@@ -7,8 +7,12 @@ $cli   = "C:\Program Files\KiCad\10.0\bin\kicad-cli.exe"
 $tools = if ($env:SROUTER_TOOLS) { $env:SROUTER_TOOLS } else { "C:\Users\RF\Documents\GitHub\srouter-b3\tools" }
 $board = "$root\hardware\bassberry\bassberry.kicad_pcb"
 $log   = "$root\hardware\bassberry\route\postroute.log"
-function step($name, [scriptblock]$b) { "== $name  $(Get-Date -Format HH:mm:ss)" | Tee-Object -Append $log; & $b 2>&1 | Select-String -NotMatch "duplicate image handler" | Tee-Object -Append $log; "   exit $LASTEXITCODE" | Tee-Object -Append $log }
-"" | Set-Content $log
+function step($name, [scriptblock]$b) {
+  "== $name  $(Get-Date -Format HH:mm:ss)" | Out-File -Append -Encoding utf8 $log
+  & $b 2>&1 | Select-String -NotMatch "duplicate image handler" | ForEach-Object { $_.Line } | Out-File -Append -Encoding utf8 $log
+  "   exit $LASTEXITCODE" | Out-File -Append -Encoding utf8 $log
+}
+"" | Out-File -Encoding utf8 $log
 step "1 track_tidy"   { & $py "$tools\track_tidy.py" $board }
 step "1b power_pour" { & $py "$root\hardware\tools\power_pour.py" $board }
 step "2 zone fill"    { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(r'$board',b);print('filled')" }
