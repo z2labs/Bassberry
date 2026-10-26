@@ -397,6 +397,14 @@ filler.Fill(board.Zones())
 out = os.path.join(PRJ, "bassberry.kicad_pcb")
 board.Save(out)
 import shutil
+# netclass: 0.15 mm clearance (the IP2366 QFN40 0.4 mm pitch leaves 0.15 mm between its own pads), 0.2 mm track,
+# 0.6/0.3 mm via (JLC 4-layer standard). Written into the project file, which the DSN export reads.
+pro = os.path.join(PRJ, "bassberry.kicad_pro")
+pj = json.load(open(pro, encoding="utf-8"))
+for c in pj["net_settings"]["classes"]:
+    if c["name"] == "Default":
+        c.update(clearance=0.15, track_width=0.2, via_diameter=0.6, via_drill=0.3)
+json.dump(pj, open(pro, "w", encoding="utf-8"), indent=2)
 shutil.copy(out, os.path.join(PRJ, "bassberry_placed.kicad_pcb"))   # route.py always starts from this
 json.dump({r: list(v) for r, v in where.items()}, open(os.path.join(PRJ, "placement.json"), "w"), indent=0)
 print("placed", len(where), "footprints ->", out)

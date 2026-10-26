@@ -26,36 +26,58 @@ PLACED = os.path.join(PRJ, "bassberry_placed.kicad_pcb")
 os.makedirs(OUT, exist_ok=True)
 
 A = "/audio/"; PW = "/power/"; BT = "/battery/"; PI = "/pi/"
-# ---------------------------------------------------------------- net widths (mm), IPC-2152-ish for 1 oz outer / 0.5 oz inner
-WIDTH = [
-    (f"{BT}CELL*", 2.5, 0.3),                                   # up to 10 A pack current
-    ("+BATT", 2.0, 0.3),
-    ("+5V", 2.0, 0.3), ("+5V_BUCK", 2.0, 0.3), (f"{PW}BUCK_SW", 1.5, 0.3),   # Pi 5 V / 5 A
-    ("VBUS", 1.5, 0.3), (f"{PW}CHG_VIN", 1.5, 0.3), (f"{PW}CHG_NODE?", 1.5, 0.3),
-    (f"{PW}CHG_LX?", 1.5, 0.3),
-    ("PVDD_SUB", 1.2, 0.3), (f"{PW}BOOST_SW", 1.0, 0.3), (f"{PW}BOOST_OUT", 1.0, 0.3),
-    (f"{A}AMP1_AP", 1.0, 0.25), (f"{A}AMP1_AN", 1.0, 0.25), (f"{A}AMP1_BP", 1.0, 0.25), (f"{A}AMP1_BN", 1.0, 0.25),
-    (f"{A}AMP2_P", 1.2, 0.25), (f"{A}AMP2_N", 1.2, 0.25), (f"{A}SAT_*", 1.0, 0.25), (f"{A}SUB_*", 1.2, 0.25),
-    ("+3V3", 0.5, 0.2), ("+3V3_AON", 0.4, 0.2), ("+3V3_USB", 0.4, 0.2),
-    (f"{PW}CHG_HG*", 0.5, 0.2), (f"{PW}CHG_LG*", 0.5, 0.2), (f"{PW}CHG_BST?", 0.5, 0.2), (f"{PW}CHG_SN?", 0.5, 0.2),
-    (f"{PW}CHG_CSN?", 0.3, 0.2), (f"{A}AMP?_BST*", 0.5, 0.2), (f"{PW}BUCK_BST", 0.4, 0.2),
+CLR = 0.15   # netclass clearance (QFN40 0.4 mm pitch)
+# routing width wish per net glob (mm). srouter routes a net with ONE width that must fit its smallest pad
+# (check.rs: 'track will wall the pad in'), so route.py clips each wish to the smallest pad of the net and
+# fatten.py widens the power copper afterwards, necking down only where it has to.
+WISH = [
+    (f"{BT}CELL*", 0.8), ("+BATT", 0.8), ("+5V", 0.8), ("+5V_BUCK", 0.8), (f"{PW}BUCK_SW", 0.8),
+    ("VBUS", 0.6), (f"{PW}CHG_VIN", 0.6), (f"{PW}CHG_NODE?", 0.6), (f"{PW}CHG_LX?", 0.6),
+    ("PVDD_SUB", 0.6), (f"{PW}BOOST_SW", 0.6), (f"{PW}BOOST_OUT", 0.6),
+    (f"{A}AMP1_AP", 0.4), (f"{A}AMP1_AN", 0.4), (f"{A}AMP1_BP", 0.4), (f"{A}AMP1_BN", 0.4),
+    (f"{A}AMP2_P", 0.4), (f"{A}AMP2_N", 0.4), (f"{A}SAT_*", 0.6), (f"{A}SUB_*", 0.8),
+    ("+3V3", 0.4), ("+3V3_AON", 0.3), ("+3V3_USB", 0.3),
+    (f"{PW}CHG_HG*", 0.3), (f"{PW}CHG_LG*", 0.3), (f"{PW}CHG_BST?", 0.3), (f"{PW}CHG_SN?", 0.3),
+    (f"{A}AMP?_BST*", 0.3), (f"{PW}BUCK_BST", 0.3),
 ]
+
+
+def widths(board):
+    """clip each wish to the narrowest pad of the nets it matches"""
+    import fnmatch
+    small = {}
+    for fp in board.GetFootprints():
+        for p in fp.Pads():
+            n = p.GetNetname()
+            if not n:
+                continue
+            s = p.GetSize(pcbnew.F_Cu) if hasattr(p, "GetSize") else None
+            d = min(pcbnew.ToMM(s.x), pcbnew.ToMM(s.y))
+            small[n] = min(small.get(n, 99), d)
+    out = []
+    for g, w in WISH:
+        ds = [d for n, d in small.items() if fnmatch.fnmatchcase(n, g)]
+        wc = max(0.2, min([w] + [round(d * 0.95, 2) for d in ds]))
+        out.append((g, wc, CLR))
+    return out
+
+
 POWER = [f"{BT}CELL*", "+BATT", "+5V", "+5V_BUCK", f"{PW}BUCK_SW", "VBUS", f"{PW}CHG_VIN", f"{PW}CHG_NODE?", f"{PW}CHG_LX?",
          "PVDD_SUB", f"{PW}BOOST_SW", f"{PW}BOOST_OUT", f"{A}AMP1_AP", f"{A}AMP1_AN", f"{A}AMP1_BP", f"{A}AMP1_BN",
          f"{A}AMP2_P", f"{A}AMP2_N", f"{A}SAT_*", f"{A}SUB_*", "+3V3", "+3V3_AON", "+3V3_USB"]
 FAST = ["I2S_*", f"{PI}PI_BCLK", f"{PI}PI_LRCLK", f"{PI}PI_DOUT", "USB_DP", "USB_DN", "I2C_*", f"{PI}ID_S?",
         f"{A}AMP2_SDIN", f"{A}AMP1_SDOUT"]
 PASSES = [
-    ("pass1_power", POWER, ["-top", "F.Cu:3", "-via", "6000"]),
+    ("pass1_power", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:15", "-via", "6000"]),   # heavy copper stays outside
     ("pass2_fast", FAST, ["-top", "F.Cu:10", "-top", "B.Cu:2", "-via", "2500"]),
     ("pass3_rest", ["*"], ["-top", "F.Cu:4", "-via", "2000"]),
 ]
 
 
-def rules(only):
+def rules(only, width):
     return {
         "ignore_nets": ["GND"],
-        "nets": [{"match": m, "width_mm": w, "clearance_mm": c} for (m, w, c) in WIDTH],
+        "nets": [{"match": m, "width_mm": w, "clearance_mm": c} for (m, w, c) in width],
         "diff_pairs": [{"p": "USB_DP", "n": "USB_DN", "gap_mm": 0.15}],
         "only": "|".join(only), "smooth": True, "style": "oct", "pad_entry": True,
     }
@@ -81,11 +103,13 @@ def import_ses(board, ses):
 def main():
     shutil.copy(PLACED, BOARD)   # always route from the placed board written by pcb_build.py
     b = pcbnew.LoadBoard(BOARD)
+    width = widths(b)
+    print("routing widths:", ", ".join(f"{g} {w}" for g, w, c in width))
     summary = []
     for name, only, args in PASSES:
         dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
         export_dsn(b, dsn)
-        json.dump(rules(only), open(rj, "w"), indent=1)
+        json.dump(rules(only, width), open(rj, "w"), indent=1)
         cmd = [SR, "-de", dsn, "-do", ses, "-rules", rj, "-report", rep] + args
         print(">>", " ".join(cmd), flush=True)
         t0 = time.time()
@@ -102,6 +126,8 @@ def main():
         import_ses(b, ses)
         summary.append((name, len(bad)))
         pcbnew.SaveBoard(BOARD, b)
+        if name == "pass1_power":     # give the power copper its width before the other nets are routed around it
+            subprocess.run([sys.executable, os.path.join(HERE, "fatten.py"), BOARD])
         b = pcbnew.LoadBoard(BOARD)
     n = add_thermal_vias(b, pcbnew)
     print("SoC via field restored:", n)
