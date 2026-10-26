@@ -10,6 +10,7 @@ from kilib import get_symbol, pins, pin_abs
 NS = uuid.UUID("6c1f5b9e-2b1e-4c55-9b7a-b455b3e77a21")
 PROJECT = "bassberry"
 POWER_SYMS = {"GND": "power:GND", "+3V3": "power:+3V3", "+5V": "power:+5V", "+BATT": "power:+BATT", "VBUS": "power:VBUS"}
+FLAGS = []
 
 
 def U(*parts):
@@ -25,8 +26,8 @@ def snap(v, g=1.27):
 
 
 class Sheet:
-    def __init__(self, name, filename, title, page, globals_=()):
-        self.name, self.filename, self.title, self.page = name, filename, title, page
+    def __init__(self, name, filename, title, page, globals_=(), paper="A3"):
+        self.name, self.filename, self.title, self.page, self.paper = name, filename, title, page, paper
         self.uuid = U("sheetfile", filename)
         self.items, self.lib_ids = [], []
         self.globals = set(globals_)
@@ -136,6 +137,10 @@ class Sheet:
                 [Sym("instances"), [Sym("project"), PROJECT, [Sym("path"), self.path, [Sym("reference"), ref], [Sym("unit"), 1]]]]]
         self.items.append(node)
 
+    def flag(self, net, x, y):
+        self.pwr += 1
+        return self.part("power:PWR_FLAG", f"#FLG{self.page:02d}{self.pwr:03d}", "PWR_FLAG", x, y, nets={"1": net})
+
     def text(self, s, x, y, size=2.0):
         self.items.append([Sym("text"), s, [Sym("exclude_from_sim"), Sym("no")], [Sym("at"), x, y, 0],
                            [Sym("effects"), font(size), [Sym("justify"), Sym("left")]], [Sym("uuid"), U(self.filename, "t", s)]])
@@ -157,7 +162,7 @@ class Sheet:
     def render(self, root=False, sheets=()):
         lib = [Sym("lib_symbols")] + [get_symbol(l) for l in self.lib_ids]
         out = [Sym("kicad_sch"), [Sym("version"), 20250114], [Sym("generator"), "eeschema"],
-               [Sym("generator_version"), "9.0"], [Sym("uuid"), self.uuid], [Sym("paper"), "A3"],
+               [Sym("generator_version"), "9.0"], [Sym("uuid"), self.uuid], [Sym("paper"), self.paper],
                [Sym("title_block"), [Sym("title"), self.title], [Sym("date"), "2026-10-26"], [Sym("rev"), "0.1"],
                 [Sym("company"), "Z2Labs - Bassberry (open hardware, CERN-OHL-S-2.0)"]],
                lib] + self.items
@@ -175,8 +180,8 @@ class Project:
         self.root.path = "/" + self.root.uuid
         self.children = []
 
-    def child(self, name, filename, title, globals_=()):
-        sh = Sheet(name, filename, title, len(self.children) + 2, globals_)
+    def child(self, name, filename, title, globals_=(), paper="A3"):
+        sh = Sheet(name, filename, title, len(self.children) + 2, globals_, paper)
         sh.sheet_uuid = U("sheetsym", filename)
         sh.path = f"/{self.root.uuid}/{sh.sheet_uuid}"
         self.children.append(sh)

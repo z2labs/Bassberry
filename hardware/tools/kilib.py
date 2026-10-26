@@ -4,11 +4,12 @@ from sexpr import parse, find, find1, Sym
 
 KICAD_SHARE = os.environ.get("KICAD_SHARE", r"C:\Program Files\KiCad\10.0\share\kicad")
 _cache = {}
+PROJECT_LIBS = {}  # name -> path of project-local .kicad_sym
 
 
 def load_lib(lib):
     if lib not in _cache:
-        path = os.path.join(KICAD_SHARE, "symbols", lib + ".kicad_sym")
+        path = PROJECT_LIBS.get(lib) or os.path.join(KICAD_SHARE, "symbols", lib + ".kicad_sym")
         _cache[lib] = parse(open(path, encoding="utf-8").read())
     return _cache[lib]
 
