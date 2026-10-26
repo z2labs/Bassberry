@@ -390,6 +390,30 @@ for s in "FB":
                 print(f"  overlap {s}: {owner[s][i]} x {owner[s][j]}")
 print("courtyard overlaps after placement:", nover)
 
+# ------------------------------------------------------------ USB-C D+/D- crossover (pre-routed, as USAGE.md asks for
+# critical pairs). Receptacle row order: B6(D+) A7(D-) A6(D+) B7(D-): the D- pads are bridged behind the row on the
+# pad layer, the middle D+ pad drops through a 0.45/0.2 mm via right behind it; srouter does the rest.
+def usb_crossover():
+    if ("J301", "A6") not in padpos:
+        return
+    lay = pcbnew.B_Cu if where["J301"][3] == "B" else pcbnew.F_Cu
+    a6, a7, b7 = padpos[("J301", "A6")], padpos[("J301", "A7")], padpos[("J301", "B7")]
+    sgn = 1 if a6[1] > where["J301"][1] else -1           # into the board
+    half = 1.45 / 2
+    def trk(p1, p2, net, w=0.2):
+        t = pcbnew.PCB_TRACK(board); t.SetStart(P(*p1)); t.SetEnd(P(*p2)); t.SetWidth(mm(w)); t.SetLayer(lay)
+        t.SetNet(netobjs[net]); board.Add(t)
+    yb = a7[1] + sgn * (half + 0.9)
+    trk(a7, (a7[0], yb), "USB_DN"); trk(b7, (b7[0], yb), "USB_DN"); trk((a7[0], yb), (b7[0], yb), "USB_DN")
+    yv = a6[1] + sgn * (half + 0.3)
+    trk(a6, (a6[0], yv), "USB_DP")
+    v = pcbnew.PCB_VIA(board); v.SetPosition(P(a6[0], yv)); v.SetWidth(mm(0.45)); v.SetDrill(mm(0.2))
+    v.SetNet(netobjs["USB_DP"]); board.Add(v)
+    print("USB-C crossover pre-routed")
+
+
+usb_crossover()
+
 # ------------------------------------------------------------ mounting holes (M3 board, M2.5 Pi, M2.5 pedestal)
 def hole(x, y, d, ref):
     fp = load_fp("MountingHole:MountingHole_3.2mm_M3_Pad_Via" if d > 3 else "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via")
@@ -452,6 +476,8 @@ pj = json.load(open(pro, encoding="utf-8"))
 for c in pj["net_settings"]["classes"]:
     if c["name"] == "Default":
         c.update(clearance=0.15, track_width=0.2, via_diameter=0.6, via_drill=0.3)
+pj["board"]["design_settings"]["rules"]["min_through_hole_diameter"] = 0.2   # 0.45/0.2 mm via at the USB-C row (JLC ok)
+pj["board"]["design_settings"]["rules"]["min_via_diameter"] = 0.45
 json.dump(pj, open(pro, "w", encoding="utf-8"), indent=2)
 shutil.copy(out, os.path.join(PRJ, "bassberry_placed.kicad_pcb"))   # route.py always starts from this
 json.dump({r: list(v) for r, v in where.items()}, open(os.path.join(PRJ, "placement.json"), "w"), indent=0)
