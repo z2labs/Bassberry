@@ -515,7 +515,7 @@ gnd_ties(["U201", "U202", "U302"])
 # ------------------------------------------------------------ GND dog-bones (USAGE.md: fan-out vias may be placed before
 # routing). Every SMD GND pad gets its own 0.6/0.3 mm via to the In2 plane right next to it, so no GND pad depends on a
 # pour finding a way in between the routed tracks later. The via keeps 0.5 mm from foreign pads (their escape lane).
-def gnd_dogbones(clr_pad=0.5, gaps=(0.35, 0.6, 0.9), only=None):
+def gnd_dogbones(clr_pad=0.5, gaps=(0.35, 0.6, 0.9), only=None, vd=0.6, vh=0.3):
     import fatten
     fatten.CLR = 0.2; fatten.CLR_PAD = clr_pad
     cu = fatten.Copper(board)
@@ -548,20 +548,20 @@ def gnd_dogbones(clr_pad=0.5, gaps=(0.35, 0.6, 0.9), only=None):
             done = False
             for gap in gaps:
                 for d in dirs:
-                    r = (abs(d[0]) * hw + abs(d[1]) * hh) + gap + 0.3
+                    r = (abs(d[0]) * hw + abs(d[1]) * hh) + gap + vd / 2
                     v = (q[0] + d[0] * r, q[1] + d[1] * r)
-                    if any(math.hypot(v[0] - a, v[1] - b_) < 0.6 + 0.3 for a, b_ in vias_xy):
+                    if any(math.hypot(v[0] - a, v[1] - b_) < vd / 2 + 0.3 + 0.3 for a, b_ in vias_xy):
                         continue
-                    if not all(cu.clear("GND", l, v, v, 0.3) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.B_Cu)):
+                    if not all(cu.clear("GND", l, v, v, vd / 2) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.B_Cu)):
                         continue
-                    if not cu.clear("GND", lay, q, v, 0.15):
+                    if not cu.clear("GND", lay, q, v, min(0.15, hw - 0.025, hh - 0.025)):
                         continue
                     ox, oy = OX, OY
                     t = pcbnew.PCB_TRACK(board); t.SetStart(p.GetPosition()); t.SetEnd(pcbnew.VECTOR2I(mm(v[0]), mm(v[1])))
-                    t.SetWidth(mm(0.3)); t.SetLayer(lay); t.SetNet(netobjs["GND"]); board.Add(t)
+                    t.SetWidth(mm(2 * min(0.15, hw - 0.025, hh - 0.025))); t.SetLayer(lay); t.SetNet(netobjs["GND"]); board.Add(t)
                     via = pcbnew.PCB_VIA(board); via.SetPosition(pcbnew.VECTOR2I(mm(v[0]), mm(v[1])))
-                    via.SetWidth(mm(0.6)); via.SetDrill(mm(0.3)); via.SetNet(netobjs["GND"]); board.Add(via)
-                    cu.add("GND", {lay}, ("seg", q, v, 0.15), t); cu.add("GND", "all", ("circ", v, 0.3), via)
+                    via.SetWidth(mm(vd)); via.SetDrill(mm(vh)); via.SetNet(netobjs["GND"]); board.Add(via)
+                    cu.add("GND", {lay}, ("seg", q, v, 0.15), t); cu.add("GND", "all", ("circ", v, vd / 2), via)
                     vias_xy.append(v); made += 1; done = True
                     break
                 if done:
@@ -646,6 +646,8 @@ add_thermal_vias(board, pcbnew)
 left = gnd_dogbones()              # after the holes and the SoC via field exist, so it sees them
 if left:                           # second chance for the tight ones: farther out, 0.3 mm escape lane
     left = gnd_dogbones(clr_pad=0.3, gaps=(0.35, 0.6, 0.9, 1.2, 1.6), only=set(left))
+if left:                           # third: a 0.45/0.2 mm via (JLC minimum) tucked in, e.g. between the pin rows
+    left = gnd_dogbones(clr_pad=0.15, gaps=(0.1, 0.2, 0.35, 0.6), only=set(left), vd=0.45, vh=0.2)
 if left:
     gnd_links(set(left))
 

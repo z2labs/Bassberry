@@ -196,7 +196,7 @@ def main(path):
     FM = pcbnew.FromMM
     # remove pours from an earlier run
     # (near-)duplicate vias of one net (two tools dropping one on almost the same spot, hole to hole < 0.25 mm):
-    # keep the first, re-point the tracks that ended on the other one
+    # keep the first, bridge the tracks that ended on the other one
     alltr = list(b.GetTracks())
     vs = [v for v in alltr if v.GetClass() == "PCB_VIA"]
     kept, dup = [], []
@@ -207,13 +207,13 @@ def main(path):
         if twin is None:
             kept.append(v); continue
         dup.append(v)
-        for t in alltr:
-            if t.GetClass() == "PCB_VIA" or t.GetNetname() != v.GetNetname():
-                continue
-            if t.GetStart() == p:
-                t.SetStart(twin.GetPosition())
-            if t.GetEnd() == p:
-                t.SetEnd(twin.GetPosition())
+        # the tracks that ended on the dropped via stay where they are; a short bridge on each of their layers
+        # joins that spot to the kept via (it lies inside the two via pads, so no new clearance is used)
+        lays = {t.GetLayer() for t in alltr if t.GetClass() != "PCB_VIA" and t.GetNetname() == v.GetNetname()
+                and (t.GetStart() == p or t.GetEnd() == p)}
+        for l in lays:
+            br = pcbnew.PCB_TRACK(b); br.SetStart(p); br.SetEnd(twin.GetPosition()); br.SetLayer(l)
+            br.SetWidth(min(v.GetWidth(pcbnew.F_Cu), twin.GetWidth(pcbnew.F_Cu))); br.SetNet(v.GetNet()); b.Add(br)
     for v in dup:
         b.Remove(v)
     if dup:
