@@ -3,7 +3,6 @@ J401,"3S BMS module (B-,B1,B2,B+,P-)",SolderWire-1sqmm_1x05_P5.4mm_D1.4mm_OD2.7m
 J502,OLED 1.3in I2C (GND VCC SCL SDA),PinSocket_1x04_P2.54mm_Horizontal,"NOT AT LCSC - hand-fit / consign. No 1x4 right-angle female socket confirmed. C2718488 (BOOMELE 1x4 female) is VERTICAL (holes top) -> does not fit horizontal footprint. Only RA 1x4 found: C5919055 Mill-Max 801-41-004-40-002000 (SMT, expensive, footprint mismatch). BOOMELE RA female exists as 1x5 C35167 / 1x40 C7251. Recommend: change footprint to vertical (C2718488) or hand-fit."
 JP101,EEPROM write enable,SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm,Solder jumper
 JP201,U2 SDIN: Pi / U1 SDOUT,SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm,Solder jumper
-L301,22u >=10A Rdc<10m,L_Sunlord_MWSA1265S,"NOT ASSEMBLED: no 22 uH >=10 A part with the MWSA1265S land pattern at LCSC; closest checked: FXL1360-220-M C526028 (Isat 7.5 A, 39.5 mOhm, pads not checked) - decide and hand-fit / consign. DOES NOT MEET SPEC. No 22uH part in a 12.6x13.45 body reaches >=10A / <10mR: even Sunlord MWSA1265S-220MT is 36mR/Isat 9A/Irms 8A (datasheet), and it was not found at LCSC (UNVERIFIED). FXL1360-220-M is the closest verified LCSC part of same body size; land pattern not verified against L_Sunlord_MWSA1265S (check terminal size). Either drop L (MWSA1265S-100MT: 10uH 16.5mR Isat 15A) or move to a 17x17 mm+ inductor."
 Q305,30V N-MOS (RU3030M2) opt.,TDSON-8-1,DNP
 R310,NC,R_0603_1608Metric,DNP
 R345,DNP 0R 2512 (PVDD_SUB = boost),R_2512_6332Metric,DNP

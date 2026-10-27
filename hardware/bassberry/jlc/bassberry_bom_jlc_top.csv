@@ -2,4 +2,4 @@ Comment,Designator,Footprint,LCSC Part #
 1042,"BT401,BT402,BT403",BatteryHolder_Keystone_1042_1x18650,C5249310
 2.54-2*20,J101,Raspberry_Pi_Zero_Socketed_THT_FaceDown_MountingHoles,C2977589
 TL3342F160QG,"SW501,SW502,SW503,SW504,SW505",SW_SPST_TL3342,C2886898
-EC11E15244G1,SW506,RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm,C370970
+EC11E15244B2,SW506,RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm,C470754
