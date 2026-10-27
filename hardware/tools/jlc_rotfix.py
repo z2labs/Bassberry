@@ -55,11 +55,14 @@ def rot(v, a):
     return (v[0] * c - v[1] * s, v[0] * s + v[1] * c)
 
 
-def fit(model, target, by_number, inl=0.3):
+def fit(model, target, by_number, inl=None):
     """model, target: [(number, x, y)] (y up). Returns (angle, (tx, ty), rms over inliers, inliers, compared).
     By number: the translation is the one most pin pairs agree on (an exposed pad numbered differently, or a tab whose
     anchor is not its centre, does not drag the fit), the rms is over the pins that agree. Geometry only: every model
     pad to its nearest board pad."""
+    if inl is None:                       # pin-pair agreement: 0.3 mm, or 2 % of the part's size for big parts
+        span = max((math.hypot(x1 - x2, y1 - y2) for _, x1, y1 in model for _, x2, y2 in model), default=0)
+        inl = max(0.3, 0.02 * span)
     best = None
     for a in (0, 90, 180, 270):
         m = [(n, rot((x, y), a)) for n, x, y in model]
