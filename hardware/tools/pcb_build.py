@@ -182,6 +182,12 @@ def pi_socket_cleanup(fp):
     for g in list(fp.GraphicalItems()):
         if g.GetLayer() in (pcbnew.F_CrtYd, pcbnew.B_CrtYd):
             fp.Remove(g)
+        elif g.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS, pcbnew.F_Fab, pcbnew.B_Fab):
+            # the Pi Zero outline would be printed on the board under a Pi 4/5: keep only what sits on the header
+            bb = g.GetBoundingBox()
+            if not (pcbnew.ToMM(bb.GetX()) >= min(xs) - 3 and pcbnew.ToMM(bb.GetRight()) <= max(xs) + 3 and
+                    pcbnew.ToMM(bb.GetY()) >= min(ys) - 3 and pcbnew.ToMM(bb.GetBottom()) <= max(ys) + 3):
+                fp.Remove(g)
     r = pcbnew.PCB_SHAPE(fp); r.SetShape(pcbnew.SHAPE_T_RECT)
     r.SetStart(pcbnew.VECTOR2I(mm(min(xs) - 1.27 - 0.5), mm(min(ys) - 1.27 - 0.5)))
     r.SetEnd(pcbnew.VECTOR2I(mm(max(xs) + 1.27 + 0.5), mm(max(ys) + 1.27 + 0.5)))
