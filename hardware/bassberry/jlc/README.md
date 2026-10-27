@@ -32,8 +32,19 @@ shortfall.
 * **Through-hole (JLC THT assembly or hand soldering):** J101 2x20 socket, J201-J203 JST XH, J402 JST PH, J501 header,
   SW506 encoder; the Keystone 1042 holders are SMD-tab parts that JLC lists as "wave soldering".
 * 38 lines are JLC Basic parts, 48 Extended (39 distinct Extended codes, each carries JLC's extended-part fee).
-* **Check the rotations in JLC's placement preview** (especially the bottom side and the SOT-23-6 / SOT-89 / QFN /
-  HTSSOP parts): KiCad and JLC do not always agree on a footprint's zero orientation.
+* **Rotations and centres are fitted, not guessed** (`hardware/tools/jlc_rotfix.py`, report in `rotfix_report.csv`):
+  for every placed part the EasyEDA footprint of its LCSC part (the model JLC places) is downloaded and fitted onto the
+  board's pads - by pin number where the numbering agrees, by geometry otherwise. The CPL rotation is KiCad's .pos
+  rotation plus the angle between JLC's and KiCad's footprint; the CPL position is where JLC's footprint origin lands
+  (the 2x20 socket and the encoder have their KiCad origin on a pin, not at the body centre). The same fit is the
+  land-pattern check: every JLC pad centre must land on this footprint's copper.
+  Results: 168 parts fitted; 167 OK. Q101 (DMP3013SFV): JLC's PowerDI3333 model has two small exposed-pad side tabs
+  that KiCad's land pattern does not have - pins 1-4 and the drain fit, no action. F401 and U502 fit with 0.6 / 0.4 mm
+  pad-spacing differences (2410 fuse on 2512 pads, SOP-16 row spacing), centred.
+* Top-side substitutes picked in JLC's BOM tool: the 18650 holder C2988620 does **not** fit (its contacts are 82.6 mm
+  apart, the Keystone 1042 footprint 79.4 mm) - the BOM keeps the Keystone 1042 C5249310; the TL3342F450QG (C2886897) and
+  the EC11E1820402 (C361165) fit (check that encoder's shaft length for the lid).
+* Still look at JLC's placement preview before paying, and at the DFM check JLC sends after the order.
 
 ## Check before ordering
 

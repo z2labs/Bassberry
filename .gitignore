@@ -12,3 +12,4 @@ hardware/bassberry/*-backups/
 hardware/bassberry/_pcb_*.pdf
 hardware/bassberry/fp-info-cache
 hardware/bassberry/*.kicad_prl
+hardware/bassberry/jlc/easyeda_cache/
