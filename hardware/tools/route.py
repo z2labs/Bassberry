@@ -83,10 +83,6 @@ AMP_OUT = [f"{A}AMP1_AP", f"{A}AMP1_AN", f"{A}AMP1_BP", f"{A}AMP1_BN", f"{A}AMP2
 PASSES = [
     # 1a: high-current nets alone, outer layers only (In1 closed: 0.5 oz inner copper carries a third), vias avoided
     ("pass1a_heavy", HEAVY, ["-top", "F.Cu:6", "-via", "20000", "-it", "80"]),
-    # 1a2: speaker paths alone, In1 closed, vias nearly forbidden (whatever cannot be done on one layer is left to 1b)
-    # (with everything else that leaves the amp pin rows - supplies and bootstraps - so they negotiate together and an
-    # output tap never walls in its neighbouring BST / PVDD pin)
-    ("pass1a2_amp", AMP_OUT + [f"{A}AMP?_BST*", "PVDD_SUB", "+BATT"], ["-top", "F.Cu:20", "-via", "60000", "-it", "80"]),
     # 1b: everything that escapes from between power pins (QFN, amp bootstrap), the 3V3 rails
     ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:40", "-via", "8000", "-it", "80"]),
     ("pass2_fast", FAST, ["-top", "F.Cu:10", "-top", "B.Cu:2", "-via", "2500"]),

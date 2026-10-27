@@ -30,7 +30,7 @@ def add_vias(b):
     layer-3 twin): first the via itself grows to 1.0/0.5 mm where it clears, then parallel vias (1.0/0.5 or 0.6/0.3 mm)
     go inside the net's own filled pour on each layer the via joins, clear of every other net on all four layers."""
     FM, mm = pcbnew.FromMM, pcbnew.ToMM
-    fatten.CLR = 0.2; fatten.CLR_PAD = 0.2
+    fatten.CLR = 0.15; fatten.CLR_PAD = 0.15        # routing is done: the netclass clearance is the rule now
     cu = fatten.Copper(b)
     outline = pcbnew.SHAPE_POLY_SET(); b.GetBoardPolygonOutlines(outline, True)
     keep = [z for z in b.Zones() if z.GetIsRuleArea()]
@@ -88,7 +88,7 @@ def add_vias(b):
             v.SetWidth(FM(1.0)); v.SetDrill(FM(0.5)); have += amps(0.5) - amps(me[2]); me[2] = 0.5
             cu.add(net, "all", ("circ", c, 0.5), v); made += 1
         # 2) parallel vias inside the net's own pour on every layer this via joins
-        for r in (0.9, 1.25, 1.6, 2.0, 2.5, 3.0, 3.5):
+        for r in (0.7, 0.9, 1.25, 1.6, 2.0, 2.5, 3.0, 3.5, 4.0):
             if have >= need:
                 break
             for k in range(24):
@@ -98,7 +98,7 @@ def add_vias(b):
                 p = (c[0] + r * math.cos(ang), c[1] + r * math.sin(ang))
                 if not inside(outline, p, 0.8) or any(z.Outline().Contains(pcbnew.VECTOR2I(FM(p[0]), FM(p[1]))) for z in keep):
                     continue
-                for dia, drill in ((1.0, 0.5), (0.6, 0.3)):
+                for dia, drill in ((1.0, 0.5), (0.6, 0.3), (0.45, 0.2)):
                     if not hole_ok(p, drill):
                         continue
                     if not all(cu.clear(net, l, p, p, dia / 2) for l in ALL):
