@@ -30,6 +30,7 @@ os.makedirs(OUT, exist_ok=True)
 
 A = "/audio/"; PW = "/power/"; BT = "/battery/"; PI = "/pi/"
 CLR = 0.15   # netclass clearance (QFN40 0.4 mm pitch)
+IN2 = ["-top", "In2.Cu:30"]   # wires on the GND plane only where nothing else fits
 # routing width wish per net glob (mm). srouter routes a net with ONE width that must fit its smallest pad
 # (check.rs: 'track will wall the pad in'), so route.py clips each wish to the smallest pad of the net and
 # fatten.py widens the power copper afterwards, necking down only where it has to.
@@ -101,7 +102,6 @@ def rules(only, width):
     }
 
 
-IN2 = ["-top", "In2.Cu:30"]   # wires on the GND plane only where nothing else fits
 VIA_PAD_INSET = 0.17   # mm: via keep-out = SMD pad inset by this (srouter keeps a via centre one via diameter off it)
 
 
