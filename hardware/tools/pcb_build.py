@@ -659,7 +659,10 @@ for layer in (pcbnew.F_Cu, pcbnew.F_Mask, pcbnew.B_Cu, pcbnew.B_Mask):
         z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
     board.Add(z)
 add_thermal_vias(board, pcbnew)
-left = gnd_dogbones()              # after the holes and the SoC via field exist, so it sees them
+# Zoltan 2026-10-27: no GND vias before routing except under exposed pads (footprint EP vias, the Pi SoC thermal pad
+# field); every GND pad reaches GND through the pours, via_rescue and the Z2 stitching after routing (postroute).
+PRE_GND_VIAS = False
+left = gnd_dogbones() if PRE_GND_VIAS else []   # after the holes and the SoC via field exist, so it sees them
 if left:                           # second chance for the tight ones: farther out, 0.3 mm escape lane
     left = gnd_dogbones(clr_pad=0.3, gaps=(0.35, 0.6, 0.9, 1.2, 1.6), only=set(left))
 def has_gnd_ep(ref):
