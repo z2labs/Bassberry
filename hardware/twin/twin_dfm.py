@@ -272,6 +272,8 @@ def fix_silk(path):
 def selftest(g):
     def nfail(rep, grp):
         return sum(int(m.split(" of ")[0]) for s, gr, m in rep.rows if s == "FAIL" and gr == grp)
+    for s in g["silk"]:
+        s.pop("obj", None)                  # pcbnew objects do not deep-copy
     base = check(g)
     st = Report("selftest: injected faults")
     p = next(p for p in g["pads"] if p["kind"] == "smd")
