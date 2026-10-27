@@ -77,7 +77,7 @@ def fit(model, target, by_number, inl=None):
             if len(pairs) < 2:
                 continue
             cands = [(q[0] - p[0], q[1] - p[1]) for p, q in pairs]
-            if len(pairs) <= 3:                # two- or three-pin part: every pin counts, take the mean
+            if len(pairs) <= 2:                # two-pin part: both pins count, take the mean
                 cands = [(sum(c[0] for c in cands) / len(cands), sum(c[1] for c in cands) / len(cands))]
                 inl_here = max(inl, max(math.hypot(q[0] - p[0] - cands[0][0], q[1] - p[1] - cands[0][1]) for p, q in pairs) + 1e-6)
             else:
@@ -87,7 +87,10 @@ def fit(model, target, by_number, inl=None):
                 ins = [(p, q) for p, q in pairs if math.hypot(q[0] - p[0] - t[0], q[1] - p[1] - t[1]) < inl_here]
                 scored.append((len(ins), t, ins))
             n_in, t, ins = max(scored, key=lambda s: s[0])
-            t = (sum(q[0] - p[0] for p, q in ins) / len(ins), sum(q[1] - p[1] for p, q in ins) / len(ins))
+            # position: the median of all pin translations (a land pattern with a wider row spacing stays centred,
+            # one tab anchored off its centre does not pull)
+            med = lambda v: sorted(v)[len(v) // 2] if len(v) % 2 else (sorted(v)[len(v) // 2 - 1] + sorted(v)[len(v) // 2]) / 2
+            t = (med([q[0] - p[0] for p, q in pairs]), med([q[1] - p[1] for p, q in pairs]))
             err = math.sqrt(sum((q[0] - p[0] - t[0]) ** 2 + (q[1] - p[1] - t[1]) ** 2 for p, q in ins) / len(ins))
             cand = (a, t, err, len(ins), len(pairs))
             key = (len(ins), -err)
