@@ -125,7 +125,8 @@ def import_ses(board, ses):
 # 2512 links, inductors, MOSFET tabs, connectors) at the widest width those pads allow. The SES goes back into the real
 # board on the real net, and the later passes join the small pads to that trunk at their own width: a neck-down
 # that happens only at the last millimetres before a fine-pitch pin.
-TRUNK_MAX = 2.4      # mm, widest trunk asked from the router (= the battery-link target; fatten.py and the pours widen further)
+TRUNK_MAX = 1.6      # mm, widest trunk asked from the router (fatten.py and the pours widen further)
+TRUNK_MAX_NET = {f"{BT}CELL*": 2.4}   # battery links between the holders: open board, full IPC width
 TRUNK_MIN = 0.5      # mm, a trunk narrower than this is no trunk
 
 
@@ -144,7 +145,7 @@ def trunk_plan(board):
         tg = next((w for g, w, a in TARGET if fnmatch.fnmatchcase(n, g)), None)
         if tg is None:
             continue
-        want = min(TRUNK_MAX, tg)
+        want = min(next((w for g, w in TRUNK_MAX_NET.items() if fnmatch.fnmatchcase(n, g)), TRUNK_MAX), tg)
         fits = sorted((d * 0.95 for d, p in ps), reverse=True)
         if len(fits) < 2 or fits[1] < TRUNK_MIN:
             continue
