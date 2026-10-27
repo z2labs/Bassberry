@@ -646,8 +646,17 @@ add_thermal_vias(board, pcbnew)
 left = gnd_dogbones()              # after the holes and the SoC via field exist, so it sees them
 if left:                           # second chance for the tight ones: farther out, 0.3 mm escape lane
     left = gnd_dogbones(clr_pad=0.3, gaps=(0.35, 0.6, 0.9, 1.2, 1.6), only=set(left))
-if left:                           # third: a 0.45/0.2 mm via (JLC minimum) tucked in, e.g. between the pin rows
-    left = gnd_dogbones(clr_pad=0.15, gaps=(0.1, 0.2, 0.35, 0.6), only=set(left), vd=0.45, vh=0.2)
+def has_gnd_ep(ref):
+    fp = fps.get(ref)
+    return fp is not None and any(p.GetNetname() == "GND" and pcbnew.ToMM(p.GetBoundingBox().GetWidth()) > 2.0 and
+                                  pcbnew.ToMM(p.GetBoundingBox().GetHeight()) > 2.0 for p in fp.Pads())
+
+
+if left:                           # third: a 0.45/0.2 mm via (JLC minimum) tucked in, e.g. between the pin rows - only
+    # for parts without a GND exposed pad (an EP part's GND pins reach the pour through the EP; a via squeezed in at
+    # the end of an amp pin row costs the bootstrap / output escapes their room)
+    left = gnd_dogbones(clr_pad=0.15, gaps=(0.1, 0.2, 0.35, 0.6), only={k for k in left if not has_gnd_ep(k.split(".")[0])},
+                        vd=0.45, vh=0.2) + [k for k in left if has_gnd_ep(k.split(".")[0])]
 if left:
     gnd_links(set(left))
 
