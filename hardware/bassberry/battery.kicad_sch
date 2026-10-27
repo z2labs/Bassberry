@@ -11,9 +11,12 @@
 		(company "Z2Labs - Bassberry (open hardware, CERN-OHL-S-2.0)")
 	)
 	(lib_symbols
-		(symbol "Connector_Generic:Conn_01x01"
+		(symbol "Device:Battery_Cell"
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 1.016)
+				(offset 0)
 				(hide yes)
 			)
 			(exclude_from_sim no)
@@ -21,28 +24,30 @@
 			(on_board yes)
 			(in_pos_files yes)
 			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "J"
-				(at 0 2.54 0)
+			(property "Reference" "BT"
+				(at 2.54 2.54 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Value" "Conn_01x01"
-				(at 0 -2.54 0)
+			(property "Value" "Battery_Cell"
+				(at 2.54 0 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
 			(property "Footprint" ""
-				(at 0 0 0)
+				(at 0 1.524 90)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -53,6 +58,17 @@
 				)
 			)
 			(property "Datasheet" ""
+				(at 0 1.524 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Single-cell battery"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -63,7 +79,7 @@
 					)
 				)
 			)
-			(property "Description" "Generic connector, single row, 01x01, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(property "Sim.Device" "V"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -74,7 +90,7 @@
 					)
 				)
 			)
-			(property "ki_keywords" "connector"
+			(property "Sim.Type" "DC"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -85,7 +101,7 @@
 					)
 				)
 			)
-			(property "ki_fp_filters" "Connector*:*_1x??_*"
+			(property "Sim.Pins" "1=+ 2=-"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -96,33 +112,98 @@
 					)
 				)
 			)
-			(symbol "Conn_01x01_1_1"
+			(property "ki_keywords" "battery cell"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "Battery_Cell_0_1"
 				(rectangle
-					(start -1.27 1.27)
-					(end 1.27 -1.27)
+					(start -2.286 1.778)
+					(end 2.286 1.524)
 					(stroke
-						(width 0.254)
+						(width 0)
 						(type default)
 					)
 					(fill
-						(type background)
+						(type outline)
 					)
 				)
 				(rectangle
-					(start -1.27 0.127)
-					(end 0 -0.127)
+					(start -1.524 1.016)
+					(end 1.524 0.508)
 					(stroke
-						(width 0.1524)
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 1.778)
+						(xy 0 2.54)
+					)
+					(stroke
+						(width 0)
 						(type default)
 					)
 					(fill
 						(type none)
 					)
 				)
+				(polyline
+					(pts
+						(xy 0 0.762)
+						(xy 0 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 3.048)
+						(xy 1.778 3.048)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 3.556)
+						(xy 1.27 2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Battery_Cell_1_1"
 				(pin passive line
-					(at -5.08 0 0)
-					(length 3.81)
-					(name "Pin_1"
+					(at 0 5.08 270)
+					(length 2.54)
+					(name "+"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -130,6 +211,24 @@
 						)
 					)
 					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -2.54 90)
+					(length 2.54)
+					(name "-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1433,7 +1532,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "3x 18650 in Keystone 54 clips. Balancing + protection by an off-the-shelf 3S BMS module (B-, B1, B2, B+, P-)."
+	(text "3x 18650 in Keystone 1042 snap-in holders (spring contacts; pad 1 = +). Balancing + protection: off-the-shelf 3S BMS module (B-, B1, B2, B+, P-)."
 		(exclude_from_sim no)
 		(at 25 22 0)
 		(effects
@@ -1442,7 +1541,7 @@
 			)
 			(justify left)
 		)
-		(uuid "f458efc4-f7d4-5b4e-9e87-56b56aa4bed5")
+		(uuid "dc5706ed-fd5c-5b17-b497-eb2bf8b796f3")
 	)
 	(text "Reverse-cell LED lights only when a cell is inserted backwards. P- of the BMS = board GND."
 		(exclude_from_sim no)
@@ -1456,8 +1555,8 @@
 		(uuid "8fa5f159-2c7a-5a63-b723-8d80b8f3d9a3")
 	)
 	(symbol
-		(lib_id "Connector_Generic:Conn_01x01")
-		(at 50.8 71.12 0)
+		(lib_id "Device:Battery_Cell")
+		(at 50.8 78.74 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1465,23 +1564,23 @@
 		(dnp no)
 		(uuid "72d1f14b-ed35-5f5d-993f-bd30221f99ec")
 		(property "Reference" "BT401"
-			(at 54.61 69.85 0)
+			(at 54.61 77.47 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "cell 1 +"
-			(at 54.61 72.39 0)
+		(property "Value" "18650 cell 1 (Keystone 1042)"
+			(at 54.61 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Battery:BatteryClip_Keystone_54_D16-19mm"
-			(at 50.8 71.12 0)
+		(property "Footprint" "Battery:BatteryHolder_Keystone_1042_1x18650"
+			(at 50.8 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1490,7 +1589,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 50.8 71.12 0)
+			(at 50.8 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1500,6 +1599,9 @@
 		)
 		(pin "1"
 			(uuid "a82836ff-ad01-5d33-9df1-af20b3305bd9")
+		)
+		(pin "2"
+			(uuid "92dcbef9-7598-5a49-8dce-1f53a4632f26")
 		)
 		(instances
 			(project "bassberry"
@@ -1511,73 +1613,18 @@
 		)
 	)
 	(label "CELL1"
-		(at 45.72 71.12 180)
+		(at 50.8 73.66 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
-		(uuid "6278c8f3-96f0-55f3-a9bc-32b6c7519399")
-	)
-	(symbol
-		(lib_id "Connector_Generic:Conn_01x01")
-		(at 50.8 88.9 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "be123420-9453-5514-8e7b-8ec03dd66856")
-		(property "Reference" "BT402"
-			(at 54.61 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "cell 1 -"
-			(at 54.61 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Battery:BatteryClip_Keystone_54_D16-19mm"
-			(at 50.8 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 50.8 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "309630e9-4972-59cd-9c3c-14695a07a25e")
-		)
-		(instances
-			(project "bassberry"
-				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/64b9f060-a050-53a9-87cd-a637fed146cc"
-					(reference "BT402")
-					(unit 1)
-				)
-			)
-		)
+		(uuid "58e99056-f3bb-5a48-901e-45554ad1bb25")
 	)
 	(label "CELL0"
-		(at 45.72 88.9 180)
+		(at 50.8 81.28 270)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1585,7 +1632,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "3086ca4c-3a1e-53e1-b07f-2cc61960d7a6")
+		(uuid "59d067e8-9325-5e8a-9d1e-c30c7ea941e9")
 	)
 	(symbol
 		(lib_id "Device:LED")
@@ -1748,32 +1795,32 @@
 		(uuid "038ae3bd-6658-5e65-9fac-63a7529e7aa3")
 	)
 	(symbol
-		(lib_id "Connector_Generic:Conn_01x01")
-		(at 109.22 71.12 0)
+		(lib_id "Device:Battery_Cell")
+		(at 109.22 78.74 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "7ba40a5f-82ff-5ff0-829d-556b53910aee")
-		(property "Reference" "BT403"
-			(at 113.03 69.85 0)
+		(uuid "be123420-9453-5514-8e7b-8ec03dd66856")
+		(property "Reference" "BT402"
+			(at 113.03 77.47 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "cell 2 +"
-			(at 113.03 72.39 0)
+		(property "Value" "18650 cell 2 (Keystone 1042)"
+			(at 113.03 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Battery:BatteryClip_Keystone_54_D16-19mm"
-			(at 109.22 71.12 0)
+		(property "Footprint" "Battery:BatteryHolder_Keystone_1042_1x18650"
+			(at 109.22 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1782,7 +1829,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 109.22 71.12 0)
+			(at 109.22 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1791,85 +1838,33 @@
 			)
 		)
 		(pin "1"
-			(uuid "9c911e14-3679-5b43-bb90-fba90541ca1e")
+			(uuid "309630e9-4972-59cd-9c3c-14695a07a25e")
+		)
+		(pin "2"
+			(uuid "4c5668b1-5f4d-51a0-85ba-132b1bbbc959")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/64b9f060-a050-53a9-87cd-a637fed146cc"
-					(reference "BT403")
+					(reference "BT402")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(label "CELL2"
-		(at 104.14 71.12 180)
+		(at 109.22 73.66 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
-		(uuid "dcc7e728-4607-5c00-a030-2beed81d2f9d")
-	)
-	(symbol
-		(lib_id "Connector_Generic:Conn_01x01")
-		(at 109.22 88.9 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d507447a-8711-5895-93ce-8897bac027b8")
-		(property "Reference" "BT404"
-			(at 113.03 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "cell 2 -"
-			(at 113.03 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Battery:BatteryClip_Keystone_54_D16-19mm"
-			(at 109.22 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 109.22 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "279ffbd1-e7e8-566b-ae2d-0903f0facca3")
-		)
-		(instances
-			(project "bassberry"
-				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/64b9f060-a050-53a9-87cd-a637fed146cc"
-					(reference "BT404")
-					(unit 1)
-				)
-			)
-		)
+		(uuid "a390cebe-2513-52b0-a83d-1b55ee98274c")
 	)
 	(label "CELL1"
-		(at 104.14 88.9 180)
+		(at 109.22 81.28 270)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1877,7 +1872,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "50e0dcd0-6bd3-526d-a241-1fc1fe5115c3")
+		(uuid "44712246-7954-5e41-b820-db5aded22a90")
 	)
 	(symbol
 		(lib_id "Device:LED")
@@ -2040,32 +2035,32 @@
 		(uuid "56336f09-4476-5bf0-a3e8-58e01b4c2a9e")
 	)
 	(symbol
-		(lib_id "Connector_Generic:Conn_01x01")
-		(at 170.18 71.12 0)
+		(lib_id "Device:Battery_Cell")
+		(at 170.18 78.74 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "3e8a4549-d9ba-5df2-a4e9-bde37851a51b")
-		(property "Reference" "BT405"
-			(at 173.99 69.85 0)
+		(uuid "7ba40a5f-82ff-5ff0-829d-556b53910aee")
+		(property "Reference" "BT403"
+			(at 173.99 77.47 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "cell 3 +"
-			(at 173.99 72.39 0)
+		(property "Value" "18650 cell 3 (Keystone 1042)"
+			(at 173.99 80.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Battery:BatteryClip_Keystone_54_D16-19mm"
-			(at 170.18 71.12 0)
+		(property "Footprint" "Battery:BatteryHolder_Keystone_1042_1x18650"
+			(at 170.18 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2074,7 +2069,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 170.18 71.12 0)
+			(at 170.18 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2083,85 +2078,33 @@
 			)
 		)
 		(pin "1"
-			(uuid "396259a4-44d1-59cb-85a6-f5e1d7260ca8")
+			(uuid "9c911e14-3679-5b43-bb90-fba90541ca1e")
+		)
+		(pin "2"
+			(uuid "dbc76abe-db3d-50e6-afff-e5203e8fb0cc")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/64b9f060-a050-53a9-87cd-a637fed146cc"
-					(reference "BT405")
+					(reference "BT403")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(label "CELL3"
-		(at 165.1 71.12 180)
+		(at 170.18 73.66 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
-		(uuid "83647f08-2d31-596e-93ec-077a72594954")
-	)
-	(symbol
-		(lib_id "Connector_Generic:Conn_01x01")
-		(at 170.18 88.9 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "cf2ab5e2-c7cb-5207-8049-e40f20b66328")
-		(property "Reference" "BT406"
-			(at 173.99 87.63 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "cell 3 -"
-			(at 173.99 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Battery:BatteryClip_Keystone_54_D16-19mm"
-			(at 170.18 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 170.18 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "4d051be9-7c66-5978-8a2b-6c8071f21602")
-		)
-		(instances
-			(project "bassberry"
-				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/64b9f060-a050-53a9-87cd-a637fed146cc"
-					(reference "BT406")
-					(unit 1)
-				)
-			)
-		)
+		(uuid "c2bbe1ab-c1cc-54af-b392-212590adeebc")
 	)
 	(label "CELL2"
-		(at 165.1 88.9 180)
+		(at 170.18 81.28 270)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -2169,7 +2112,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "85356e0a-dcfb-5e16-bd8a-6ff8e7c43f3e")
+		(uuid "5bf6e7fe-2e90-59d8-aaa3-742f8654dc96")
 	)
 	(symbol
 		(lib_id "Device:LED")

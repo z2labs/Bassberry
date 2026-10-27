@@ -1,0 +1,2541 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-27T02:33:57",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.6",
+    "schematic_parity": [],
+    "source": "bassberry.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Silkscreen clipped by board edge",
+            "items": [
+                {
+                    "description": "Szegmens a(z) Edge.Cuts rétegen",
+                    "pos": {
+                        "x": 111.0,
+                        "y": 50.0
+                    },
+                    "uuid": "6ec8b028-5ebc-4b75-9937-9e227c944dd5"
+                },
+                {
+                    "description": "A(z) H1 referenciamezője",
+                    "pos": {
+                        "x": 116.0,
+                        "y": 49.6
+                    },
+                    "uuid": "1e08d057-1310-4d9c-b871-b0e094f7aa27"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_edge_clearance"
+        },
+        {
+            "description": "Silkscreen clipped by board edge",
+            "items": [
+                {
+                    "description": "Szegmens a(z) Edge.Cuts rétegen",
+                    "pos": {
+                        "x": 230.0,
+                        "y": 50.0
+                    },
+                    "uuid": "ea382022-4746-4442-baa5-4a7ed6ff2f57"
+                },
+                {
+                    "description": "A(z) R309 referenciamezője",
+                    "pos": {
+                        "x": 230.25,
+                        "y": 72.93
+                    },
+                    "uuid": "9dbf1f9c-c591-4e18-9973-3437a7e2ff7b"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_edge_clearance"
+        },
+        {
+            "description": "Silkscreen clipped by board edge",
+            "items": [
+                {
+                    "description": "Szegmens a(z) Edge.Cuts rétegen",
+                    "pos": {
+                        "x": 230.0,
+                        "y": 50.0
+                    },
+                    "uuid": "ea382022-4746-4442-baa5-4a7ed6ff2f57"
+                },
+                {
+                    "description": "A(z) C311 referenciamezője",
+                    "pos": {
+                        "x": 229.0,
+                        "y": 88.32
+                    },
+                    "uuid": "38b52e5f-ad9e-4207-893f-e91530052383"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_edge_clearance"
+        },
+        {
+            "description": "A 'Raspberry_Pi_Zero_Socketed_THT_FaceDown_MountingHoles' lábkiosztás nem egyezik meg a 'Module' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás J101",
+                    "pos": {
+                        "x": 106.23,
+                        "y": 126.63
+                    },
+                    "uuid": "426698c8-ae8c-4b93-829e-f3c91adf3224"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'PinSocket_1x04_P2.54mm_Horizontal' lábkiosztás nem egyezik meg a 'Connector_PinSocket_2.54mm' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás J502",
+                    "pos": {
+                        "x": 184.0,
+                        "y": 150.5
+                    },
+                    "uuid": "eb2677cc-dcf0-4190-ba3b-542d32675d8b"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R108",
+                    "pos": {
+                        "x": 120.5,
+                        "y": 122.5
+                    },
+                    "uuid": "03d27da0-7d33-4ce3-8155-f7416e215cb1"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0805_2012Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C265",
+                    "pos": {
+                        "x": 208.0,
+                        "y": 112.0
+                    },
+                    "uuid": "054a7648-7833-42da-9905-1379d3cc6baa"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1210_3225Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C340",
+                    "pos": {
+                        "x": 137.25,
+                        "y": 101.0
+                    },
+                    "uuid": "087fc110-5ae7-498f-9f2b-3f6b38d13f61"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R317",
+                    "pos": {
+                        "x": 224.0,
+                        "y": 82.75
+                    },
+                    "uuid": "0cdca26f-24cc-42d7-92f0-fef1b0bfc8eb"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R103",
+                    "pos": {
+                        "x": 111.0,
+                        "y": 75.0
+                    },
+                    "uuid": "10fabc51-d886-4b87-96b5-1c81ecd910dc"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0805_2012Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C264",
+                    "pos": {
+                        "x": 198.75,
+                        "y": 117.25
+                    },
+                    "uuid": "134e7948-39b1-43a9-9d2c-d00301505d45"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_1206_3216Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R302",
+                    "pos": {
+                        "x": 200.5,
+                        "y": 57.0
+                    },
+                    "uuid": "1ada0ea7-dd5f-420a-a3fb-e1e35c238ddd"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R512",
+                    "pos": {
+                        "x": 188.5,
+                        "y": 85.25
+                    },
+                    "uuid": "1e60b060-037e-46d9-9bad-a1e914894489"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R303",
+                    "pos": {
+                        "x": 211.75,
+                        "y": 102.5
+                    },
+                    "uuid": "20374729-a094-4dfc-b494-23d7585b3d25"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R312",
+                    "pos": {
+                        "x": 219.25,
+                        "y": 85.75
+                    },
+                    "uuid": "20fa55e7-9ff2-4bd0-bc69-2acb96d7e490"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R332",
+                    "pos": {
+                        "x": 129.25,
+                        "y": 124.25
+                    },
+                    "uuid": "2351f701-9c20-4d24-9eb4-374e164037c9"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1206_3216Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C232",
+                    "pos": {
+                        "x": 136.0,
+                        "y": 70.0
+                    },
+                    "uuid": "2610c38f-51a5-468d-a2f9-da6e1ccef2c4"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C225",
+                    "pos": {
+                        "x": 169.25,
+                        "y": 84.0
+                    },
+                    "uuid": "290db52c-57c7-4876-82ab-54e28816d764"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R503",
+                    "pos": {
+                        "x": 186.75,
+                        "y": 134.5
+                    },
+                    "uuid": "29ff0bb5-5838-4348-bd4a-dc9261fac312"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R501",
+                    "pos": {
+                        "x": 194.0,
+                        "y": 139.0
+                    },
+                    "uuid": "2a68b268-86d8-4cc0-8d77-f129ca72a31b"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R331",
+                    "pos": {
+                        "x": 127.0,
+                        "y": 124.25
+                    },
+                    "uuid": "31432308-6d2c-476e-9816-a25c846ebdcb"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R401",
+                    "pos": {
+                        "x": 153.25,
+                        "y": 154.5
+                    },
+                    "uuid": "34b78efa-3db2-456b-a324-1af92e5809f9"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1206_3216Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C242",
+                    "pos": {
+                        "x": 165.75,
+                        "y": 71.25
+                    },
+                    "uuid": "396b7071-649f-448e-8421-d61571ea1180"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R311",
+                    "pos": {
+                        "x": 217.0,
+                        "y": 83.5
+                    },
+                    "uuid": "3edbea51-522c-4788-b8a7-991a7ca2d11b"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C302",
+                    "pos": {
+                        "x": 218.5,
+                        "y": 89.0
+                    },
+                    "uuid": "4034020b-c893-4af5-abf2-69e03722d22d"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C350",
+                    "pos": {
+                        "x": 200.75,
+                        "y": 126.25
+                    },
+                    "uuid": "42ed4f87-7145-4384-be53-fb5c4ab477d9"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1206_3216Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C336",
+                    "pos": {
+                        "x": 121.25,
+                        "y": 149.0
+                    },
+                    "uuid": "43d75391-bf35-49b1-8807-ccf8d7698f2a"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R343",
+                    "pos": {
+                        "x": 189.75,
+                        "y": 129.25
+                    },
+                    "uuid": "45a832c8-be58-4652-964c-f017558ec694"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C241",
+                    "pos": {
+                        "x": 165.25,
+                        "y": 88.5
+                    },
+                    "uuid": "461344c8-d95f-45a2-bf4a-a90dc28a7f28"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R502",
+                    "pos": {
+                        "x": 189.75,
+                        "y": 138.5
+                    },
+                    "uuid": "47121d97-7026-4263-b04b-0e867d3e64cf"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C501",
+                    "pos": {
+                        "x": 189.75,
+                        "y": 131.5
+                    },
+                    "uuid": "4cd58c16-5e5c-4b5e-a0bf-2c98cd5c1fa3"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1210_3225Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C341",
+                    "pos": {
+                        "x": 140.5,
+                        "y": 105.75
+                    },
+                    "uuid": "4d4ed4e8-2300-46e2-b2c2-126d107aba37"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1206_3216Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C243",
+                    "pos": {
+                        "x": 170.0,
+                        "y": 86.75
+                    },
+                    "uuid": "4d8830f7-6156-455e-972c-e3f388058f80"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R309",
+                    "pos": {
+                        "x": 226.75,
+                        "y": 71.75
+                    },
+                    "uuid": "4eee0876-9974-4ed0-b816-5b3dbccec7ba"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1210_3225Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C312",
+                    "pos": {
+                        "x": 206.5,
+                        "y": 64.5
+                    },
+                    "uuid": "4f8ab3e4-938a-4093-942a-8ca7c711f1a5"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C211",
+                    "pos": {
+                        "x": 125.75,
+                        "y": 83.75
+                    },
+                    "uuid": "4fde9984-472c-4f3f-9c35-346197b33e87"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C218",
+                    "pos": {
+                        "x": 138.5,
+                        "y": 84.5
+                    },
+                    "uuid": "51492792-00a6-416d-9ab2-2ad137c32251"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R211",
+                    "pos": {
+                        "x": 131.25,
+                        "y": 87.5
+                    },
+                    "uuid": "539cf6a0-eea6-40f8-8e46-7a235ab61503"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R342",
+                    "pos": {
+                        "x": 145.5,
+                        "y": 97.75
+                    },
+                    "uuid": "53e3f8c1-f6ed-474a-abd1-909bbe541481"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C104",
+                    "pos": {
+                        "x": 118.5,
+                        "y": 96.75
+                    },
+                    "uuid": "558b037f-eb91-4886-ac27-e7f58bcfcdf4"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C303",
+                    "pos": {
+                        "x": 209.25,
+                        "y": 98.25
+                    },
+                    "uuid": "59f2fd47-f1e0-406c-9aaf-f03528155507"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R307",
+                    "pos": {
+                        "x": 200.0,
+                        "y": 82.0
+                    },
+                    "uuid": "5cdf1dc3-b5d4-4ecf-aea1-341269b99cf5"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C331",
+                    "pos": {
+                        "x": 121.0,
+                        "y": 129.0
+                    },
+                    "uuid": "5f021fb4-b059-42e5-b8da-973fec2725f2"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R308",
+                    "pos": {
+                        "x": 221.0,
+                        "y": 64.0
+                    },
+                    "uuid": "5f9d43ad-b32e-4a90-951e-03218c69120b"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C307",
+                    "pos": {
+                        "x": 213.0,
+                        "y": 83.75
+                    },
+                    "uuid": "5fe4a8a9-df61-4afd-b441-0e094141dad7"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C222",
+                    "pos": {
+                        "x": 160.0,
+                        "y": 89.25
+                    },
+                    "uuid": "61b9aac1-3124-4395-aacf-e96c48267c9a"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R105",
+                    "pos": {
+                        "x": 112.25,
+                        "y": 93.5
+                    },
+                    "uuid": "62043355-e1ce-42c4-98b3-e1a74088f0bf"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R510",
+                    "pos": {
+                        "x": 112.25,
+                        "y": 116.5
+                    },
+                    "uuid": "635f5011-084c-4795-9abf-d590a46d3367"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C304",
+                    "pos": {
+                        "x": 205.0,
+                        "y": 88.0
+                    },
+                    "uuid": "64516d62-86d9-4f53-b0fa-60476eac8f0a"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_2512_6332Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R344",
+                    "pos": {
+                        "x": 172.25,
+                        "y": 73.5
+                    },
+                    "uuid": "646614e5-29de-45d9-bce6-762ca82591b2"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_1206_3216Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R304",
+                    "pos": {
+                        "x": 218.0,
+                        "y": 55.0
+                    },
+                    "uuid": "67245d2b-4734-4ed1-bc25-b540bf22bcd5"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1206_3216Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C333",
+                    "pos": {
+                        "x": 124.25,
+                        "y": 124.75
+                    },
+                    "uuid": "67eb41d6-8cbf-4e1f-a70f-bc7b271796f9"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R313",
+                    "pos": {
+                        "x": 197.0,
+                        "y": 86.0
+                    },
+                    "uuid": "6a039a1c-4a7b-4448-b392-d7c62ff3ea6c"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C223",
+                    "pos": {
+                        "x": 156.75,
+                        "y": 83.25
+                    },
+                    "uuid": "6d960055-1923-48e7-9739-0af2deec34b1"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C229",
+                    "pos": {
+                        "x": 165.75,
+                        "y": 75.0
+                    },
+                    "uuid": "6eba94a0-5620-470b-b841-3ce0d5bbdafa"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C305",
+                    "pos": {
+                        "x": 202.0,
+                        "y": 88.75
+                    },
+                    "uuid": "70a4dfc0-dfcf-46eb-9371-d2607b79516e"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0805_2012Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C102",
+                    "pos": {
+                        "x": 111.75,
+                        "y": 126.0
+                    },
+                    "uuid": "71517514-8299-41d8-b432-777c5ba9f458"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R101",
+                    "pos": {
+                        "x": 112.25,
+                        "y": 114.0
+                    },
+                    "uuid": "71801003-2ca2-4b18-88c9-fbaecc489831"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C103",
+                    "pos": {
+                        "x": 102.75,
+                        "y": 127.0
+                    },
+                    "uuid": "71e0d66a-9595-491f-9892-3a2a5f67f765"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R301",
+                    "pos": {
+                        "x": 221.75,
+                        "y": 89.75
+                    },
+                    "uuid": "73075ca0-f389-46bd-865e-6fc42425e3bd"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1210_3225Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C101",
+                    "pos": {
+                        "x": 114.75,
+                        "y": 133.5
+                    },
+                    "uuid": "75bbda54-0077-4c77-9a12-4b7ac604bcdb"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R320",
+                    "pos": {
+                        "x": 195.75,
+                        "y": 70.25
+                    },
+                    "uuid": "79c871c2-cee4-4891-8a4d-f5dd805d8da7"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_1206_3216Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R305",
+                    "pos": {
+                        "x": 191.0,
+                        "y": 64.0
+                    },
+                    "uuid": "7aab320e-4db7-403f-bf8a-8f0fca56c98a"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R403",
+                    "pos": {
+                        "x": 166.75,
+                        "y": 151.5
+                    },
+                    "uuid": "806eb313-ac90-460b-8f1a-f06a9d50f5d2"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C212",
+                    "pos": {
+                        "x": 129.0,
+                        "y": 87.5
+                    },
+                    "uuid": "84261425-8a68-494e-afc2-2dec35ab0289"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C311",
+                    "pos": {
+                        "x": 225.5,
+                        "y": 89.75
+                    },
+                    "uuid": "8574fd1c-7c03-4f03-9ebd-766e05c77080"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C351",
+                    "pos": {
+                        "x": 203.5,
+                        "y": 122.0
+                    },
+                    "uuid": "859c6685-98f2-4cc5-9d9a-dd9353384530"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R106",
+                    "pos": {
+                        "x": 102.75,
+                        "y": 113.75
+                    },
+                    "uuid": "8c571bd4-8600-4198-89fc-dae9fd29010e"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C353",
+                    "pos": {
+                        "x": 181.5,
+                        "y": 76.0
+                    },
+                    "uuid": "915106ba-29a0-4428-a96b-de021de6ca0e"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C231",
+                    "pos": {
+                        "x": 134.25,
+                        "y": 86.75
+                    },
+                    "uuid": "94355064-504e-40c2-8646-788acb709d1f"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1206_3216Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C337",
+                    "pos": {
+                        "x": 129.0,
+                        "y": 150.25
+                    },
+                    "uuid": "9578fb8d-5f9f-4c00-bd26-fe7b009113d6"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0805_2012Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C263",
+                    "pos": {
+                        "x": 227.25,
+                        "y": 108.0
+                    },
+                    "uuid": "962f78da-692a-432c-b7d0-5aedd2e23f47"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'TestPoint_Pad_D1.5mm' lábkiosztás nem egyezik meg a 'TestPoint' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás TP101",
+                    "pos": {
+                        "x": 122.0,
+                        "y": 97.25
+                    },
+                    "uuid": "966a59be-68a8-4bd1-8249-838424766ef4"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'Diodes_PowerDI3333-8' lábkiosztás nem egyezik meg a 'Package_SON' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás Q101",
+                    "pos": {
+                        "x": 116.0,
+                        "y": 128.5
+                    },
+                    "uuid": "97394aa9-4244-4aa5-bf49-11141084e235"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C310",
+                    "pos": {
+                        "x": 195.5,
+                        "y": 67.0
+                    },
+                    "uuid": "988ed6a9-ecf9-4034-8637-5943c03654e0"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_2512_6332Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R345",
+                    "pos": {
+                        "x": 171.75,
+                        "y": 90.75
+                    },
+                    "uuid": "9be4ccf4-193d-4df3-ac9a-3190011c94f0"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R316",
+                    "pos": {
+                        "x": 225.25,
+                        "y": 87.5
+                    },
+                    "uuid": "9c00b1d1-67a1-4aa7-9410-231cec5c5397"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'Fuse_2512_6332Metric' lábkiosztás nem egyezik meg a 'Fuse' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás F401",
+                    "pos": {
+                        "x": 178.0,
+                        "y": 58.0
+                    },
+                    "uuid": "9c67928e-0707-4c70-b1ae-1aa1daa65c5c"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R306",
+                    "pos": {
+                        "x": 200.0,
+                        "y": 71.0
+                    },
+                    "uuid": "9d177862-2124-46db-b434-d5dee8b8c270"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C226",
+                    "pos": {
+                        "x": 169.25,
+                        "y": 81.5
+                    },
+                    "uuid": "9ea6da23-ac3f-4878-932b-2f83a29b9195"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1210_3225Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C315",
+                    "pos": {
+                        "x": 219.5,
+                        "y": 59.5
+                    },
+                    "uuid": "a041f9be-16b0-4408-b1da-e05bc9a3f1bc"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0805_2012Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C262",
+                    "pos": {
+                        "x": 227.25,
+                        "y": 113.5
+                    },
+                    "uuid": "a3b0b22c-700b-412e-84d8-be3f793eb824"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1210_3225Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C316",
+                    "pos": {
+                        "x": 223.5,
+                        "y": 53.0
+                    },
+                    "uuid": "a45ed816-e172-44c5-8ad1-1bc2cb99f1a5"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0805_2012Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C260",
+                    "pos": {
+                        "x": 101.5,
+                        "y": 78.0
+                    },
+                    "uuid": "a54269ea-8a7a-4a2f-9806-2e6c6d77b554"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R202",
+                    "pos": {
+                        "x": 102.75,
+                        "y": 90.75
+                    },
+                    "uuid": "a6347703-12b8-4fbc-b970-96e01bded0d3"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0805_2012Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C261",
+                    "pos": {
+                        "x": 101.25,
+                        "y": 74.0
+                    },
+                    "uuid": "a6723220-8483-4761-9fb4-db55653be1cb"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R315",
+                    "pos": {
+                        "x": 222.25,
+                        "y": 86.5
+                    },
+                    "uuid": "a69acc41-ca94-4bcb-bb21-9702c0a37dee"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R201",
+                    "pos": {
+                        "x": 102.75,
+                        "y": 118.75
+                    },
+                    "uuid": "aadba6e2-b010-4071-a277-04a94234eddb"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C227",
+                    "pos": {
+                        "x": 169.25,
+                        "y": 79.0
+                    },
+                    "uuid": "ab935c04-3196-4788-adb8-3ad7111ff5f5"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R341",
+                    "pos": {
+                        "x": 149.0,
+                        "y": 96.0
+                    },
+                    "uuid": "abb0ff14-971a-492a-9744-b25d1e28f453"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C334",
+                    "pos": {
+                        "x": 121.5,
+                        "y": 125.75
+                    },
+                    "uuid": "ac1530e7-5811-4974-8b4a-c16c4398beab"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C306",
+                    "pos": {
+                        "x": 209.5,
+                        "y": 83.0
+                    },
+                    "uuid": "ae51a76e-4388-4bb0-a72c-be75af824259"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R310",
+                    "pos": {
+                        "x": 198.0,
+                        "y": 89.0
+                    },
+                    "uuid": "af3e6bdd-4830-4ae9-8969-a3946b42c915"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C221",
+                    "pos": {
+                        "x": 156.75,
+                        "y": 85.5
+                    },
+                    "uuid": "b0fec813-5627-4248-b7eb-61a1f7220f4f"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R402",
+                    "pos": {
+                        "x": 158.75,
+                        "y": 154.5
+                    },
+                    "uuid": "b55b5322-8a56-4bd6-9f4c-316a9f3dbfa1"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C510",
+                    "pos": {
+                        "x": 194.25,
+                        "y": 74.0
+                    },
+                    "uuid": "b831c64c-86e9-4dad-b1e5-e4221a682765"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C213",
+                    "pos": {
+                        "x": 125.75,
+                        "y": 81.5
+                    },
+                    "uuid": "b947ed9f-8367-4d5a-890a-c16ba76fc20c"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R104",
+                    "pos": {
+                        "x": 102.75,
+                        "y": 93.25
+                    },
+                    "uuid": "bd79d4b3-cf13-4bd8-9dc6-ea945e4cff08"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C301",
+                    "pos": {
+                        "x": 213.0,
+                        "y": 97.25
+                    },
+                    "uuid": "bd9e6865-c4e1-4853-8e5c-4d7d622e93a7"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C216",
+                    "pos": {
+                        "x": 138.25,
+                        "y": 79.75
+                    },
+                    "uuid": "bdaeed71-54e8-47e8-844c-919a4e5a32e7"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C228",
+                    "pos": {
+                        "x": 168.75,
+                        "y": 76.0
+                    },
+                    "uuid": "be5f2388-c826-4d95-a01b-1c671baeb419"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R107",
+                    "pos": {
+                        "x": 118.5,
+                        "y": 99.25
+                    },
+                    "uuid": "bf59ddac-a5f0-4e93-8521-8ddcec2778a9"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1206_3216Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C335",
+                    "pos": {
+                        "x": 125.75,
+                        "y": 150.25
+                    },
+                    "uuid": "c1185a7b-a39d-4414-a72b-3949abd7dc01"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C308",
+                    "pos": {
+                        "x": 212.25,
+                        "y": 99.5
+                    },
+                    "uuid": "c3ab0fdf-1487-4864-ba81-f0740a16d16f"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R314",
+                    "pos": {
+                        "x": 220.75,
+                        "y": 83.25
+                    },
+                    "uuid": "c3f56573-4caf-45a7-bc64-b94cb06eb903"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C330",
+                    "pos": {
+                        "x": 128.25,
+                        "y": 128.0
+                    },
+                    "uuid": "cb18ab83-76c8-46a2-ae68-bf3d40a0448f"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R333",
+                    "pos": {
+                        "x": 189.75,
+                        "y": 136.25
+                    },
+                    "uuid": "d0e1c63a-3644-4c8a-aad3-b8bc2566d57f"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R109",
+                    "pos": {
+                        "x": 112.5,
+                        "y": 122.0
+                    },
+                    "uuid": "d5cf5d0d-d992-4957-bfe1-7a1c188f2fa4"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R102",
+                    "pos": {
+                        "x": 102.75,
+                        "y": 83.25
+                    },
+                    "uuid": "d6892164-4829-4f3a-885a-16a005966230"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1206_3216Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C233",
+                    "pos": {
+                        "x": 137.75,
+                        "y": 88.25
+                    },
+                    "uuid": "dc6b5950-0719-450d-b158-65277127f975"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R511",
+                    "pos": {
+                        "x": 191.75,
+                        "y": 86.0
+                    },
+                    "uuid": "de057cb6-3b8d-4280-a337-45ee4f860ea5"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C219",
+                    "pos": {
+                        "x": 131.0,
+                        "y": 72.5
+                    },
+                    "uuid": "de7d9a3d-4237-43ec-956a-45db1909c77a"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'USB_C_Receptacle_HRO_TYPE-C-31-M-12' lábkiosztás nem egyezik meg a 'Connector_USB' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás J301",
+                    "pos": {
+                        "x": 191.0,
+                        "y": 53.595
+                    },
+                    "uuid": "df58c174-feac-48dc-8e46-03daaa901d7b"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C309",
+                    "pos": {
+                        "x": 209.25,
+                        "y": 102.25
+                    },
+                    "uuid": "e11678e6-be39-4da6-9df8-fb5e6e2ff026"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R221",
+                    "pos": {
+                        "x": 162.25,
+                        "y": 89.25
+                    },
+                    "uuid": "ea022e27-3c23-4687-820d-45f866fab3a1"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C503",
+                    "pos": {
+                        "x": 189.75,
+                        "y": 134.0
+                    },
+                    "uuid": "edd4a1c4-2b94-4ab1-a946-2241b30744ba"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C215",
+                    "pos": {
+                        "x": 138.25,
+                        "y": 82.25
+                    },
+                    "uuid": "f0036a1c-d399-4271-95c2-c245e612bb63"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C502",
+                    "pos": {
+                        "x": 193.0,
+                        "y": 128.25
+                    },
+                    "uuid": "f01bd4b8-95b4-4490-9df7-7103912c99a5"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C217",
+                    "pos": {
+                        "x": 134.25,
+                        "y": 73.25
+                    },
+                    "uuid": "f1e14d42-6cab-4da9-94cb-f90c206338f7"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1206_3216Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C332",
+                    "pos": {
+                        "x": 118.25,
+                        "y": 133.75
+                    },
+                    "uuid": "f4c55d7d-79ab-470d-976b-302ce522da2f"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_1210_3225Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C313",
+                    "pos": {
+                        "x": 195.25,
+                        "y": 63.25
+                    },
+                    "uuid": "f768043f-3e2d-4e1f-9dd3-147c56363689"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C224",
+                    "pos": {
+                        "x": 156.75,
+                        "y": 78.0
+                    },
+                    "uuid": "f87cd6ee-7bf5-4d0c-9608-e8e271d91cae"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C352",
+                    "pos": {
+                        "x": 189.25,
+                        "y": 73.5
+                    },
+                    "uuid": "fa3fbfbb-386d-48ff-a234-38764a39e1b8"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'R_0603_1608Metric' lábkiosztás nem egyezik meg a 'Resistor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás R321",
+                    "pos": {
+                        "x": 226.25,
+                        "y": 83.0
+                    },
+                    "uuid": "fad2948d-28a9-4b43-8233-71d050343d62"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A 'C_0603_1608Metric' lábkiosztás nem egyezik meg a 'Capacitor_SMD' könyvtárban lévő másolatával",
+            "items": [
+                {
+                    "description": "Lábkiosztás C214",
+                    "pos": {
+                        "x": 125.75,
+                        "y": 76.25
+                    },
+                    "uuid": "ff669a46-085e-4720-bcdc-2b78c41566c6"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) BT402 referenciamezője",
+                    "pos": {
+                        "x": 136.22,
+                        "y": 101.5
+                    },
+                    "uuid": "17a4aa47-0d66-4059-837e-9f664eb02372"
+                },
+                {
+                    "description": "Szegmens: BT402 a(z) F.Silkscreen rétegen",
+                    "pos": {
+                        "x": 136.315,
+                        "y": 140.39
+                    },
+                    "uuid": "f9026b32-072e-4f1a-9456-12aaaa27a1bf"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) BT403 referenciamezője",
+                    "pos": {
+                        "x": 180.78,
+                        "y": 101.5
+                    },
+                    "uuid": "620264bb-a247-4df4-acc1-873ac43933f9"
+                },
+                {
+                    "description": "Szegmens: BT403 a(z) F.Silkscreen rétegen",
+                    "pos": {
+                        "x": 180.185,
+                        "y": 62.61
+                    },
+                    "uuid": "e842c33c-05b5-4cc6-b7f7-25c169b4b880"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Szegmens: J101 a(z) F.Silkscreen rétegen",
+                    "pos": {
+                        "x": 79.14,
+                        "y": 89.54
+                    },
+                    "uuid": "f5124704-5c79-4574-9d7f-5c7982d04bcf"
+                },
+                {
+                    "description": "Zóna [<no net>] F.Mask-on, prioritás: 0",
+                    "pos": {
+                        "x": 68.5,
+                        "y": 92.5
+                    },
+                    "uuid": "fbef3616-4148-432e-87e1-9c18be8cbf0e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Szegmens: J101 a(z) F.Silkscreen rétegen",
+                    "pos": {
+                        "x": 79.14,
+                        "y": 97.66
+                    },
+                    "uuid": "4419dc39-08df-4822-a011-86151313e665"
+                },
+                {
+                    "description": "Zóna [<no net>] F.Mask-on, prioritás: 0",
+                    "pos": {
+                        "x": 68.5,
+                        "y": 92.5
+                    },
+                    "uuid": "fbef3616-4148-432e-87e1-9c18be8cbf0e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Szegmens: J101 a(z) F.Silkscreen rétegen",
+                    "pos": {
+                        "x": 80.94,
+                        "y": 97.66
+                    },
+                    "uuid": "b7e38a61-5e7c-42bb-9d9f-46a109c2c17a"
+                },
+                {
+                    "description": "Zóna [<no net>] F.Mask-on, prioritás: 0",
+                    "pos": {
+                        "x": 68.5,
+                        "y": 92.5
+                    },
+                    "uuid": "fbef3616-4148-432e-87e1-9c18be8cbf0e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "A(z) H8 referenciamezője",
+                    "pos": {
+                        "x": 71.5,
+                        "y": 108.35
+                    },
+                    "uuid": "ad589ad3-ff8f-4cc2-b159-108dad0327c2"
+                },
+                {
+                    "description": "Zóna [<no net>] F.Mask-on, prioritás: 0",
+                    "pos": {
+                        "x": 68.5,
+                        "y": 92.5
+                    },
+                    "uuid": "fbef3616-4148-432e-87e1-9c18be8cbf0e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Szegmens: L203 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 140.89,
+                        "y": 78.165
+                    },
+                    "uuid": "cd5fa8cc-db61-43c8-9862-3381232c267b"
+                },
+                {
+                    "description": "A(z) L203 referenciamezője",
+                    "pos": {
+                        "x": 140.8,
+                        "y": 83.75
+                    },
+                    "uuid": "e360c026-c9df-470c-b561-ae2be5d2c1dd"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Szegmens: C234 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 126.954437,
+                        "y": 62.86
+                    },
+                    "uuid": "23807350-587a-4877-84aa-a876f193d453"
+                },
+                {
+                    "description": "A(z) C234 referenciamezője",
+                    "pos": {
+                        "x": 133.25,
+                        "y": 63.05
+                    },
+                    "uuid": "5fa99f02-a3ef-42f6-99be-e33bae1a6e9b"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) J402 referenciamezője",
+                    "pos": {
+                        "x": 187.0,
+                        "y": 148.65
+                    },
+                    "uuid": "6b6e0b04-540c-41c1-ba5b-99d0715569c0"
+                },
+                {
+                    "description": "Téglalap: J402 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 183.94,
+                        "y": 148.31
+                    },
+                    "uuid": "b34d4181-6071-4eb9-9add-53fc0a6dd271"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) J402 referenciamezője",
+                    "pos": {
+                        "x": 187.0,
+                        "y": 148.65
+                    },
+                    "uuid": "6b6e0b04-540c-41c1-ba5b-99d0715569c0"
+                },
+                {
+                    "description": "Szegmens: J402 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 186.5,
+                        "y": 148.31
+                    },
+                    "uuid": "fdcb9cea-418f-4663-b6d9-1f9791dadfd4"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) J402 referenciamezője",
+                    "pos": {
+                        "x": 187.0,
+                        "y": 148.65
+                    },
+                    "uuid": "6b6e0b04-540c-41c1-ba5b-99d0715569c0"
+                },
+                {
+                    "description": "Szegmens: J402 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 185.4,
+                        "y": 148.51
+                    },
+                    "uuid": "91159135-e6f7-40a8-9ead-ca05dc2ec47e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) J402 referenciamezője",
+                    "pos": {
+                        "x": 187.0,
+                        "y": 148.65
+                    },
+                    "uuid": "6b6e0b04-540c-41c1-ba5b-99d0715569c0"
+                },
+                {
+                    "description": "Szegmens: J402 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 185.7,
+                        "y": 148.41
+                    },
+                    "uuid": "83a4445c-42dc-4011-be11-8489cd73950c"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Szegmens: J402 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 185.7,
+                        "y": 148.51
+                    },
+                    "uuid": "14faf61e-0d12-460d-88c0-be9dd8f82559"
+                },
+                {
+                    "description": "A(z) J402 referenciamezője",
+                    "pos": {
+                        "x": 187.0,
+                        "y": 148.65
+                    },
+                    "uuid": "6b6e0b04-540c-41c1-ba5b-99d0715569c0"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) J402 referenciamezője",
+                    "pos": {
+                        "x": 187.0,
+                        "y": 148.65
+                    },
+                    "uuid": "6b6e0b04-540c-41c1-ba5b-99d0715569c0"
+                },
+                {
+                    "description": "Szegmens: J402 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 187.5,
+                        "y": 147.7
+                    },
+                    "uuid": "975e7c55-1603-4bd9-9882-ee7f5d72b9fc"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) U304 referenciamezője",
+                    "pos": {
+                        "x": 150.0,
+                        "y": 102.4
+                    },
+                    "uuid": "14a1a2bf-bc3b-4bd4-a5c7-378f5114badd"
+                },
+                {
+                    "description": "Sokszög: U304 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 148.55,
+                        "y": 101.51
+                    },
+                    "uuid": "8d7c840f-c1da-4722-9395-87a6bedf4c1e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Sokszög: U301 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 189.8,
+                        "y": 70.51
+                    },
+                    "uuid": "b1ba5f5e-96ca-497f-b9ad-c748e456643a"
+                },
+                {
+                    "description": "A(z) U301 referenciamezője",
+                    "pos": {
+                        "x": 191.25,
+                        "y": 71.4
+                    },
+                    "uuid": "b9273b1e-422a-495b-ab31-b4f9c88fab8e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Szegmens: F401 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 179.71,
+                        "y": 60.002013
+                    },
+                    "uuid": "8a89d617-72fb-4895-a72c-dbb3101b64b9"
+                },
+                {
+                    "description": "A(z) F401 referenciamezője",
+                    "pos": {
+                        "x": 180.13,
+                        "y": 58.0
+                    },
+                    "uuid": "d9342931-e9a6-4415-8543-c1698133715d"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Szegmens: D301 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 184.65,
+                        "y": 59.01
+                    },
+                    "uuid": "4dd6402c-c3b8-4c0a-948b-fc6c2723db32"
+                },
+                {
+                    "description": "A(z) D301 referenciamezője",
+                    "pos": {
+                        "x": 185.0,
+                        "y": 55.5
+                    },
+                    "uuid": "68e3949d-97c7-4c23-b6b7-751e24378ed8"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Sokszög: Q102 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 117.7,
+                        "y": 122.49
+                    },
+                    "uuid": "57c44eb0-b750-4566-a684-93963fbbd8fb"
+                },
+                {
+                    "description": "A(z) Q102 referenciamezője",
+                    "pos": {
+                        "x": 116.25,
+                        "y": 121.6
+                    },
+                    "uuid": "9f7688ef-f99e-4a5b-a1a5-560dc275d95d"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) J201 referenciamezője",
+                    "pos": {
+                        "x": 99.05,
+                        "y": 77.0
+                    },
+                    "uuid": "8e5a95ac-777c-4d8a-8c94-0384e796b7ed"
+                },
+                {
+                    "description": "Téglalap: J201 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 98.46,
+                        "y": 80.56
+                    },
+                    "uuid": "d0446cca-a4e2-40ff-8865-461e86f8e980"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) JP101 referenciamezője",
+                    "pos": {
+                        "x": 118.75,
+                        "y": 92.55
+                    },
+                    "uuid": "3c93ba2b-4f8f-406d-82d2-6409a8c69761"
+                },
+                {
+                    "description": "Szegmens: JP101 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 119.45,
+                        "y": 93.0
+                    },
+                    "uuid": "dfa5a8c7-4ed5-4fcc-b452-3fd2f0094f27"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) JP101 referenciamezője",
+                    "pos": {
+                        "x": 118.75,
+                        "y": 92.55
+                    },
+                    "uuid": "3c93ba2b-4f8f-406d-82d2-6409a8c69761"
+                },
+                {
+                    "description": "Körív: JP101 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 118.049999,
+                        "y": 93.699999
+                    },
+                    "uuid": "4c58f3b9-cec1-40ab-893e-b67aaacc992c"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) J201 referenciamezője",
+                    "pos": {
+                        "x": 99.05,
+                        "y": 77.0
+                    },
+                    "uuid": "8e5a95ac-777c-4d8a-8c94-0384e796b7ed"
+                },
+                {
+                    "description": "Téglalap: J201 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 98.45,
+                        "y": 77.25
+                    },
+                    "uuid": "afa1cb0b-3963-488c-89b2-7994bede1fc0"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "A(z) J202 referenciamezője",
+                    "pos": {
+                        "x": 224.05,
+                        "y": 110.75
+                    },
+                    "uuid": "8b79933b-6cdc-4e97-ad35-887b7aaed7d7"
+                },
+                {
+                    "description": "Téglalap: J202 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 224.46,
+                        "y": 114.56
+                    },
+                    "uuid": "edf060cf-46be-407f-a1e5-ace5679995a6"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance",
+            "items": [
+                {
+                    "description": "Téglalap: J202 a(z) B.Silkscreen rétegen",
+                    "pos": {
+                        "x": 224.45,
+                        "y": 111.25
+                    },
+                    "uuid": "745b7b5c-44aa-4ab5-b5cc-c0c6ec742a1e"
+                },
+                {
+                    "description": "A(z) J202 referenciamezője",
+                    "pos": {
+                        "x": 224.05,
+                        "y": 110.75
+                    },
+                    "uuid": "8b79933b-6cdc-4e97-ad35-887b7aaed7d7"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "A(z) C353 referenciamezője",
+                    "pos": {
+                        "x": 181.25,
+                        "y": 72.07
+                    },
+                    "uuid": "8ea2f030-7432-472d-bc49-6da9ad2f2272"
+                },
+                {
+                    "description": "Forrszem 2 [GND] (U306), B.Cu",
+                    "pos": {
+                        "x": 184.0,
+                        "y": 72.0
+                    },
+                    "uuid": "c0f5a37c-e45f-45bc-b466-5e2eb2af6f73"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "réz kitüremkedés (In1.Cu)",
+            "items": [],
+            "severity": "warning",
+            "type": "copper_sliver"
+        }
+    ]
+}

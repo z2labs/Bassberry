@@ -1,0 +1,109 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-27T02:06:39",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.6",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/a6d767ec-7dbb-5efa-9092-a28939b51ffc",
+            "violations": []
+        },
+        {
+            "path": "/pi/",
+            "uuid_path": "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/b44a858d-c800-5707-9f27-b8f256d724c5",
+            "violations": []
+        },
+        {
+            "path": "/audio/",
+            "uuid_path": "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/336d929c-11d4-54a3-8e7b-2d76f7b7895a",
+            "violations": [
+                {
+                    "description": "Output és Output típusú lábak vannak összekötve",
+                    "items": [
+                        {
+                            "description": "Symbol U202 Láb 23 [OUT_A-, Output, Line]",
+                            "pos": {
+                                "x": 1.2446,
+                                "y": 2.0574
+                            },
+                            "uuid": "5da944b9-0e2d-5b94-91ac-7d52d3356d86"
+                        },
+                        {
+                            "description": "Symbol U202 Láb 26 [OUT_A+, Output, Line]",
+                            "pos": {
+                                "x": 1.2446,
+                                "y": 2.0066
+                            },
+                            "uuid": "b2e59126-d71b-559f-a866-8b99590b8e38"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_to_pin"
+                },
+                {
+                    "description": "Output és Output típusú lábak vannak összekötve",
+                    "items": [
+                        {
+                            "description": "Symbol U202 Láb 17 [OUT_B+, Output, Line]",
+                            "pos": {
+                                "x": 1.2446,
+                                "y": 2.159
+                            },
+                            "uuid": "f20b212d-1844-59a4-a9c3-0cd957251376"
+                        },
+                        {
+                            "description": "Symbol U202 Láb 20 [OUT_B-, Output, Line]",
+                            "pos": {
+                                "x": 1.2446,
+                                "y": 2.2098
+                            },
+                            "uuid": "8e28e597-fc51-5362-9ef1-b71dc662889d"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_to_pin"
+                }
+            ]
+        },
+        {
+            "path": "/power/",
+            "uuid_path": "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b",
+            "violations": []
+        },
+        {
+            "path": "/battery/",
+            "uuid_path": "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/64b9f060-a050-53a9-87cd-a637fed146cc",
+            "violations": []
+        },
+        {
+            "path": "/ui/",
+            "uuid_path": "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/fe65986e-dde2-59c0-b932-092b11b72bde",
+            "violations": []
+        }
+    ],
+    "source": "bassberry.kicad_sch"
+}

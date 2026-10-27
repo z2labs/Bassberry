@@ -1494,6 +1494,148 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "bassberry:+3V3_USB"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "+3V3_USB"
+				(at 0 3.556 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"+3V3_USB\""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "+3V3_USB_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27)
+						(xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54)
+						(xy 0.762 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0)
+						(xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "+3V3_USB_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:D_TVS"
 			(pin_numbers
 				(hide yes)
@@ -4350,7 +4492,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "power:+5V"
+		(symbol "bassberry:+5V_BUCK"
 			(power global)
 			(pin_numbers
 				(hide yes)
@@ -4375,7 +4517,7 @@
 					)
 				)
 			)
-			(property "Value" "+5V"
+			(property "Value" "+5V_BUCK"
 				(at 0 3.556 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -4407,7 +4549,7 @@
 					)
 				)
 			)
-			(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(property "Description" "Power symbol creates a global label with name \"+5V_BUCK\""
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -4429,7 +4571,7 @@
 					)
 				)
 			)
-			(symbol "+5V_0_1"
+			(symbol "+5V_BUCK_0_1"
 				(polyline
 					(pts
 						(xy -0.762 1.27)
@@ -4470,7 +4612,7 @@
 					)
 				)
 			)
-			(symbol "+5V_1_1"
+			(symbol "+5V_BUCK_1_1"
 				(pin power_in line
 					(at 0 0 90)
 					(length 0)
@@ -4878,28 +5020,33 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Jumper:SolderJumper_3_Bridged12"
+		(symbol "bassberry:PVDD_SUB"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
 				(hide yes)
 			)
 			(exclude_from_sim no)
-			(in_bom no)
+			(in_bom yes)
 			(on_board yes)
 			(in_pos_files yes)
 			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "JP"
-				(at -2.54 -2.54 0)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
 				(show_name no)
 				(do_not_autoplace no)
+				(hide yes)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" "SolderJumper_3_Bridged12"
-				(at 0 2.794 0)
+			(property "Value" "PVDD_SUB"
+				(at 0 3.556 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
@@ -4920,28 +5067,6 @@
 				)
 			)
 			(property "Datasheet" ""
-				(at 0 -15.24 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "3-pole Solder Jumper, pins 1+2 closed/bridged"
-				(at 0 -12.7 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "Solder Jumper SPDT"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -4952,7 +5077,7 @@
 					)
 				)
 			)
-			(property "ki_fp_filters" "SolderJumper*Bridged12*"
+			(property "Description" "Power symbol creates a global label with name \"PVDD_SUB\""
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -4963,11 +5088,22 @@
 					)
 				)
 			)
-			(symbol "SolderJumper_3_Bridged12_0_1"
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "PVDD_SUB_0_1"
 				(polyline
 					(pts
-						(xy -2.54 0)
-						(xy -2.032 0)
+						(xy -0.762 1.27)
+						(xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -4979,80 +5115,8 @@
 				)
 				(polyline
 					(pts
-						(xy -1.016 1.016)
-						(xy -1.016 -1.016)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -1.016 0.508)
-					(end -0.508 -0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(arc
-					(start -1.016 -1.016)
-					(mid -2.0276 0)
-					(end -1.016 1.016)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start -0.508 1.016)
-					(end 0.508 -1.016)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -1.27)
-						(xy 0 -1.016)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(arc
-					(start 1.016 1.016)
-					(mid 2.0276 0)
-					(end 1.016 -1.016)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.016 1.016)
-						(xy 1.016 -1.016)
+						(xy 0 2.54)
+						(xy 0.762 1.27)
 					)
 					(stroke
 						(width 0)
@@ -5064,8 +5128,8 @@
 				)
 				(polyline
 					(pts
-						(xy 2.54 0)
-						(xy 2.032 0)
+						(xy 0 0)
+						(xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -5076,11 +5140,11 @@
 					)
 				)
 			)
-			(symbol "SolderJumper_3_Bridged12_1_1"
-				(pin passive line
-					(at -5.08 0 0)
-					(length 2.54)
-					(name "A"
+			(symbol "PVDD_SUB_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0)
+					(name ""
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5088,42 +5152,6 @@
 						)
 					)
 					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 0 180)
-					(length 2.54)
-					(name "B"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5287,6 +5315,304 @@
 				)
 			)
 			(embedded_fonts no)
+		)
+		(symbol "bassberry:+3V3_AON"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "+3V3_AON"
+				(at 0 3.556 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"+3V3_AON\""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "+3V3_AON_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27)
+						(xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54)
+						(xy 0.762 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0)
+						(xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "+3V3_AON_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "bassberry:XC6216B332PR"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at 0 7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "XC6216B332PR"
+				(at 0 -12.7 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-89-5"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.torexsemi.com/file/xc6216/XC6216-XE6216.pdf"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Torex XC6216B 3.3 V LDO, VIN 2-28 V, 150 mA, CE active high, SOT-89-5 (1 VOUT, 2 VSS, 3 CE, 4 NC, 5 VIN)"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "XC6216B332PR_0_1"
+				(rectangle
+					(start -6.35 5.08)
+					(end 6.35 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "XC6216B332PR_1_1"
+				(pin power_in line
+					(at -11.43 2.54 0)
+					(length 5.08)
+					(name "VIN"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -11.43 0 0)
+					(length 5.08)
+					(name "CE"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at 11.43 2.54 180)
+					(length 5.08)
+					(name "VOUT"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -10.16 90)
+					(length 5.08)
+					(name "VSS"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at -3.81 10.16 270)
+					(length 5.08)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
 		)
 	)
 	(text "IP2366 application per Injoinic datasheet V1.10 fig. 9. Settings: 3S (6.2k), 4.2V/cell (9.1k), 30W (3.6k)."
@@ -5833,17 +6159,61 @@
 		)
 		(uuid "da956076-bef4-58bf-9c66-c9d275db6c6b")
 	)
-	(global_label "+3V3_USB"
-		(shape bidirectional)
-		(at 45.72 134.62 90)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
+	(symbol
+		(lib_id "bassberry:+3V3_USB")
+		(at 45.72 134.62 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1b807085-7017-58d8-af62-fa6ad0ce3856")
+		(property "Reference" "#PWR04005"
+			(at 45.72 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
-			(justify left)
 		)
-		(uuid "0e7a8a13-8c5c-5c11-9acc-95f040696bfa")
+		(property "Value" "+3V3_USB"
+			(at 45.72 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 45.72 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 45.72 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0cf1a028-2f96-5313-88eb-0d8f2503b6d7")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04005")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(global_label "USB_DP"
 		(shape bidirectional)
@@ -5923,8 +6293,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "1b807085-7017-58d8-af62-fa6ad0ce3856")
-		(property "Reference" "#PWR04005"
+		(uuid "cc92f06a-3ee7-5108-a7e5-deb2d2f4cb23")
+		(property "Reference" "#PWR04006"
 			(at 72.39 139.7 0)
 			(effects
 				(font
@@ -5960,12 +6330,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "0cf1a028-2f96-5313-88eb-0d8f2503b6d7")
+			(uuid "2e714cb7-65ad-5efa-b96c-f1410a37f4b1")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04005")
+					(reference "#PWR04006")
 					(unit 1)
 				)
 			)
@@ -5979,8 +6349,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "cc92f06a-3ee7-5108-a7e5-deb2d2f4cb23")
-		(property "Reference" "#PWR04006"
+		(uuid "53458306-0c45-5a9c-8a7a-3ca00a07dbfc")
+		(property "Reference" "#PWR04007"
 			(at 80.01 139.7 0)
 			(effects
 				(font
@@ -6016,12 +6386,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "2e714cb7-65ad-5efa-b96c-f1410a37f4b1")
+			(uuid "4aee808f-c904-5013-9e27-e13ca9b52708")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04006")
+					(reference "#PWR04007")
 					(unit 1)
 				)
 			)
@@ -6035,8 +6405,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "5f5fb8cc-948e-5ef7-8578-55c64c44329d")
-		(property "Reference" "#FLG04007"
+		(uuid "ecb9dda0-b6ff-5a2e-9311-11fb5299881e")
+		(property "Reference" "#FLG04008"
 			(at 24.13 59.69 0)
 			(effects
 				(font
@@ -6072,12 +6442,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "644412ef-7c98-578e-b2f5-51e041b2ee8c")
+			(uuid "e3d39711-0ce1-56df-a141-82fb8e3da783")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#FLG04007")
+					(reference "#FLG04008")
 					(unit 1)
 				)
 			)
@@ -6091,8 +6461,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "391f2ac1-c543-5896-9385-0930450cd397")
-		(property "Reference" "#PWR04008"
+		(uuid "b042e4c8-aa03-546c-ab27-daff162fdc79")
+		(property "Reference" "#PWR04009"
 			(at 20.32 60.96 0)
 			(effects
 				(font
@@ -6128,12 +6498,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "21502a16-6eae-5def-bdc3-1e482b00f6b3")
+			(uuid "2df69ea4-9d6b-5ccd-a2a3-2f5c03ae523a")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04008")
+					(reference "#PWR04009")
 					(unit 1)
 				)
 			)
@@ -6147,8 +6517,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "5a05fb52-fd79-53e9-9448-c08a7f6c1d51")
-		(property "Reference" "#FLG04009"
+		(uuid "5b6e1084-5b8e-5a0e-abb1-800d5f939605")
+		(property "Reference" "#FLG04010"
 			(at 34.29 59.69 0)
 			(effects
 				(font
@@ -6184,12 +6554,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "3dd3bf5a-f905-5ace-a136-9923bab59642")
+			(uuid "c6760e84-e609-5560-9279-f4d0b6cf462a")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#FLG04009")
+					(reference "#FLG04010")
 					(unit 1)
 				)
 			)
@@ -6231,7 +6601,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_DFN_QFN:QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm"
+		(property "Footprint" "Package_DFN_QFN:QFN-40-1EP_5x5mm_P0.4mm_EP3.6x3.6mm_ThermalVias"
 			(at 170.18 119.38 0)
 			(effects
 				(font
@@ -6389,8 +6759,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a6fa35d2-51df-57da-9eea-1d5bf203c1e6")
-		(property "Reference" "#PWR04010"
+		(uuid "225ed49d-8d7b-585a-8287-319f11157b2a")
+		(property "Reference" "#PWR04011"
 			(at 152.4 96.52 0)
 			(effects
 				(font
@@ -6426,12 +6796,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "efeca0b4-652a-59d1-a5f9-47440a575de1")
+			(uuid "8584b594-7fe7-5dc0-b783-5e57158a4967")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04010")
+					(reference "#PWR04011")
 					(unit 1)
 				)
 			)
@@ -6696,8 +7066,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "225ed49d-8d7b-585a-8287-319f11157b2a")
-		(property "Reference" "#PWR04011"
+		(uuid "d10d4324-a648-5f4e-b0fc-8f85d6e95172")
+		(property "Reference" "#PWR04012"
 			(at 187.96 121.92 0)
 			(effects
 				(font
@@ -6733,12 +7103,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "8584b594-7fe7-5dc0-b783-5e57158a4967")
+			(uuid "8a5c15eb-98bf-5b80-a6c0-99c9d39de1c9")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04011")
+					(reference "#PWR04012")
 					(unit 1)
 				)
 			)
@@ -6752,8 +7122,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "d10d4324-a648-5f4e-b0fc-8f85d6e95172")
-		(property "Reference" "#PWR04012"
+		(uuid "1b3f55ed-5145-58c0-9996-6576c202ad53")
+		(property "Reference" "#PWR04013"
 			(at 187.96 124.46 0)
 			(effects
 				(font
@@ -6789,12 +7159,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "8a5c15eb-98bf-5b80-a6c0-99c9d39de1c9")
+			(uuid "02823e63-e8c3-5b6b-88f6-e1cfab1f3f51")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04012")
+					(reference "#PWR04013")
 					(unit 1)
 				)
 			)
@@ -6886,8 +7256,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "1b3f55ed-5145-58c0-9996-6576c202ad53")
-		(property "Reference" "#PWR04013"
+		(uuid "99662591-f88c-5311-a7f0-656b37874179")
+		(property "Reference" "#PWR04014"
 			(at 170.18 149.86 0)
 			(effects
 				(font
@@ -6923,12 +7293,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "02823e63-e8c3-5b6b-88f6-e1cfab1f3f51")
+			(uuid "d13e1179-ce61-51ea-a1e8-5ecdb82a3c61")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04013")
+					(reference "#PWR04014")
 					(unit 1)
 				)
 			)
@@ -7171,8 +7541,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "99662591-f88c-5311-a7f0-656b37874179")
-		(property "Reference" "#PWR04014"
+		(uuid "22ff5c3c-b453-5e2d-b2be-19971edd6b73")
+		(property "Reference" "#PWR04015"
 			(at 134.62 204.47 0)
 			(effects
 				(font
@@ -7208,12 +7578,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "d13e1179-ce61-51ea-a1e8-5ecdb82a3c61")
+			(uuid "c3dfffdb-4098-56c6-beff-62a5b2d1c953")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04014")
+					(reference "#PWR04015")
 					(unit 1)
 				)
 			)
@@ -7376,8 +7746,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "22ff5c3c-b453-5e2d-b2be-19971edd6b73")
-		(property "Reference" "#PWR04015"
+		(uuid "c694cf3b-6e60-5240-87e4-77424e912f77")
+		(property "Reference" "#PWR04016"
 			(at 154.94 204.47 0)
 			(effects
 				(font
@@ -7413,12 +7783,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "c3dfffdb-4098-56c6-beff-62a5b2d1c953")
+			(uuid "852784a5-425c-5858-8c5b-de8ef6596b76")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04015")
+					(reference "#PWR04016")
 					(unit 1)
 				)
 			)
@@ -7490,8 +7860,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "c694cf3b-6e60-5240-87e4-77424e912f77")
-		(property "Reference" "#PWR04016"
+		(uuid "c4deda88-03d9-5b66-bd6b-eb7e85d0d480")
+		(property "Reference" "#PWR04017"
 			(at 165.1 196.85 0)
 			(effects
 				(font
@@ -7527,12 +7897,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "852784a5-425c-5858-8c5b-de8ef6596b76")
+			(uuid "8560267f-db4b-5d76-868f-3b67e9c03928")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04016")
+					(reference "#PWR04017")
 					(unit 1)
 				)
 			)
@@ -7546,8 +7916,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "c4deda88-03d9-5b66-bd6b-eb7e85d0d480")
-		(property "Reference" "#PWR04017"
+		(uuid "669d4b5e-7c65-5cf0-9ac5-f7d469058de1")
+		(property "Reference" "#PWR04018"
 			(at 165.1 204.47 0)
 			(effects
 				(font
@@ -7583,12 +7953,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "8560267f-db4b-5d76-868f-3b67e9c03928")
+			(uuid "aa55e66d-f029-56f9-aced-ded6d99a1225")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04017")
+					(reference "#PWR04018")
 					(unit 1)
 				)
 			)
@@ -7671,8 +8041,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "669d4b5e-7c65-5cf0-9ac5-f7d469058de1")
-		(property "Reference" "#PWR04018"
+		(uuid "511f22ec-8b1b-5879-8c53-ee2481713ee8")
+		(property "Reference" "#PWR04019"
 			(at 175.26 204.47 0)
 			(effects
 				(font
@@ -7708,12 +8078,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "aa55e66d-f029-56f9-aced-ded6d99a1225")
+			(uuid "8d4a425d-4a12-5642-aae6-4173988e2dad")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04018")
+					(reference "#PWR04019")
 					(unit 1)
 				)
 			)
@@ -7796,8 +8166,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "511f22ec-8b1b-5879-8c53-ee2481713ee8")
-		(property "Reference" "#PWR04019"
+		(uuid "a3b0a11c-985b-5fb0-8bdd-da7fb78b1af8")
+		(property "Reference" "#PWR04020"
 			(at 185.42 204.47 0)
 			(effects
 				(font
@@ -7833,12 +8203,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "8d4a425d-4a12-5642-aae6-4173988e2dad")
+			(uuid "38853028-05ef-52f8-86bb-b0b28b40dbce")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04019")
+					(reference "#PWR04020")
 					(unit 1)
 				)
 			)
@@ -7921,8 +8291,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a3b0a11c-985b-5fb0-8bdd-da7fb78b1af8")
-		(property "Reference" "#PWR04020"
+		(uuid "b7efec58-90b8-584c-852d-2acfe4e27b64")
+		(property "Reference" "#PWR04021"
 			(at 195.58 204.47 0)
 			(effects
 				(font
@@ -7958,12 +8328,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "38853028-05ef-52f8-86bb-b0b28b40dbce")
+			(uuid "7a6d09db-a3e5-5182-b003-a7c38638d552")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04020")
+					(reference "#PWR04021")
 					(unit 1)
 				)
 			)
@@ -8046,8 +8416,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "b7efec58-90b8-584c-852d-2acfe4e27b64")
-		(property "Reference" "#PWR04021"
+		(uuid "e487fc95-69e0-5439-97bd-505813ed7cd5")
+		(property "Reference" "#PWR04022"
 			(at 205.74 204.47 0)
 			(effects
 				(font
@@ -8083,12 +8453,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "7a6d09db-a3e5-5182-b003-a7c38638d552")
+			(uuid "a7d7fee6-ce69-52c0-a1ff-7a53d67d85ee")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04021")
+					(reference "#PWR04022")
 					(unit 1)
 				)
 			)
@@ -8171,8 +8541,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "e487fc95-69e0-5439-97bd-505813ed7cd5")
-		(property "Reference" "#PWR04022"
+		(uuid "5037a9b8-d374-5af5-99b2-ac1fe2bff6b9")
+		(property "Reference" "#PWR04023"
 			(at 215.9 204.47 0)
 			(effects
 				(font
@@ -8208,12 +8578,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "a7d7fee6-ce69-52c0-a1ff-7a53d67d85ee")
+			(uuid "9097177a-b679-5791-9633-93489bad8936")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04022")
+					(reference "#PWR04023")
 					(unit 1)
 				)
 			)
@@ -8296,8 +8666,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "5037a9b8-d374-5af5-99b2-ac1fe2bff6b9")
-		(property "Reference" "#PWR04023"
+		(uuid "7804e872-73f8-5f94-a768-eddddb3894ba")
+		(property "Reference" "#PWR04024"
 			(at 226.06 204.47 0)
 			(effects
 				(font
@@ -8333,12 +8703,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "9097177a-b679-5791-9633-93489bad8936")
+			(uuid "c7b93260-75cc-5fd9-ac57-496a220a7dc0")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04023")
+					(reference "#PWR04024")
 					(unit 1)
 				)
 			)
@@ -8422,8 +8792,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "7804e872-73f8-5f94-a768-eddddb3894ba")
-		(property "Reference" "#PWR04024"
+		(uuid "c474e706-4388-5ecf-8cc5-116ca20b304a")
+		(property "Reference" "#PWR04025"
 			(at 236.22 204.47 0)
 			(effects
 				(font
@@ -8459,12 +8829,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "c7b93260-75cc-5fd9-ac57-496a220a7dc0")
+			(uuid "c2d1c8cd-d38f-570e-8e71-b9cd21e64cb2")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04024")
+					(reference "#PWR04025")
 					(unit 1)
 				)
 			)
@@ -8627,8 +8997,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "c474e706-4388-5ecf-8cc5-116ca20b304a")
-		(property "Reference" "#PWR04025"
+		(uuid "51510238-dfaa-5947-b3c7-6d821f5f8490")
+		(property "Reference" "#PWR04026"
 			(at 124.46 229.87 0)
 			(effects
 				(font
@@ -8664,12 +9034,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "c2d1c8cd-d38f-570e-8e71-b9cd21e64cb2")
+			(uuid "a64869b4-944c-5101-a715-b7e2e6cdc387")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04025")
+					(reference "#PWR04026")
 					(unit 1)
 				)
 			)
@@ -8741,8 +9111,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "51510238-dfaa-5947-b3c7-6d821f5f8490")
-		(property "Reference" "#PWR04026"
+		(uuid "0592d903-01f2-589f-9d98-9120fc238def")
+		(property "Reference" "#PWR04027"
 			(at 144.78 236.22 0)
 			(effects
 				(font
@@ -8778,12 +9148,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "a64869b4-944c-5101-a715-b7e2e6cdc387")
+			(uuid "50eb9d3d-ca4b-5c61-a9b8-a2a6990aebb3")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04026")
+					(reference "#PWR04027")
 					(unit 1)
 				)
 			)
@@ -9387,8 +9757,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "0592d903-01f2-589f-9d98-9120fc238def")
-		(property "Reference" "#PWR04027"
+		(uuid "23054c33-c9b5-5804-b74f-885e11c91b8f")
+		(property "Reference" "#PWR04028"
 			(at 81.28 66.04 0)
 			(effects
 				(font
@@ -9424,12 +9794,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "50eb9d3d-ca4b-5c61-a9b8-a2a6990aebb3")
+			(uuid "58488932-31c3-5c83-917f-a5e6f1c4964c")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04027")
+					(reference "#PWR04028")
 					(unit 1)
 				)
 			)
@@ -9501,8 +9871,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "23054c33-c9b5-5804-b74f-885e11c91b8f")
-		(property "Reference" "#PWR04028"
+		(uuid "494fa3a6-994e-54d7-becb-52d848d2bb3a")
+		(property "Reference" "#PWR04029"
 			(at 93.98 67.31 0)
 			(effects
 				(font
@@ -9538,12 +9908,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "58488932-31c3-5c83-917f-a5e6f1c4964c")
+			(uuid "4dfa2395-b366-558a-9b0f-210259c1e504")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04028")
+					(reference "#PWR04029")
 					(unit 1)
 				)
 			)
@@ -9815,8 +10185,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "494fa3a6-994e-54d7-becb-52d848d2bb3a")
-		(property "Reference" "#PWR04029"
+		(uuid "10d391e4-0bf5-55ed-951d-25e935168657")
+		(property "Reference" "#PWR04030"
 			(at 241.3 88.9 0)
 			(effects
 				(font
@@ -9852,12 +10222,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "4dfa2395-b366-558a-9b0f-210259c1e504")
+			(uuid "54b6d11a-1ffb-520d-a1a8-aeb879716595")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04029")
+					(reference "#PWR04030")
 					(unit 1)
 				)
 			)
@@ -10060,8 +10430,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "10d391e4-0bf5-55ed-951d-25e935168657")
-		(property "Reference" "#PWR04030"
+		(uuid "893ec414-c111-53c8-9ba3-a30fd9a94d64")
+		(property "Reference" "#PWR04031"
 			(at 302.26 88.9 0)
 			(effects
 				(font
@@ -10097,12 +10467,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "54b6d11a-1ffb-520d-a1a8-aeb879716595")
+			(uuid "1b4a3b32-0ebf-55aa-8ea7-3cc0db0fbd15")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04030")
+					(reference "#PWR04031")
 					(unit 1)
 				)
 			)
@@ -10847,8 +11217,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "893ec414-c111-53c8-9ba3-a30fd9a94d64")
-		(property "Reference" "#PWR04031"
+		(uuid "f2dce252-dc46-594f-8f8f-d96071e2fe87")
+		(property "Reference" "#PWR04032"
 			(at 302.26 113.03 0)
 			(effects
 				(font
@@ -10884,12 +11254,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "1b4a3b32-0ebf-55aa-8ea7-3cc0db0fbd15")
+			(uuid "5c4c0bbd-da5d-5040-adc4-121670747ca0")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04031")
+					(reference "#PWR04032")
 					(unit 1)
 				)
 			)
@@ -11052,8 +11422,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "f2dce252-dc46-594f-8f8f-d96071e2fe87")
-		(property "Reference" "#PWR04032"
+		(uuid "4df491d5-d483-591a-afa2-11bb27733aa5")
+		(property "Reference" "#PWR04033"
 			(at 322.58 113.03 0)
 			(effects
 				(font
@@ -11089,12 +11459,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "5c4c0bbd-da5d-5040-adc4-121670747ca0")
+			(uuid "891c1ced-1df7-5cbd-9253-dc8cf917fd25")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04032")
+					(reference "#PWR04033")
 					(unit 1)
 				)
 			)
@@ -11177,8 +11547,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "4df491d5-d483-591a-afa2-11bb27733aa5")
-		(property "Reference" "#PWR04033"
+		(uuid "62fcdbd3-3125-5271-ae54-d704744c1013")
+		(property "Reference" "#PWR04034"
 			(at 231.14 143.51 0)
 			(effects
 				(font
@@ -11214,12 +11584,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "891c1ced-1df7-5cbd-9253-dc8cf917fd25")
+			(uuid "7a50f593-27db-5720-9a5e-1c1ce6ad2871")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04033")
+					(reference "#PWR04034")
 					(unit 1)
 				)
 			)
@@ -11302,8 +11672,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "62fcdbd3-3125-5271-ae54-d704744c1013")
-		(property "Reference" "#PWR04034"
+		(uuid "a9a35767-acad-5bff-aef1-8a3ecbe6729a")
+		(property "Reference" "#PWR04035"
 			(at 241.3 143.51 0)
 			(effects
 				(font
@@ -11339,12 +11709,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "7a50f593-27db-5720-9a5e-1c1ce6ad2871")
+			(uuid "f5485a10-5c97-55d4-ba7e-1cb787a0c466")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04034")
+					(reference "#PWR04035")
 					(unit 1)
 				)
 			)
@@ -11427,8 +11797,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a9a35767-acad-5bff-aef1-8a3ecbe6729a")
-		(property "Reference" "#PWR04035"
+		(uuid "4b47262b-65b4-52e4-8cb3-68ac04fcd0d1")
+		(property "Reference" "#PWR04036"
 			(at 251.46 143.51 0)
 			(effects
 				(font
@@ -11464,12 +11834,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "f5485a10-5c97-55d4-ba7e-1cb787a0c466")
+			(uuid "7be9e614-b4eb-50f7-9e2e-cdfe7fd2ef8a")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04035")
+					(reference "#PWR04036")
 					(unit 1)
 				)
 			)
@@ -11552,8 +11922,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "4b47262b-65b4-52e4-8cb3-68ac04fcd0d1")
-		(property "Reference" "#PWR04036"
+		(uuid "7f123f0f-5465-5581-aecd-5e422a93902b")
+		(property "Reference" "#PWR04037"
 			(at 261.62 143.51 0)
 			(effects
 				(font
@@ -11589,12 +11959,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "7be9e614-b4eb-50f7-9e2e-cdfe7fd2ef8a")
+			(uuid "f4bca64d-9258-5538-86e7-8ac8eddb0dfb")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04036")
+					(reference "#PWR04037")
 					(unit 1)
 				)
 			)
@@ -11666,8 +12036,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "7f123f0f-5465-5581-aecd-5e422a93902b")
-		(property "Reference" "#PWR04037"
+		(uuid "2d55e047-41f6-58e7-b640-ac2dd39037de")
+		(property "Reference" "#PWR04038"
 			(at 271.78 135.89 0)
 			(effects
 				(font
@@ -11703,12 +12073,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "f4bca64d-9258-5538-86e7-8ac8eddb0dfb")
+			(uuid "de189df5-d1c4-5232-a59c-97d31fb94ae7")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04037")
+					(reference "#PWR04038")
 					(unit 1)
 				)
 			)
@@ -11722,8 +12092,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "2d55e047-41f6-58e7-b640-ac2dd39037de")
-		(property "Reference" "#PWR04038"
+		(uuid "81c9d6a2-6728-5838-b119-a812c1c2e01e")
+		(property "Reference" "#PWR04039"
 			(at 271.78 143.51 0)
 			(effects
 				(font
@@ -11759,12 +12129,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "de189df5-d1c4-5232-a59c-97d31fb94ae7")
+			(uuid "859c43c1-4aaf-5ad5-9b64-0db69c6c02fc")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04038")
+					(reference "#PWR04039")
 					(unit 1)
 				)
 			)
@@ -11836,8 +12206,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "81c9d6a2-6728-5838-b119-a812c1c2e01e")
-		(property "Reference" "#PWR04039"
+		(uuid "aa9ab4ec-0ae2-5a96-9d10-7f1fb47ad880")
+		(property "Reference" "#PWR04040"
 			(at 281.94 135.89 0)
 			(effects
 				(font
@@ -11873,12 +12243,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "859c43c1-4aaf-5ad5-9b64-0db69c6c02fc")
+			(uuid "0251cb10-a774-5aeb-9428-72000b9c6130")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04039")
+					(reference "#PWR04040")
 					(unit 1)
 				)
 			)
@@ -11892,8 +12262,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "aa9ab4ec-0ae2-5a96-9d10-7f1fb47ad880")
-		(property "Reference" "#PWR04040"
+		(uuid "de930410-83b9-5f04-8995-e974d51b2887")
+		(property "Reference" "#PWR04041"
 			(at 281.94 143.51 0)
 			(effects
 				(font
@@ -11929,12 +12299,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "0251cb10-a774-5aeb-9428-72000b9c6130")
+			(uuid "194d8247-6633-5190-ab6b-49b7b3331ae7")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04040")
+					(reference "#PWR04041")
 					(unit 1)
 				)
 			)
@@ -12006,8 +12376,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "de930410-83b9-5f04-8995-e974d51b2887")
-		(property "Reference" "#PWR04041"
+		(uuid "59330fad-6733-54ef-8319-c3dece4721aa")
+		(property "Reference" "#PWR04042"
 			(at 292.1 135.89 0)
 			(effects
 				(font
@@ -12043,12 +12413,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "194d8247-6633-5190-ab6b-49b7b3331ae7")
+			(uuid "9ee11dee-c386-5f4c-8999-eb27e55779f0")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04041")
+					(reference "#PWR04042")
 					(unit 1)
 				)
 			)
@@ -12062,8 +12432,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "59330fad-6733-54ef-8319-c3dece4721aa")
-		(property "Reference" "#PWR04042"
+		(uuid "58f20ef3-1c86-54da-9f0f-0f217fef4728")
+		(property "Reference" "#PWR04043"
 			(at 292.1 143.51 0)
 			(effects
 				(font
@@ -12099,18 +12469,18 @@
 			)
 		)
 		(pin "1"
-			(uuid "9ee11dee-c386-5f4c-8999-eb27e55779f0")
+			(uuid "22a5390c-48a6-551a-b8a7-8ab91d060d70")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04042")
+					(reference "#PWR04043")
 					(unit 1)
 				)
 			)
 		)
 	)
-	(text "Pi 5V buck: Vout = 0.76*(1+R31/R32) = 5.14 V. EN driven by supervisor (PI_PWR_EN)."
+	(text "Pi 5V buck (+5V_BUCK, feeds the Pi through the back-power ideal diode on the Pi sheet): Vout = 0.76*(1+R31/R32) = 5.14 V. EN driven by supervisor (PI_PWR_EN)."
 		(exclude_from_sim no)
 		(at 30 290 0)
 		(effects
@@ -12119,7 +12489,7 @@
 			)
 			(justify left)
 		)
-		(uuid "dc47bbc9-d096-5c9c-9ee1-b02b1d07296d")
+		(uuid "7ba048a0-b2cb-5cfa-8ce5-9a9ac34cbf7b")
 	)
 	(symbol
 		(lib_id "Regulator_Switching:TPS565208")
@@ -12199,8 +12569,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "58f20ef3-1c86-54da-9f0f-0f217fef4728")
-		(property "Reference" "#PWR04043"
+		(uuid "b0143829-8c6d-5590-96a6-a6979ce8b44c")
+		(property "Reference" "#PWR04044"
 			(at 78.74 337.82 0)
 			(effects
 				(font
@@ -12236,12 +12606,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "22a5390c-48a6-551a-b8a7-8ab91d060d70")
+			(uuid "82e73dd2-eef2-509f-85f9-2c5825bc8843")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04043")
+					(reference "#PWR04044")
 					(unit 1)
 				)
 			)
@@ -12266,8 +12636,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "b0143829-8c6d-5590-96a6-a6979ce8b44c")
-		(property "Reference" "#PWR04044"
+		(uuid "afa8da06-cc08-5033-842b-351285523928")
+		(property "Reference" "#PWR04045"
 			(at 68.58 327.66 0)
 			(effects
 				(font
@@ -12303,12 +12673,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "82e73dd2-eef2-509f-85f9-2c5825bc8843")
+			(uuid "1294a8d8-3e0c-555a-8637-2fd9fb066cb9")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04044")
+					(reference "#PWR04045")
 					(unit 1)
 				)
 			)
@@ -12498,15 +12868,15 @@
 		(uuid "267545ec-899e-542b-a936-db7261290281")
 	)
 	(symbol
-		(lib_id "power:+5V")
+		(lib_id "bassberry:+5V_BUCK")
 		(at 119.38 323.85 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "afa8da06-cc08-5033-842b-351285523928")
-		(property "Reference" "#PWR04045"
+		(uuid "51f4b890-59f9-5a31-8286-a9dbcc6d02d0")
+		(property "Reference" "#PWR04046"
 			(at 119.38 323.85 0)
 			(effects
 				(font
@@ -12515,7 +12885,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+5V_BUCK"
 			(at 119.38 321.31 0)
 			(effects
 				(font
@@ -12542,12 +12912,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "1294a8d8-3e0c-555a-8637-2fd9fb066cb9")
+			(uuid "041aa9c6-67e1-5828-9b8d-b7e9b7ee2dd1")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04045")
+					(reference "#PWR04046")
 					(unit 1)
 				)
 			)
@@ -12612,15 +12982,15 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+5V")
+		(lib_id "bassberry:+5V_BUCK")
 		(at 129.54 316.23 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "51f4b890-59f9-5a31-8286-a9dbcc6d02d0")
-		(property "Reference" "#PWR04046"
+		(uuid "411982c1-70cf-5630-8c68-1490aa138302")
+		(property "Reference" "#PWR04047"
 			(at 129.54 316.23 0)
 			(effects
 				(font
@@ -12629,7 +12999,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+5V_BUCK"
 			(at 129.54 313.69 0)
 			(effects
 				(font
@@ -12656,12 +13026,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "041aa9c6-67e1-5828-9b8d-b7e9b7ee2dd1")
+			(uuid "fe0c87b4-6732-501f-b050-6c56e0ebed94")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04046")
+					(reference "#PWR04047")
 					(unit 1)
 				)
 			)
@@ -12755,8 +13125,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "411982c1-70cf-5630-8c68-1490aa138302")
-		(property "Reference" "#PWR04047"
+		(uuid "f4c69edf-225a-5b2e-8c02-6ddf04693a87")
+		(property "Reference" "#PWR04048"
 			(at 139.7 323.85 0)
 			(effects
 				(font
@@ -12792,12 +13162,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "fe0c87b4-6732-501f-b050-6c56e0ebed94")
+			(uuid "97d21e72-fb6c-5ce8-805d-141a789fafcd")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04047")
+					(reference "#PWR04048")
 					(unit 1)
 				)
 			)
@@ -12862,15 +13232,15 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+5V")
+		(lib_id "bassberry:+5V_BUCK")
 		(at 149.86 316.23 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "f4c69edf-225a-5b2e-8c02-6ddf04693a87")
-		(property "Reference" "#PWR04048"
+		(uuid "186f5cd5-29b4-5328-8650-26570274b7b7")
+		(property "Reference" "#PWR04049"
 			(at 149.86 316.23 0)
 			(effects
 				(font
@@ -12879,7 +13249,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+5V_BUCK"
 			(at 149.86 313.69 0)
 			(effects
 				(font
@@ -12906,12 +13276,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "97d21e72-fb6c-5ce8-805d-141a789fafcd")
+			(uuid "36151693-42f7-5535-9f58-c2d571a00499")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04048")
+					(reference "#PWR04049")
 					(unit 1)
 				)
 			)
@@ -13006,8 +13376,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "186f5cd5-29b4-5328-8650-26570274b7b7")
-		(property "Reference" "#PWR04049"
+		(uuid "39fa7712-fd3e-555c-83bf-080156b2310b")
+		(property "Reference" "#PWR04050"
 			(at 160.02 323.85 0)
 			(effects
 				(font
@@ -13043,12 +13413,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "36151693-42f7-5535-9f58-c2d571a00499")
+			(uuid "58dfe8a2-499b-5b05-8797-f11939606acd")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04049")
+					(reference "#PWR04050")
 					(unit 1)
 				)
 			)
@@ -13120,8 +13490,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "39fa7712-fd3e-555c-83bf-080156b2310b")
-		(property "Reference" "#PWR04050"
+		(uuid "1cbd6eb6-0fb2-5cc9-a600-c3a4377a0342")
+		(property "Reference" "#PWR04051"
 			(at 109.22 346.71 0)
 			(effects
 				(font
@@ -13157,12 +13527,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "58dfe8a2-499b-5b05-8797-f11939606acd")
+			(uuid "f8190b6b-8bd3-5232-8a72-90a10919ea3a")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04050")
+					(reference "#PWR04051")
 					(unit 1)
 				)
 			)
@@ -13176,8 +13546,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "1cbd6eb6-0fb2-5cc9-a600-c3a4377a0342")
-		(property "Reference" "#PWR04051"
+		(uuid "46700ac8-fd2a-5161-aa10-232bf011a05f")
+		(property "Reference" "#PWR04052"
 			(at 109.22 354.33 0)
 			(effects
 				(font
@@ -13213,12 +13583,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "f8190b6b-8bd3-5232-8a72-90a10919ea3a")
+			(uuid "827d4934-6f64-5f1d-83a4-3cf82e2adb7a")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04051")
+					(reference "#PWR04052")
 					(unit 1)
 				)
 			)
@@ -13290,8 +13660,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "46700ac8-fd2a-5161-aa10-232bf011a05f")
-		(property "Reference" "#PWR04052"
+		(uuid "480db90f-ec3a-58fb-8d25-7d8927dca510")
+		(property "Reference" "#PWR04053"
 			(at 119.38 346.71 0)
 			(effects
 				(font
@@ -13327,12 +13697,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "827d4934-6f64-5f1d-83a4-3cf82e2adb7a")
+			(uuid "765e0e3e-1e4d-57bd-b217-882ca2df57f7")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04052")
+					(reference "#PWR04053")
 					(unit 1)
 				)
 			)
@@ -13346,8 +13716,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "480db90f-ec3a-58fb-8d25-7d8927dca510")
-		(property "Reference" "#PWR04053"
+		(uuid "94acaff5-6f9c-53b9-964a-9af5ec980175")
+		(property "Reference" "#PWR04054"
 			(at 119.38 354.33 0)
 			(effects
 				(font
@@ -13383,12 +13753,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "765e0e3e-1e4d-57bd-b217-882ca2df57f7")
+			(uuid "e16900ea-53ee-5545-a064-a85d95cfa4a7")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04053")
+					(reference "#PWR04054")
 					(unit 1)
 				)
 			)
@@ -13460,8 +13830,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "94acaff5-6f9c-53b9-964a-9af5ec980175")
-		(property "Reference" "#PWR04054"
+		(uuid "17a238d6-596b-5a1c-a30b-24abb3b86aa7")
+		(property "Reference" "#PWR04055"
 			(at 129.54 346.71 0)
 			(effects
 				(font
@@ -13497,12 +13867,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "e16900ea-53ee-5545-a064-a85d95cfa4a7")
+			(uuid "a6fce38e-420d-5eee-a24e-f74e69e95652")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04054")
+					(reference "#PWR04055")
 					(unit 1)
 				)
 			)
@@ -13516,8 +13886,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "17a238d6-596b-5a1c-a30b-24abb3b86aa7")
-		(property "Reference" "#PWR04055"
+		(uuid "5fc2d397-4353-5e2e-9198-42e24cac7410")
+		(property "Reference" "#PWR04056"
 			(at 129.54 354.33 0)
 			(effects
 				(font
@@ -13553,12 +13923,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "a6fce38e-420d-5eee-a24e-f74e69e95652")
+			(uuid "4d5f29bf-dd43-5828-91c8-29328a53e19f")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04055")
+					(reference "#PWR04056")
 					(unit 1)
 				)
 			)
@@ -13623,15 +13993,15 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+5V")
+		(lib_id "bassberry:+5V_BUCK")
 		(at 139.7 346.71 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "5fc2d397-4353-5e2e-9198-42e24cac7410")
-		(property "Reference" "#PWR04056"
+		(uuid "0c1e7903-2d54-5973-9095-9c290f44c68b")
+		(property "Reference" "#PWR04057"
 			(at 139.7 346.71 0)
 			(effects
 				(font
@@ -13640,7 +14010,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+5V_BUCK"
 			(at 139.7 344.17 0)
 			(effects
 				(font
@@ -13667,12 +14037,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "4d5f29bf-dd43-5828-91c8-29328a53e19f")
+			(uuid "9c8a1150-6e1d-5bde-9269-e3ba172e6b1a")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04056")
+					(reference "#PWR04057")
 					(unit 1)
 				)
 			)
@@ -13686,8 +14056,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "0c1e7903-2d54-5973-9095-9c290f44c68b")
-		(property "Reference" "#PWR04057"
+		(uuid "d7ebcd77-dea9-5d79-806b-13d1ba490929")
+		(property "Reference" "#PWR04058"
 			(at 139.7 354.33 0)
 			(effects
 				(font
@@ -13723,12 +14093,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "9c8a1150-6e1d-5bde-9269-e3ba172e6b1a")
+			(uuid "0fed6dbd-b0b1-5305-ae39-fabdc2bb144e")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04057")
+					(reference "#PWR04058")
 					(unit 1)
 				)
 			)
@@ -13793,15 +14163,15 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+5V")
+		(lib_id "bassberry:+5V_BUCK")
 		(at 149.86 346.71 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "d7ebcd77-dea9-5d79-806b-13d1ba490929")
-		(property "Reference" "#PWR04058"
+		(uuid "6d748174-aaaf-5593-b782-3ce98a46085b")
+		(property "Reference" "#PWR04059"
 			(at 149.86 346.71 0)
 			(effects
 				(font
@@ -13810,7 +14180,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+5V_BUCK"
 			(at 149.86 344.17 0)
 			(effects
 				(font
@@ -13837,12 +14207,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "0fed6dbd-b0b1-5305-ae39-fabdc2bb144e")
+			(uuid "30d2fd07-bc44-5d79-a661-9eb4f9909558")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04058")
+					(reference "#PWR04059")
 					(unit 1)
 				)
 			)
@@ -13856,8 +14226,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "6d748174-aaaf-5593-b782-3ce98a46085b")
-		(property "Reference" "#PWR04059"
+		(uuid "86173763-5f21-54de-8a15-be894778d612")
+		(property "Reference" "#PWR04060"
 			(at 149.86 354.33 0)
 			(effects
 				(font
@@ -13893,12 +14263,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "30d2fd07-bc44-5d79-a661-9eb4f9909558")
+			(uuid "6a7e5db7-6a80-5e64-befd-74ff801021fa")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04059")
+					(reference "#PWR04060")
 					(unit 1)
 				)
 			)
@@ -13963,15 +14333,15 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+5V")
+		(lib_id "bassberry:+5V_BUCK")
 		(at 160.02 346.71 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "86173763-5f21-54de-8a15-be894778d612")
-		(property "Reference" "#PWR04060"
+		(uuid "e12c8d57-3088-59fd-8b5a-2e798d2fb406")
+		(property "Reference" "#PWR04061"
 			(at 160.02 346.71 0)
 			(effects
 				(font
@@ -13980,7 +14350,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+5V_BUCK"
 			(at 160.02 344.17 0)
 			(effects
 				(font
@@ -14007,12 +14377,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "6a7e5db7-6a80-5e64-befd-74ff801021fa")
+			(uuid "f2d4dfd6-3d40-5353-8663-b173363aa84f")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04060")
+					(reference "#PWR04061")
 					(unit 1)
 				)
 			)
@@ -14026,8 +14396,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "e12c8d57-3088-59fd-8b5a-2e798d2fb406")
-		(property "Reference" "#PWR04061"
+		(uuid "b42655eb-2fdc-5aa6-86ac-acdcccdb96c1")
+		(property "Reference" "#PWR04062"
 			(at 160.02 354.33 0)
 			(effects
 				(font
@@ -14063,18 +14433,130 @@
 			)
 		)
 		(pin "1"
-			(uuid "f2d4dfd6-3d40-5353-8663-b173363aa84f")
+			(uuid "891ee5cc-085c-5f10-b669-16d4015877fb")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04061")
+					(reference "#PWR04062")
 					(unit 1)
 				)
 			)
 		)
 	)
-	(text "Sub PVDD boost (optional): Vout = 0.6*(1+R41/R42) = 17.1 V. JP1 selects PVDD_SUB = +BATT (default) or boost."
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 180.34 330.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7d63a4c3-3e54-596f-b93d-9dd8c9fa74ca")
+		(property "Reference" "#FLG04063"
+			(at 184.15 328.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 184.15 331.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 180.34 330.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 180.34 330.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5a3afcbc-461e-5b5c-827e-571f145587af")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#FLG04063")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "bassberry:+5V_BUCK")
+		(at 180.34 330.2 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1213c085-27cd-5883-8658-609cb7ddcf44")
+		(property "Reference" "#PWR04064"
+			(at 180.34 330.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V_BUCK"
+			(at 180.34 327.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 180.34 330.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 180.34 330.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "cd44ad41-4c59-5521-83c0-c812ec4576a7")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04064")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(text "Sub PVDD boost (optional): Vout = 0.6*(1+R41/R42) = 17.1 V. R44 (fitted) feeds PVDD_SUB from +BATT, R45 instead from the boost."
 		(exclude_from_sim no)
 		(at 200 290 0)
 		(effects
@@ -14083,7 +14565,7 @@
 			)
 			(justify left)
 		)
-		(uuid "1f3e6612-b397-5de6-bc79-50901b99e052")
+		(uuid "59c4d4c6-0647-5979-b61d-d6729ad40b32")
 	)
 	(symbol
 		(lib_id "Regulator_Switching:MT3608")
@@ -14174,8 +14656,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "b42655eb-2fdc-5aa6-86ac-acdcccdb96c1")
-		(property "Reference" "#PWR04062"
+		(uuid "83aae5f7-4084-553a-9d6c-47423d77f9c3")
+		(property "Reference" "#PWR04065"
 			(at 231.14 337.82 0)
 			(effects
 				(font
@@ -14211,12 +14693,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "891ee5cc-085c-5f10-b669-16d4015877fb")
+			(uuid "8b6ada71-0abf-5873-bfb8-35e84ecc114a")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04062")
+					(reference "#PWR04065")
 					(unit 1)
 				)
 			)
@@ -14253,8 +14735,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "686d66c6-fae3-540b-90de-6fe6e1872ffa")
-		(property "Reference" "#PWR04063"
+		(uuid "bcede4cf-650c-5759-810a-3d2008f8f05a")
+		(property "Reference" "#PWR04066"
 			(at 223.52 327.66 0)
 			(effects
 				(font
@@ -14290,12 +14772,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "6a22b15a-b793-5f23-83e3-177b501619fc")
+			(uuid "5a9c95ec-9dee-5679-b1d4-4b67e2e87db0")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04063")
+					(reference "#PWR04066")
 					(unit 1)
 				)
 			)
@@ -14367,8 +14849,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "1213c085-27cd-5883-8658-609cb7ddcf44")
-		(property "Reference" "#PWR04064"
+		(uuid "a75634ff-3ba3-5bb4-8da6-cfb6b52e2cf5")
+		(property "Reference" "#PWR04067"
 			(at 254 316.23 0)
 			(effects
 				(font
@@ -14404,12 +14886,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "cd44ad41-4c59-5521-83c0-c812ec4576a7")
+			(uuid "d2152b28-32d4-5fff-973d-059cf7ed65df")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04064")
+					(reference "#PWR04067")
 					(unit 1)
 				)
 			)
@@ -14663,8 +15145,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "83aae5f7-4084-553a-9d6c-47423d77f9c3")
-		(property "Reference" "#PWR04065"
+		(uuid "a01f96f1-af1c-53c1-b940-9e84d20c8008")
+		(property "Reference" "#PWR04068"
 			(at 304.8 323.85 0)
 			(effects
 				(font
@@ -14700,12 +15182,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "8b6ada71-0abf-5873-bfb8-35e84ecc114a")
+			(uuid "588ea06b-9209-57ea-91c1-c1df7cfc785f")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04065")
+					(reference "#PWR04068")
 					(unit 1)
 				)
 			)
@@ -14788,8 +15270,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "bcede4cf-650c-5759-810a-3d2008f8f05a")
-		(property "Reference" "#PWR04066"
+		(uuid "4984b333-1de9-563f-b827-f7b95b51e434")
+		(property "Reference" "#PWR04069"
 			(at 314.96 323.85 0)
 			(effects
 				(font
@@ -14825,12 +15307,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "5a9c95ec-9dee-5679-b1d4-4b67e2e87db0")
+			(uuid "583f0c16-6927-5db2-9eab-331cff96f1b1")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04066")
+					(reference "#PWR04069")
 					(unit 1)
 				)
 			)
@@ -14913,8 +15395,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a75634ff-3ba3-5bb4-8da6-cfb6b52e2cf5")
-		(property "Reference" "#PWR04067"
+		(uuid "fe6614a2-e106-545f-9142-612dfde1fa42")
+		(property "Reference" "#PWR04070"
 			(at 325.12 323.85 0)
 			(effects
 				(font
@@ -14950,12 +15432,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "d2152b28-32d4-5fff-973d-059cf7ed65df")
+			(uuid "096c0ad2-95c8-5ab2-8869-d5d8c6bc26de")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04067")
+					(reference "#PWR04070")
 					(unit 1)
 				)
 			)
@@ -15039,8 +15521,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a01f96f1-af1c-53c1-b940-9e84d20c8008")
-		(property "Reference" "#PWR04068"
+		(uuid "47ca7883-445d-5844-9eda-31a6d40307e1")
+		(property "Reference" "#PWR04071"
 			(at 335.28 323.85 0)
 			(effects
 				(font
@@ -15076,44 +15558,44 @@
 			)
 		)
 		(pin "1"
-			(uuid "588ea06b-9209-57ea-91c1-c1df7cfc785f")
+			(uuid "158b0bb7-6bb9-594a-9a41-f803e8b5b446")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04068")
+					(reference "#PWR04071")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(symbol
-		(lib_id "Jumper:SolderJumper_3_Bridged12")
-		(at 360.68 330.2 0)
+		(lib_id "Device:R")
+		(at 350.52 320.04 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "4c701039-cba7-5bcb-80e8-f6aac2a54280")
-		(property "Reference" "JP301"
-			(at 364.49 328.93 0)
+		(uuid "50f2dca7-12ac-51a3-8cb1-ffe825af7e3f")
+		(property "Reference" "R344"
+			(at 354.33 318.77 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "PVDD_SUB select"
-			(at 364.49 331.47 0)
+		(property "Value" "0R 2512 (PVDD_SUB = battery)"
+			(at 354.33 321.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm"
-			(at 360.68 330.2 0)
+		(property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+			(at 350.52 320.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15122,7 +15604,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 360.68 330.2 0)
+			(at 350.52 320.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15131,18 +15613,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "226fd51f-54fb-56f3-8c09-3d74d5542658")
+			(uuid "0833c083-5fe6-5d85-b77f-6e46a5b1c1f6")
 		)
 		(pin "2"
-			(uuid "888a5356-7a69-500a-adc1-7f018100f2cf")
-		)
-		(pin "3"
-			(uuid "dc06d54e-729b-5f69-8281-4eff98ccbd86")
+			(uuid "7ff1b67c-13ca-5108-b9bd-333433d80f1a")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "JP301")
+					(reference "R344")
 					(unit 1)
 				)
 			)
@@ -15150,15 +15629,15 @@
 	)
 	(symbol
 		(lib_id "power:+BATT")
-		(at 355.6 330.2 90)
+		(at 350.52 316.23 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "4984b333-1de9-563f-b827-f7b95b51e434")
-		(property "Reference" "#PWR04069"
-			(at 355.6 330.2 0)
+		(uuid "ee41b204-5053-57c6-9501-ceadf33b62d8")
+		(property "Reference" "#PWR04072"
+			(at 350.52 316.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15167,7 +15646,7 @@
 			)
 		)
 		(property "Value" "+BATT"
-			(at 355.6 327.66 0)
+			(at 350.52 313.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15175,7 +15654,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 355.6 330.2 0)
+			(at 350.52 316.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15184,7 +15663,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 355.6 330.2 0)
+			(at 350.52 316.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15193,31 +15672,133 @@
 			)
 		)
 		(pin "1"
-			(uuid "583f0c16-6927-5db2-9eab-331cff96f1b1")
+			(uuid "40bd57d5-8782-5de3-9750-34fb4d0d51d0")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04069")
+					(reference "#PWR04072")
 					(unit 1)
 				)
 			)
 		)
 	)
-	(global_label "PVDD_SUB"
-		(shape bidirectional)
-		(at 360.68 334.01 270)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
+	(symbol
+		(lib_id "bassberry:PVDD_SUB")
+		(at 350.52 323.85 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "598d6fe7-d1a2-5bf1-816b-8ea1b87938f8")
+		(property "Reference" "#PWR04073"
+			(at 350.52 323.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
-			(justify right)
 		)
-		(uuid "75bde8b5-ca5f-5912-9a81-0d698f9eec50")
+		(property "Value" "PVDD_SUB"
+			(at 350.52 321.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 350.52 323.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 350.52 323.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4c4fbe7a-d21e-5511-8dbc-f4a1056fd5f3")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04073")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 365.76 320.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp yes)
+		(uuid "40e298f1-dff4-57c7-8cd7-6395d602944b")
+		(property "Reference" "R345"
+			(at 369.57 318.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "DNP 0R 2512 (PVDD_SUB = boost)"
+			(at 369.57 321.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+			(at 365.76 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 365.76 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a3706a26-e1be-5673-97d4-d480df852138")
+		)
+		(pin "2"
+			(uuid "78098ce4-de51-5e20-b829-ec39859eccb0")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "R345")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(label "BOOST_OUT"
-		(at 365.76 330.2 0)
+		(at 365.76 316.23 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -15225,7 +15806,63 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "4caf5718-5eda-59da-a186-d399cd34ee83")
+		(uuid "981cddfb-8e23-58b4-9cf4-904eaa511f4e")
+	)
+	(symbol
+		(lib_id "bassberry:PVDD_SUB")
+		(at 365.76 323.85 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "670f2619-0d8b-5da1-9818-1ef465c0cf26")
+		(property "Reference" "#PWR04074"
+			(at 365.76 323.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PVDD_SUB"
+			(at 365.76 321.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 365.76 323.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 365.76 323.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "45874533-b1cc-56ce-a371-e0e4f96bd256")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04074")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
@@ -15235,8 +15872,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "c8d934f8-8242-56a8-bf0a-e4b1a9c7a798")
-		(property "Reference" "#FLG04070"
+		(uuid "1f9ab763-6317-5099-9f45-f6d2f2bea05c")
+		(property "Reference" "#FLG04075"
 			(at 379.73 328.93 0)
 			(effects
 				(font
@@ -15272,28 +15909,72 @@
 			)
 		)
 		(pin "1"
-			(uuid "1903539e-111e-5e89-9227-1bbdda463b31")
+			(uuid "82be0faa-098c-52d6-a626-df0be8d9eee5")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#FLG04070")
+					(reference "#FLG04075")
 					(unit 1)
 				)
 			)
 		)
 	)
-	(global_label "PVDD_SUB"
-		(shape bidirectional)
-		(at 375.92 330.2 270)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
+	(symbol
+		(lib_id "bassberry:PVDD_SUB")
+		(at 375.92 330.2 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "09eb9429-dfc6-586c-9577-5a2f72c55e50")
+		(property "Reference" "#PWR04076"
+			(at 375.92 330.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
-			(justify right)
 		)
-		(uuid "455b8706-3040-5d9c-ba78-f98a71ccfbfd")
+		(property "Value" "PVDD_SUB"
+			(at 375.92 327.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 375.92 330.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 375.92 330.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ce5ea7c1-c77f-5013-abfa-8c83160f3a9b")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04076")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "Regulator_Linear:HT75xx-1-SOT89")
@@ -15364,8 +16045,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "47ca7883-445d-5844-9eda-31a6d40307e1")
-		(property "Reference" "#PWR04071"
+		(uuid "3df74746-cb5b-5796-88ba-72e8fe3d21b7")
+		(property "Reference" "#PWR04077"
 			(at 78.74 381 0)
 			(effects
 				(font
@@ -15401,12 +16082,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "158b0bb7-6bb9-594a-9a41-f803e8b5b446")
+			(uuid "ff4208b3-7a6b-5e20-9897-d261407ee8d9")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04071")
+					(reference "#PWR04077")
 					(unit 1)
 				)
 			)
@@ -15420,8 +16101,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "ee41b204-5053-57c6-9501-ceadf33b62d8")
-		(property "Reference" "#PWR04072"
+		(uuid "648150f9-32af-5b62-9b33-3521513e7b4e")
+		(property "Reference" "#PWR04078"
 			(at 71.12 373.38 0)
 			(effects
 				(font
@@ -15457,31 +16138,75 @@
 			)
 		)
 		(pin "1"
-			(uuid "40bd57d5-8782-5de3-9750-34fb4d0d51d0")
+			(uuid "c5cf4aec-1de7-5ded-b73f-bd08aca50fc9")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04072")
+					(reference "#PWR04078")
 					(unit 1)
 				)
 			)
 		)
 	)
-	(global_label "+3V3_AON"
-		(shape bidirectional)
-		(at 86.36 373.38 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
+	(symbol
+		(lib_id "bassberry:+3V3_AON")
+		(at 86.36 373.38 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "18e32425-08fb-5e21-8970-6fb8c9690e7b")
+		(property "Reference" "#PWR04079"
+			(at 86.36 373.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
-			(justify left)
 		)
-		(uuid "d0ba7648-f1e4-5c0e-a0ab-e28cb438055f")
+		(property "Value" "+3V3_AON"
+			(at 86.36 370.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 86.36 373.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 86.36 373.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "558b2988-a1e2-573c-81cc-0c5bef8de948")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04079")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
-		(lib_id "Regulator_Linear:HT75xx-1-SOT89")
+		(lib_id "bassberry:XC6216B332PR")
 		(at 160.02 375.92 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -15497,7 +16222,7 @@
 				)
 			)
 		)
-		(property "Value" "HT7533-1"
+		(property "Value" "XC6216B332PR"
 			(at 163.83 377.19 0)
 			(effects
 				(font
@@ -15505,7 +16230,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-89-3"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-89-5"
 			(at 160.02 375.92 0)
 			(effects
 				(font
@@ -15523,14 +16248,20 @@
 				(hide yes)
 			)
 		)
+		(pin "5"
+			(uuid "2d95da61-e91f-5452-93da-29e4674e8b15")
+		)
+		(pin "3"
+			(uuid "7526ed54-23b2-5eb9-ae38-ab87ebf6ca9e")
+		)
 		(pin "1"
 			(uuid "0b22bf39-f02d-530c-ae9d-9719b865ac70")
 		)
 		(pin "2"
 			(uuid "1bb307cc-49d2-5c79-ad8f-975078c35342")
 		)
-		(pin "3"
-			(uuid "7526ed54-23b2-5eb9-ae38-ab87ebf6ca9e")
+		(pin "4"
+			(uuid "331e0d1e-9960-5d5e-939d-683ecafa1f5c")
 		)
 		(instances
 			(project "bassberry"
@@ -15542,72 +16273,16 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 160.02 381 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "598d6fe7-d1a2-5bf1-816b-8ea1b87938f8")
-		(property "Reference" "#PWR04073"
-			(at 160.02 381 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 160.02 383.54 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 160.02 381 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 160.02 381 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "4c4fbe7a-d21e-5511-8dbc-f4a1056fd5f3")
-		)
-		(instances
-			(project "bassberry"
-				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04073")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:VBUS")
-		(at 152.4 373.38 90)
+		(at 148.59 373.38 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "670f2619-0d8b-5da1-9818-1ef465c0cf26")
-		(property "Reference" "#PWR04074"
-			(at 152.4 373.38 0)
+		(uuid "a70f1b6f-177e-5f32-bcdd-80703503a3d7")
+		(property "Reference" "#PWR04080"
+			(at 148.59 373.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15616,7 +16291,7 @@
 			)
 		)
 		(property "Value" "VBUS"
-			(at 152.4 370.84 0)
+			(at 148.59 370.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15624,7 +16299,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 152.4 373.38 0)
+			(at 148.59 373.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15633,7 +16308,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 152.4 373.38 0)
+			(at 148.59 373.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15642,28 +16317,184 @@
 			)
 		)
 		(pin "1"
-			(uuid "45874533-b1cc-56ce-a371-e0e4f96bd256")
+			(uuid "8e7f9d5f-8b53-57d8-a903-6a49a69694ff")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04074")
+					(reference "#PWR04080")
 					(unit 1)
 				)
 			)
 		)
 	)
-	(global_label "+3V3_USB"
-		(shape bidirectional)
-		(at 167.64 373.38 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
+	(symbol
+		(lib_id "power:VBUS")
+		(at 148.59 375.92 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0e82522f-47c6-5152-b87e-ba1bd1db74a1")
+		(property "Reference" "#PWR04081"
+			(at 148.59 375.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
-			(justify left)
 		)
-		(uuid "5bb36160-7dbe-5eb3-bf51-92c1786c760c")
+		(property "Value" "VBUS"
+			(at 148.59 373.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 148.59 375.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 148.59 375.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c1f27520-d092-52b1-8f8b-b8ae22b82c46")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04081")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "bassberry:+3V3_USB")
+		(at 171.45 373.38 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1b0cae3f-0cee-5f37-a819-96315fe3064c")
+		(property "Reference" "#PWR04082"
+			(at 171.45 373.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3_USB"
+			(at 171.45 370.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 171.45 373.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 171.45 373.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2ec3297e-5cf3-5ea2-9fd0-aa4793a6b9ac")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04082")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 160.02 386.08 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6bd679a2-dcb3-5375-be7e-b07def36cbda")
+		(property "Reference" "#PWR04083"
+			(at 160.02 386.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 160.02 388.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 160.02 386.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 160.02 386.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "edda0cda-9319-5457-9e8c-f65185f1f490")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04083")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "Device:C")
@@ -15731,8 +16562,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "93050f56-40a8-57b7-8816-1b019924f59f")
-		(property "Reference" "#PWR04075"
+		(uuid "8282dbac-c4d7-5cd0-b5e3-d0c538fee41d")
+		(property "Reference" "#PWR04084"
 			(at 99.06 387.35 0)
 			(effects
 				(font
@@ -15768,12 +16599,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "6697c4a5-2c9d-5eab-9a43-6554d712bf6c")
+			(uuid "b79716e7-7f19-5f73-9887-38febd2a5a31")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04075")
+					(reference "#PWR04084")
 					(unit 1)
 				)
 			)
@@ -15787,8 +16618,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "09eb9429-dfc6-586c-9577-5a2f72c55e50")
-		(property "Reference" "#PWR04076"
+		(uuid "cdfa3907-af10-520a-922a-54ffc70c1adb")
+		(property "Reference" "#PWR04085"
 			(at 99.06 394.97 0)
 			(effects
 				(font
@@ -15824,12 +16655,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "ce5ea7c1-c77f-5013-abfa-8c83160f3a9b")
+			(uuid "a30df4be-1534-5028-83b2-1431124c6634")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04076")
+					(reference "#PWR04085")
 					(unit 1)
 				)
 			)
@@ -15893,17 +16724,61 @@
 			)
 		)
 	)
-	(global_label "+3V3_AON"
-		(shape bidirectional)
-		(at 109.22 387.35 90)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
+	(symbol
+		(lib_id "bassberry:+3V3_AON")
+		(at 109.22 387.35 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "79ab625d-4c6a-585c-a7cc-499ec73a0fb4")
+		(property "Reference" "#PWR04086"
+			(at 109.22 387.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
-			(justify left)
 		)
-		(uuid "b601436a-7f2e-5804-bd34-0be3a56a73e3")
+		(property "Value" "+3V3_AON"
+			(at 109.22 384.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 109.22 387.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 109.22 387.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "730c5cb3-b9a2-508e-b08a-38bb80c0d991")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04086")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -15913,8 +16788,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "3df74746-cb5b-5796-88ba-72e8fe3d21b7")
-		(property "Reference" "#PWR04077"
+		(uuid "ce1d4fc9-f978-56fb-82d2-09170dfd1a77")
+		(property "Reference" "#PWR04087"
 			(at 109.22 394.97 0)
 			(effects
 				(font
@@ -15950,12 +16825,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "ff4208b3-7a6b-5e20-9897-d261407ee8d9")
+			(uuid "e9a52edd-5ec8-5d65-a8bc-7355a8cc9126")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04077")
+					(reference "#PWR04087")
 					(unit 1)
 				)
 			)
@@ -16027,8 +16902,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "648150f9-32af-5b62-9b33-3521513e7b4e")
-		(property "Reference" "#PWR04078"
+		(uuid "29949b3a-e3f5-570c-9734-2af015096fd0")
+		(property "Reference" "#PWR04088"
 			(at 180.34 387.35 0)
 			(effects
 				(font
@@ -16064,12 +16939,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "c5cf4aec-1de7-5ded-b73f-bd08aca50fc9")
+			(uuid "0ee79066-1a5d-5dc9-bb7e-b28dbc0e220d")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04078")
+					(reference "#PWR04088")
 					(unit 1)
 				)
 			)
@@ -16083,8 +16958,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "18e32425-08fb-5e21-8970-6fb8c9690e7b")
-		(property "Reference" "#PWR04079"
+		(uuid "02e103e8-5c98-5df2-8ee2-d90bc0ab1e25")
+		(property "Reference" "#PWR04089"
 			(at 180.34 394.97 0)
 			(effects
 				(font
@@ -16120,12 +16995,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "558b2988-a1e2-573c-81cc-0c5bef8de948")
+			(uuid "7da65cac-d477-58a9-a950-9c68396511f6")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04079")
+					(reference "#PWR04089")
 					(unit 1)
 				)
 			)
@@ -16189,17 +17064,61 @@
 			)
 		)
 	)
-	(global_label "+3V3_USB"
-		(shape bidirectional)
-		(at 190.5 387.35 90)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
+	(symbol
+		(lib_id "bassberry:+3V3_USB")
+		(at 190.5 387.35 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f4a3d760-fc3e-5c72-b870-32a2e6cc069b")
+		(property "Reference" "#PWR04090"
+			(at 190.5 387.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
-			(justify left)
 		)
-		(uuid "de32392d-f298-5e28-a05c-51aa98c15a9c")
+		(property "Value" "+3V3_USB"
+			(at 190.5 384.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 190.5 387.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 387.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a66b709a-0cd2-5c2d-a3e1-5f552e1f77cf")
+		)
+		(instances
+			(project "bassberry"
+				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
+					(reference "#PWR04090")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -16209,8 +17128,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a70f1b6f-177e-5f32-bcdd-80703503a3d7")
-		(property "Reference" "#PWR04080"
+		(uuid "c06cb048-91ef-577d-aa2c-0666587db8a4")
+		(property "Reference" "#PWR04091"
 			(at 190.5 394.97 0)
 			(effects
 				(font
@@ -16246,12 +17165,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "8e7f9d5f-8b53-57d8-a903-6a49a69694ff")
+			(uuid "8ea9ac0f-016f-5f61-8873-12967c641d2f")
 		)
 		(instances
 			(project "bassberry"
 				(path "/a6d767ec-7dbb-5efa-9092-a28939b51ffc/0d244cd1-7c95-5542-8e55-02ff0cf9689b"
-					(reference "#PWR04080")
+					(reference "#PWR04091")
 					(unit 1)
 				)
 			)

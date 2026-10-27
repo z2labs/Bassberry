@@ -1,0 +1,449 @@
+﻿== 02:06:24 schematic
+schematics written to C:\Users\RF\Documents\GitHub\bassberry\hardware\bassberry
+ERC violations: 2
+  error pin_to_pin ['Symbol U202 L├íb 23 [OUT_A-, Output, Line]', 'Symbol U202 L├íb 26 [OUT_A+, Output, Line]']
+  error pin_to_pin ['Symbol U202 L├íb 17 [OUT_B+, Output, Line]', 'Symbol U202 L├íb 20 [OUT_B-, Output, Line]']
+== 02:06:40 placement
+
+Pi socket rotation 180 score 7
+  J301: y = 3.60 mm (courtyard front at -0.6 mm)
+  J402: moved 0.5 mm from its anchor to stay courtyard-free
+  Q303: moved 1.0 mm from its anchor to stay courtyard-free
+  C317: moved 2.0 mm from its anchor to stay courtyard-free
+  U302: moved 1.0 mm from its anchor to stay courtyard-free
+  U303: rotation 90 (pin 2 toward +y)
+  L302: rotation 270 (pin 1 toward -y)
+  L302: moved 2.0 mm from its anchor to stay courtyard-free
+  Q101: rotation 0 (pin 1 toward -x)
+  U202: moved 2.0 mm from its anchor to stay courtyard-free
+  C234: moved 2.5 mm from its anchor to stay courtyard-free
+courtyard overlaps after placement: 0
+USB-C crossover pre-routed
+GND pins tied to their exposed pad: 11
+GND dog-bones: 100, no room: U501.7 U305.1 U304.2 U302.41 U302.41 U201.1 U201.5 U201.14 J301.A1 J301.A12 J301.B1 J301.B
+12
+GND dog-bones: 4, no room: U501.7 U304.2 U302.41 U302.41 U201.1 U201.14
+GND dog-bones: 2, no room: none
+GND links: none; still alone (pour / stitching): U302.41 U302.41 U302.41 U302.41 U302.41 U302.41 U302.41 U302.41 U302.4
+1 U302.41 U302.41 U302.41 U302.41 U302.41 U302.41 U302.41 U302.41 U302.41 U201.1 U201.14
+placed 179 footprints -> C:\Users\RF\Documents\GitHub\bassberry\hardware\tools\..\bassberry\bassberry.kicad_pcb
+
+
+== 02:07:00 pre-route twin_check
+
+== layer 1: netlist vs source-document spec
+  WARN [physical] OLED module pin order must be GND-VCC-SCL-SDA (1.3in SH1106 modules exist with VCC-GND): check the mo
+dule before plugging
+  WARN [physical] 3S BMS module pad order B-, B1, B2, B+, P- must match the module silk
+  WARN [physical] Keystone 1042 polarity: '+' marked contact = pad 1, cells must be inserted per the silk
+  WARN [physical] NTC on J402 must be fitted (IP2366 11.7: NTC pin never floating)
+  WARN [physical] Pi antenna keep-out position: confirm on a real Pi 4 / Pi 5 / Pi 3B+
+  WARN [physical] TDSON MOSFETs: any 30-40 V SO-8FL/TDSON part with the JEDEC pin-out (1-3 S, 4 G, 5-8 D)
+  WARN [deviation] TAS5805M PDN: 10 k pull-DOWN instead of TI's 10 k pull-up: amps stay off until the Linux driver driv
+es PDN
+  WARN [deviation] IP2366 DPC/DMC: not connected (fig. 9 wires them to USB D+/D- for QC/FCP/AFC); USB data goes to the 
+CH340 console
+  WARN [deviation] IP2366 RPSET 3.6 k (30 W) instead of fig. 9 27 k (140 W): 3S pack, cheap inductor and MOSFETs
+  WARN [deviation] HAT ZVD PFET DMP3013SFV instead of DMG2305UX: the Pi 5 needs 5 A
+  -> 170 pass, 10 warn, 0 FAIL
+== selftest: injected faults
+  PASS [inject] Pi socket mirrored (odd/even rows swapped: the face-down trap): 26 new FAIL  e.g. GPIO16 unused (HAT gu
+ide: not driven at boot)  connected to ['J101', 'R102']
+  PASS [inject] amp 1 SCLK/LRCLK swapped: 2 new FAIL  e.g. PCM_CLK -> amp 1 SCLK  NOT REACHED
+  PASS [inject] ZVD PFET drain/source swapped: 5 new FAIL  e.g. Pi 5 V pins = back-power diode output (PFET source)  ->
+ 2 different nodes: J101.5V_2, J101
+  PASS [inject] HAT EEPROM SDA/SCL swapped: 2 new FAIL  e.g. ID_SC -> EEPROM SCL  -> 2 different nodes: J101.ID_SC, U10
+1.SCL
+  PASS [inject] IP2366 HG1/LG1 swapped: 2 new FAIL  e.g. HG1 -> 10 Ohm -> Q1 gate: R306 between U302.HG1 and Q301.G
+  PASS [inject] TPS565208 VIN/SW swapped: 3 new FAIL  e.g. SW -> 4.7 uH -> 5.1 V node (ZVD input): L302 between U303.SW
+ and Q101.D
+  PASS [inject] MT3608 FB/EN swapped: 3 new FAIL  e.g. Vout = 0.6*(1+Rtop/Rbot), below TAS PVDD max: Rtop [] Rbot [('R3
+43', 100000.0)]
+  PASS [inject] BMS B1/B2 swapped: 2 new FAIL  e.g. cell 1 + = cell 2 - = BMS B1  -> 2 different nodes: BT401.+, BT402.
+-, J401.2
+  PASS [inject] cell 2 holder rotated (polarity): 3 new FAIL  e.g. cell 1 + = cell 2 - = BMS B1  -> 2 different nodes: 
+BT401.+, BT402.-, J401.2
+  PASS [inject] USB D+/D- swapped at the CH340: 2 new FAIL  e.g. D+ (both receptacle rows) -> CH340 UD+  -> 2 different
+ nodes: J301.D+, U502.UD+
+  PASS [inject] supervisor I2C SDA/SCL swapped: 2 new FAIL  e.g. SCL1: amps, supervisor PC2 (I2C SCL), OLED  -> 2 diffe
+rent nodes: J101.GPIO3, U201.SCL, U2
+  PASS [inject] both amps on the same I2C address (ADR 15k): 1 new FAIL  e.g. amp 2 ADR 47 k to DVDD -> I2C 0x2E: [('R2
+21', 15000.0)]
+  PASS [inject] buck divider wrong (10k -> 12k: 4.4 V for the Pi): 1 new FAIL  e.g. Vout = 0.760*(1+Rtop/Rbot) for the 
+Pi: R331 57.6k / R332 12k -> 4.408 V
+  PASS [inject] BAT_NUM resistor 9.1k (4 cells): 1 new FAIL  e.g. BAT_NUM 6.2 k = 3 cells in series: [('R311', 9100.0)]
+  PASS [inject] amp 2 PBTL tie OUT_A+/OUT_A- missing: 2 new FAIL  e.g. U202 BST_A- bootstrap 0.22 uF: []
+  PASS [inject] something else on ID_SD (HAT violation): 1 new FAIL  e.g. ID_SD: EEPROM SDA + its pull-up only (HAT rul
+e)  extra ['R106'] missing []
+  -> 16 pass, 0 warn, 0 FAIL
+
+
+== 02:07:01 pre-route twin_plug
+
+== layer 2: Pi 4/5 plugged in face down
+  PASS [holes] Pi hole pattern found, face down (max error 0.000 mm); orientation chosen by the enclosure: ports over t
+he open corner
+  PASS [pin] every Pi pin lands on the socket pad with its own number
+  PASS [ports] USB/Ethernet block hangs over the open corner (no board under it)
+  PASS [thermal] Pi 4 SoC lid (15 mm) inside the exposed thermal pad
+  PASS [thermal] Pi 5 SoC lid (17 mm) inside the exposed thermal pad
+  PASS [antenna] antenna corner covered by the copper keep-out: 81 % (on-board part)
+  PASS [shadow] no top-side part under the Pi (only its socket)
+  -> 7 pass, 0 warn, 0 FAIL
+== layer 2b: Pi signals through the geometric join
+  -> 31 pass, 0 warn, 0 FAIL
+== selftest
+  PASS [inject] socket rows swapped: 26 FAIL
+  PASS [inject] Pi plugged one pin off: 24 FAIL
+  -> 2 pass, 0 warn, 0 FAIL
+
+
+== 02:07:02 pre-route twin_mech
+
+== layer 4: mechanics (cells, edges, lid controls)
+  -> 37 pass, 0 warn, 0 FAIL
+== selftest: injected faults
+  PASS [inject] cell holder turned 90 degrees: 3 new FAIL
+  PASS [inject] cell 2 holder reversed: 2 new FAIL
+  PASS [inject] PLAY button on the bottom: 1 new FAIL
+  PASS [inject] USB-C turned round (pads over the edge): 1 new FAIL
+  -> 4 pass, 0 warn, 0 FAIL
+
+
+== 02:07:03 route
+
+escape probe: walled-in pads: 0
+routing widths: /battery/CELL* 0.76, +BATT 0.2, +5V 0.4, +5V_BUCK 0.57, /power/BUCK_SW 0.57, VBUS 0.2, /power/CHG_VIN 0
+.2, /power/CHG_NODE? 0.2, /power/CHG_LX? 0.2, PVDD_SUB 0.38, /power/BOOST_SW 0.57, /power/BOOST_OUT 0.6, /audio/AMP1_AP
+ 0.38, /audio/AMP1_AN 0.38, /audio/AMP1_BP 0.38, /audio/AMP1_BN 0.38, /audio/AMP2_P 0.38, /audio/AMP2_N 0.38, /audio/SA
+T_* 0.6, /audio/SUB_* 0.8, +3V3 0.38, +3V3_AON 0.3, +3V3_USB 0.3, /power/CHG_HG* 0.2, /power/CHG_LG* 0.2, /power/CHG_BS
+T? 0.2, /power/CHG_SN? 0.3, /audio/AMP?_BST* 0.3, /power/BUCK_BST 0.3
+trunks: +5V 1.6 mm (6 taps), +5V_BUCK 1.6 mm (6 taps), +BATT 1.6 mm (27 taps), /audio/AMP1_AN 0.6 mm (1 taps), /audio/A
+MP1_AP 0.6 mm (1 taps), /audio/AMP1_BN 0.6 mm (1 taps), /audio/AMP1_BP 0.6 mm (1 taps), /audio/AMP2_N 0.85 mm (2 taps),
+ /audio/AMP2_P 0.85 mm (2 taps), /audio/SAT_L_N 0.6 mm (0 taps), /audio/SAT_L_P 0.6 mm (0 taps), /audio/SAT_R_N 0.6 mm 
+(0 taps), /audio/SAT_R_P 0.6 mm (0 taps), /audio/SUB_N 1.0 mm (1 taps), /audio/SUB_P 1.0 mm (1 taps), /battery/CELL0 1.
+6 mm (1 taps), /battery/CELL1 1.6 mm (2 taps), /battery/CELL2 1.6 mm (2 taps), /battery/CELL3 1.6 mm (2 taps), /power/B
+OOST_OUT 0.8 mm (1 taps), /power/BOOST_SW 1.0 mm (1 taps), /power/BUCK_SW 0.85 mm (1 taps), /power/CHG_LX1 1.2 mm (6 ta
+ps), /power/CHG_LX2 1.2 mm (6 taps), /power/CHG_NODEB 1.0 mm (2 taps), /power/CHG_NODEC 1.0 mm (2 taps), /power/CHG_VIN
+ 1.0 mm (8 taps), PVDD_SUB 1.0 mm (6 taps), VBUS 1.0 mm (8 taps)
+  +5V                      1 seg, at target   1, min 1.90 mm (target 1.9)
+  +5V_BUCK                 4 seg, at target   2, min 1.60 mm (target 1.9)
+  +BATT                    9 seg, at target   4, min 1.60 mm (target 2.4)
+  /audio/AMP1_AN           7 seg, at target   7, min 0.60 mm (target 0.6)
+  /audio/AMP1_AP          12 seg, at target  12, min 0.60 mm (target 0.6)
+  /audio/AMP1_BN           4 seg, at target   4, min 0.60 mm (target 0.6)
+  /audio/AMP1_BP           3 seg, at target   3, min 0.60 mm (target 0.6)
+  /audio/AMP2_N            5 seg, at target   0, min 0.85 mm (target 1.0)
+  /audio/AMP2_P            5 seg, at target   5, min 1.00 mm (target 1.0)
+  /audio/SAT_L_N           6 seg, at target   6, min 0.60 mm (target 0.6)
+  /audio/SAT_L_P           2 seg, at target   2, min 0.60 mm (target 0.6)
+  /audio/SAT_R_N           9 seg, at target   9, min 0.60 mm (target 0.6)
+  /audio/SAT_R_P           4 seg, at target   4, min 0.60 mm (target 0.6)
+  /audio/SUB_N             1 seg, at target   1, min 1.00 mm (target 1.0)
+  /audio/SUB_P             2 seg, at target   2, min 1.00 mm (target 1.0)
+  /battery/CELL0           1 seg, at target   1, min 2.40 mm (target 2.4)
+  /battery/CELL1           7 seg, at target   3, min 1.60 mm (target 2.4)
+  /battery/CELL2           3 seg, at target   1, min 1.60 mm (target 2.4)
+  /battery/CELL3           2 seg, at target   1, min 1.90 mm (target 2.4)
+  /power/BOOST_OUT         5 seg, at target   5, min 0.80 mm (target 0.8)
+  /power/BOOST_SW          1 seg, at target   1, min 1.00 mm (target 1.0)
+  /power/BUCK_SW           4 seg, at target   0, min 0.85 mm (target 1.9)
+  /power/CHG_LX1           1 seg, at target   1, min 1.20 mm (target 1.2)
+  /power/CHG_LX2           1 seg, at target   1, min 1.20 mm (target 1.2)
+  /power/CHG_NODEB         1 seg, at target   1, min 1.00 mm (target 1.0)
+  /power/CHG_NODEC         3 seg, at target   3, min 1.00 mm (target 1.0)
+  /power/CHG_VIN          12 seg, at target  12, min 1.00 mm (target 1.0)
+  PVDD_SUB                 9 seg, at target   9, min 1.00 mm (target 1.0)
+  VBUS                     1 seg, at target   1, min 1.00 mm (target 1.0)
+fatten: 23 segments widened, 28 vias enlarged or added in parallel
+   pass0_trunk: exit 0, 10 s, unrouted: 1
+    ! diff pair USB_DP/USB_DN: net(s) not routed here
+   pass1a_heavy: exit 0, 4 s, unrouted: 1
+    ! diff pair USB_DP/USB_DN: net(s) not routed here
+  +5V                      6 seg, at target   2, min 0.40 mm (target 1.9)
+  +5V_BUCK                23 seg, at target   8, min 0.57 mm (target 1.9)
+  +BATT                   68 seg, at target  19, min 0.20 mm (target 2.4)
+  /audio/AMP1_AN           9 seg, at target   7, min 0.38 mm (target 0.6)
+  /audio/AMP1_AP          14 seg, at target  12, min 0.38 mm (target 0.6)
+  /audio/AMP1_BN           8 seg, at target   4, min 0.38 mm (target 0.6)
+  /audio/AMP1_BP           5 seg, at target   3, min 0.38 mm (target 0.6)
+  /audio/AMP2_N           13 seg, at target   0, min 0.38 mm (target 1.0)
+  /audio/AMP2_P           13 seg, at target   9, min 0.38 mm (target 1.0)
+  /audio/SAT_L_N           6 seg, at target   6, min 0.60 mm (target 0.6)
+  /audio/SAT_L_P           2 seg, at target   2, min 0.60 mm (target 0.6)
+  /audio/SAT_R_N          13 seg, at target  13, min 0.60 mm (target 0.6)
+  /audio/SAT_R_P           6 seg, at target   6, min 0.60 mm (target 0.6)
+  /audio/SUB_N             2 seg, at target   2, min 1.00 mm (target 1.0)
+  /audio/SUB_P             5 seg, at target   5, min 1.00 mm (target 1.0)
+  /battery/CELL0           2 seg, at target   1, min 0.76 mm (target 2.4)
+  /battery/CELL1          17 seg, at target   5, min 0.76 mm (target 2.4)
+  /battery/CELL2           7 seg, at target   1, min 0.76 mm (target 2.4)
+  /battery/CELL3          11 seg, at target   5, min 1.00 mm (target 2.4)
+  /power/BOOST_OUT        13 seg, at target   9, min 0.60 mm (target 0.8)
+  /power/BOOST_SW          2 seg, at target   1, min 0.57 mm (target 1.0)
+  /power/BUCK_SW          11 seg, at target   2, min 0.57 mm (target 1.9)
+  /power/CHG_LX1          14 seg, at target   3, min 0.20 mm (target 1.2)
+  /power/CHG_LX2          17 seg, at target   1, min 0.20 mm (target 1.2)
+  /power/CHG_NODEB        10 seg, at target   2, min 0.20 mm (target 1.0)
+  /power/CHG_NODEC        15 seg, at target   6, min 0.20 mm (target 1.0)
+  /power/CHG_VIN          28 seg, at target  17, min 0.20 mm (target 1.0)
+  PVDD_SUB                18 seg, at target  12, min 0.38 mm (target 1.0)
+  VBUS                    22 seg, at target   3, min 0.20 mm (target 1.0)
+fatten: 101 segments widened, 17 vias enlarged or added in parallel
+   pass1b_local: exit 0, 64 s, unrouted: 1
+    ! diff pair USB_DP/USB_DN: net(s) not routed here
+   pass2_fast: exit 0, 27 s, unrouted: 0
+   pass3_rest: exit 0, 73 s, unrouted: 2
+    ! diff pair USB_DP/USB_DN: net(s) not routed here
+    ! /audio/AMP1_ADR: no path
+   repair 1: stuck ['/audio/AMP1_ADR']
+   repair 1: ripped ['AMP2_PDN', 'I2S_LRCLK']
+   repair 1: left []
+SoC via field restored: 0
+routed -> C:\Users\RF\Documents\GitHub\bassberry\hardware\bassberry\bassberry.kicad_pcb [('pass0_trunk', 1), ('pass1a_h
+eavy', 1), ('pass1b_local', 1), ('pass2_fast', 0), ('pass3_rest', 2), ('repair1', 0)]
+
+
+== 02:10:33 post-route
+
+== 1 track_tidy  02:10:34
+pass 1: 305 chains changed (95 runs centred in their channel), 627 segments out, 833 in
+pass 2: 41 chains changed (44 runs centred in their channel), 193 segments out, 182 in
+pass 3: 15 chains changed (16 runs centred in their channel), 69 segments out, 68 in
+pass 4: 6 chains changed (7 runs centred in their channel), 34 segments out, 34 in
+pass 5: 4 chains changed (6 runs centred in their channel), 25 segments out, 25 in
+pass 6: 2 chains changed (3 runs centred in their channel), 12 segments out, 12 in
+segments 1178 -> 1372
+   exit 0
+== 1a tidy_guard  02:11:17
+tidy_guard: 5 connections lost by the tidy, 5 re-joined
+   exit 0
+== 1b power_pour  02:11:35
+power_pour: 1 near-duplicate vias merged
+power_pour: 27 plane tap vias
+power_pour: 37 dead pour pieces removed
+power_pour: 58 vias enlarged or added in parallel
+power_pour: 135 zones on 29 nets
+   exit 0
+== 2 zone fill  02:12:08
+filled
+   exit 0
+== 2b walled-in GND pads: 
+== 3 gnd_stitch  02:12:29
+gnd_stitch: plane In2.Cu, via 0.60/0.30, clearance 0.25 mm (incl. margin), edge 0.35 mm, 582 vias (240 GND)
+  round 1, 200 mil cells: {'100mil': 12, '25mil': 10, '12.5mil': 1, '50mil': 6, '200mil': 4}
+  round 1, islands without a via: 1, stitched 0
+  round 1, pour pockets dropped by the filler: 70, stitched 0
+  round 2, 200 mil cells: {'25mil': 1, '50mil': 3, '12.5mil': 1}
+  round 2, islands without a via: 1, stitched 0
+  round 2, pour pockets dropped by the filler: 70, stitched 0
+  round 3, 200 mil cells: {'50mil': 1}
+  round 3, islands without a via: 1, stitched 0
+  round 3, pour pockets dropped by the filler: 70, stitched 0
+  round 4, 200 mil cells: nothing to add
+  round 4, islands without a via: 1, stitched 0
+  round 4, pour pockets dropped by the filler: 70, stitched 0
+  ! bare island B.Cu at (166.3, 80.3) 2.4x0.8 mm - no legal spot
+  ! pocket F.Cu at (154.6, 151.1) 2.3x3.0 mm, 2.81 mm2 - no via fits
+  ! pocket F.Cu at (170.0, 151.5) 4.1x0.4 mm, 1.68 mm2 - no via fits
+  ! pocket F.Cu at (176.5, 151.5) 4.4x0.4 mm, 1.80 mm2 - no via fits
+  ! pocket F.Cu at (193.5, 143.4) 7.1x14.2 mm, 21.40 mm2 - no via fits
+  ! pocket F.Cu at (181.3, 144.8) 13.7x11.4 mm, 39.96 mm2 - no via fits
+  ! pocket F.Cu at (160.7, 149.1) 1.5x1.1 mm, 0.95 mm2 - no via fits
+  ! pocket F.Cu at (149.5, 146.6) 2.4x2.7 mm, 2.83 mm2 - no via fits
+  ! pocket F.Cu at (165.6, 144.7) 0.7x0.7 mm, 0.32 mm2 - no via fits
+  ! pocket F.Cu at (197.0, 135.0) 1.8x1.1 mm, 1.12 mm2 - no via fits
+  ! pocket F.Cu at (192.4, 129.4) 0.9x0.9 mm, 0.42 mm2 - no via fits
+  ! pocket F.Cu at (110.9, 116.9) 1.2x2.1 mm, 1.69 mm2 - no via fits
+  ! pocket F.Cu at (110.9, 114.9) 1.2x1.5 mm, 1.13 mm2 - no via fits
+  ! pocket F.Cu at (107.5, 107.6) 2.5x2.5 mm, 2.24 mm2 - no via fits
+  ! pocket F.Cu at (205.7, 106.6) 0.9x0.9 mm, 0.38 mm2 - no via fits
+  ! pocket F.Cu at (154.4, 104.4) 10.9x5.0 mm, 40.87 mm2 - no via fits
+  ! pocket F.Cu at (171.6, 101.7) 11.3x10.3 mm, 55.06 mm2 - no via fits
+  ! pocket F.Cu at (205.7, 102.6) 4.8x2.4 mm, 6.48 mm2 - no via fits
+  ! pocket F.Cu at (107.5, 100.0) 2.5x2.5 mm, 2.24 mm2 - no via fits
+  ! pocket F.Cu at (212.4, 99.3) 1.3x2.1 mm, 1.00 mm2 - no via fits
+  ! pocket F.Cu at (160.8, 85.9) 3.2x2.9 mm, 2.27 mm2 - no via fits
+  ! pocket F.Cu at (211.1, 85.6) 1.4x1.1 mm, 0.91 mm2 - no via fits
+  ! pocket F.Cu at (107.5, 82.2) 2.5x2.5 mm, 2.24 mm2 - no via fits
+  ! pocket F.Cu at (188.8, 78.1) 0.5x5.6 mm, 2.68 mm2 - no via fits
+  ! pocket F.Cu at (214.2, 69.4) 12.8x11.6 mm, 39.69 mm2 - no via fits
+  ! pocket In2.Cu at (107.5, 125.3) 2.5x2.5 mm, 1.98 mm2 - no via fits
+  ! pocket In2.Cu at (107.5, 107.6) 2.5x2.5 mm, 2.25 mm2 - no via fits
+  ! pocket In2.Cu at (107.5, 100.0) 2.5x2.5 mm, 2.25 mm2 - no via fits
+  ! pocket In2.Cu at (107.5, 82.2) 2.5x2.5 mm, 2.25 mm2 - no via fits
+  ! pocket B.Cu at (195.7, 137.4) 4.5x12.7 mm, 22.88 mm2 - no via fits
+  ! pocket B.Cu at (193.4, 137.8) 1.0x0.8 mm, 0.62 mm2 - no via fits
+  ! pocket B.Cu at (204.8, 134.5) 9.5x7.0 mm, 43.56 mm2 - no via fits
+  ! pocket B.Cu at (191.7, 136.4) 0.8x0.8 mm, 0.41 mm2 - no via fits
+  ! pocket B.Cu at (197.1, 135.2) 0.8x0.7 mm, 0.37 mm2 - no via fits
+  ! pocket B.Cu at (105.5, 125.0) 1.3x1.6 mm, 0.94 mm2 - no via fits
+  ! pocket B.Cu at (105.5, 122.8) 1.4x2.4 mm, 1.40 mm2 - no via fits
+  ! pocket B.Cu at (105.5, 120.3) 1.4x2.4 mm, 1.40 mm2 - no via fits
+  ! pocket B.Cu at (171.7, 108.8) 16.3x16.4 mm, 9.14 mm2 - no via fits
+  ! pocket B.Cu at (105.5, 112.7) 1.4x2.4 mm, 1.40 mm2 - no via fits
+  ! pocket B.Cu at (196.9, 111.7) 0.7x1.4 mm, 0.48 mm2 - no via fits
+  ! pocket B.Cu at (105.5, 110.1) 1.4x2.4 mm, 1.40 mm2 - no via fits
+  ! pocket B.Cu at (107.5, 107.6) 2.5x2.5 mm, 2.24 mm2 - no via fits
+  ! pocket B.Cu at (105.5, 108.0) 1.4x1.5 mm, 0.84 mm2 - no via fits
+  ! pocket B.Cu at (215.0, 102.3) 1.8x2.7 mm, 1.20 mm2 - no via fits
+  ! pocket B.Cu at (211.0, 102.9) 0.9x1.2 mm, 0.48 mm2 - no via fits
+  ! pocket B.Cu at (107.5, 100.0) 2.5x2.5 mm, 2.24 mm2 - no via fits
+  ! pocket B.Cu at (117.7, 95.6) 1.7x1.1 mm, 0.93 mm2 - no via fits
+  ! pocket B.Cu at (111.1, 94.9) 2.8x1.8 mm, 2.57 mm2 - no via fits
+  ! pocket B.Cu at (113.7, 95.0) 1.8x1.6 mm, 1.54 mm2 - no via fits
+  ! pocket B.Cu at (215.0, 94.8) 1.9x1.1 mm, 1.25 mm2 - no via fits
+  ! pocket B.Cu at (123.1, 89.3) 6.5x1.9 mm, 7.09 mm2 - no via fits
+  ! pocket B.Cu at (215.1, 87.6) 2.4x1.4 mm, 1.99 mm2 - no via fits
+  ! pocket B.Cu at (223.5, 85.1) 3.1x5.7 mm, 7.05 mm2 - no via fits
+  ! pocket B.Cu at (209.0, 87.2) 0.9x1.1 mm, 0.67 mm2 - no via fits
+  ! pocket B.Cu at (212.1, 86.3) 1.1x2.2 mm, 1.20 mm2 - no via fits
+  ! pocket B.Cu at (226.1, 85.6) 0.4x2.2 mm, 0.97 mm2 - no via fits
+  ! pocket B.Cu at (167.5, 85.5) 1.2x0.4 mm, 0.40 mm2 - no via fits
+  ! pocket B.Cu at (207.1, 84.4) 3.5x1.8 mm, 2.05 mm2 - no via fits
+  ! pocket B.Cu at (132.9, 84.7) 1.1x0.8 mm, 0.40 mm2 - no via fits
+  ! pocket B.Cu at (201.6, 83.6) 2.7x2.6 mm, 3.47 mm2 - no via fits
+  ! pocket B.Cu at (189.3, 84.1) 1.9x1.1 mm, 1.23 mm2 - no via fits
+  ! pocket B.Cu at (107.5, 82.2) 2.5x2.5 mm, 2.24 mm2 - no via fits
+  ! pocket B.Cu at (104.8, 81.8) 2.8x2.1 mm, 2.88 mm2 - no via fits
+  ! pocket B.Cu at (205.9, 82.1) 0.8x1.1 mm, 0.63 mm2 - no via fits
+  ! pocket B.Cu at (205.0, 80.9) 2.5x1.8 mm, 1.78 mm2 - no via fits
+  ! pocket B.Cu at (207.6, 80.9) 1.7x0.9 mm, 1.08 mm2 - no via fits
+  ! pocket B.Cu at (112.1, 79.6) 2.9x2.8 mm, 1.42 mm2 - no via fits
+  ! pocket B.Cu at (167.7, 74.9) 0.8x0.6 mm, 0.32 mm2 - no via fits
+  ! pocket B.Cu at (197.0, 68.1) 0.5x0.8 mm, 0.34 mm2 - no via fits
+  ! pocket B.Cu at (175.6, 59.9) 1.0x0.7 mm, 0.32 mm2 - no via fits
+  ! pocket B.Cu at (200.5, 57.0) 1.2x1.4 mm, 0.56 mm2 - no via fits
+gnd_stitch: added 39 vias in 4 round(s), 621 in total, 1030.9 s
+   exit 1
+== 4 via_rescue  02:29:54
+via 0.60/0.30 mm, clearance 0.15 mm, edge 0.30 mm
+round 1: 74 GND islands, 0 orphan group(s)
+0 via(s) added, wrote C:\Users\RF\Documents\GitHub\bassberry\hardware\bassberry\bassberry.kicad_pcb
+   exit 0
+== 5 stitch_audit  02:30:08
+GND copper farther than 3.0 mm from any GND via, by the rule that blocks a via there:
+  clearance(In1.Cu)   9198.0 mm2   worst: [(52.0, 50.7, 159.2), (51.8, 51.2, 159.2), (51.6, 50.7, 158.7), (51.5, 51.7, 159.2), (51.3, 52.2, 159.2)]
+  2nd-layer           2252.0 mm2   worst: [(21.6, 181.2, 106.7), (21.5, 180.7, 106.7), (21.4, 181.7, 106.2), (21.3, 181.2, 107.2), (21.3, 180.2, 106.7)]
+  clearance(F.Cu)     1435.0 mm2   worst: [(22.4, 210.2, 149.7), (22.2, 209.7, 149.7), (21.9, 210.2, 149.2), (21.7, 209.7, 149.2), (21.6, 209.2, 149.2)]
+  plane(In2.Cu)        387.0 mm2   worst: [(26.7, 206.2, 155.7), (26.6, 206.7, 155.2), (25.4, 212.2, 152.2), (25.1, 212.7, 151.7), (24.9, 210.7, 152.2)]
+  edge                 374.2 mm2   worst: [(50.6, 53.7, 159.2), (50.6, 52.7, 158.7), (50.6, 51.7, 158.2), (50.4, 54.2, 159.2), (50.4, 53.2, 158.7)]
+  clearance(B.Cu)       65.8 mm2   worst: [(5.9, 119.7, 88.2), (5.9, 119.2, 88.2), (5.9, 113.7, 78.2), (5.8, 120.2, 88.2), (5.8, 119.2, 87.7)]
+  LEGAL                  6.5 mm2   worst: [(4.2, 158.2, 80.7), (4.0, 148.7, 132.7), (4.0, 148.2, 132.7), (4.0, 118.7, 81.7), (3.9, 119.2, 81.7)]
+  via-gap                0.8 mm2   worst: [(4.0, 158.2, 80.2), (3.8, 147.7, 132.7), (3.7, 147.2, 132.7)]
+   exit 1
+== 6 silk_dfm fix  02:31:34
+  D303: no free spot within 4 mm, moved to Fab
+  C241: no free spot within 4 mm, moved to Fab
+  R307: no free spot within 4 mm, moved to Fab
+  C307: no free spot within 4 mm, moved to Fab
+  R105: no free spot within 4 mm, moved to Fab
+  C305: no free spot within 4 mm, moved to Fab
+  R301: no free spot within 4 mm, moved to Fab
+  D302: no free spot within 4 mm, moved to Fab
+  R305: no free spot within 4 mm, moved to Fab
+  C231: no free spot within 4 mm, moved to Fab
+  Q101: no free spot within 4 mm, moved to Fab
+  C316: no free spot within 4 mm, moved to Fab
+  R315: no free spot within 4 mm, moved to Fab
+  C306: no free spot within 4 mm, moved to Fab
+  SW301: no free spot within 4 mm, moved to Fab
+  C510: no free spot within 4 mm, moved to Fab
+  U101: no free spot within 4 mm, moved to Fab
+  C308: no free spot within 4 mm, moved to Fab
+  C503: no free spot within 4 mm, moved to Fab
+  C215: no free spot within 4 mm, moved to Fab
+  C217: no free spot within 4 mm, moved to Fab
+  C332: no free spot within 4 mm, moved to Fab
+  C313: no free spot within 4 mm, moved to Fab
+  R321: no free spot within 4 mm, moved to Fab
+  J401: no free spot within 4 mm, moved to Fab
+  BASSBERRY 2.1  rev 0.2: no free spot within 4 mm, moved to Fab
+silk: 691 thin lines, 0 small texts, 266 items within clearance of a pad/edge; fixed: 177 cut, 131 texts moved, 117 to Fab
+   exit 0
+== 6 silk_dfm  02:33:34
+silk: 0 thin lines, 0 small texts, 0 items within clearance of a pad/edge; fixed: 0 cut, 0 texts moved, 0 to Fab
+   exit 0
+== 6b zone refill  02:33:38
+refilled after stitching
+   exit 0
+== 7 DRC  02:33:46
+Szab├ílys├ęrt├ęsek sz├íma: 152
+0 kapcsolat n├ęlk├╝li elemet tal├íltunk
+0 kapcsol├ísi rajz parit├ísprobl├ęm├ít tal├íltunk
+DRC hibajelent├ęs elmentve ide: C:/Users/RF/Documents/GitHub/bassberry/hardware/bassberry/route/drc.json
+violations 152 unconnected 0 parity 0
+  ('warning', 'lib_footprint_mismatch') 122
+  ('warning', 'silk_overlap') 21
+  ('warning', 'silk_over_copper') 5
+  ('warning', 'silk_edge_clearance') 3
+  ('warning', 'copper_sliver') 1
+   exit 0
+== twin twin_check  02:33:57
+== layer 1: netlist vs source-document spec
+  WARN [physical] OLED module pin order must be GND-VCC-SCL-SDA (1.3in SH1106 modules exist with VCC-GND): check the module before plugging
+  WARN [physical] 3S BMS module pad order B-, B1, B2, B+, P- must match the module silk
+  WARN [physical] Keystone 1042 polarity: '+' marked contact = pad 1, cells must be inserted per the silk
+  WARN [physical] NTC on J402 must be fitted (IP2366 11.7: NTC pin never floating)
+  WARN [physical] Pi antenna keep-out position: confirm on a real Pi 4 / Pi 5 / Pi 3B+
+  WARN [physical] TDSON MOSFETs: any 30-40 V SO-8FL/TDSON part with the JEDEC pin-out (1-3 S, 4 G, 5-8 D)
+  WARN [deviation] TAS5805M PDN: 10 k pull-DOWN instead of TI's 10 k pull-up: amps stay off until the Linux driver drives PDN
+  WARN [deviation] IP2366 DPC/DMC: not connected (fig. 9 wires them to USB D+/D- for QC/FCP/AFC); USB data goes to the CH340 console
+  WARN [deviation] IP2366 RPSET 3.6 k (30 W) instead of fig. 9 27 k (140 W): 3S pack, cheap inductor and MOSFETs
+  WARN [deviation] HAT ZVD PFET DMP3013SFV instead of DMG2305UX: the Pi 5 needs 5 A
+  -> 170 pass, 10 warn, 0 FAIL
+== selftest: injected faults
+  PASS [inject] Pi socket mirrored (odd/even rows swapped: the face-down trap): 26 new FAIL  e.g. GPIO16 unused (HAT guide: not driven at boot)  connected to ['J101', 'R102']
+  PASS [inject] amp 1 SCLK/LRCLK swapped: 2 new FAIL  e.g. PCM_CLK -> amp 1 SCLK  NOT REACHED
+  PASS [inject] ZVD PFET drain/source swapped: 5 new FAIL  e.g. Pi 5 V pins = back-power diode output (PFET source)  -> 2 different nodes: J101.5V_2, J101
+  PASS [inject] HAT EEPROM SDA/SCL swapped: 2 new FAIL  e.g. ID_SC -> EEPROM SCL  -> 2 different nodes: J101.ID_SC, U101.SCL
+  PASS [inject] IP2366 HG1/LG1 swapped: 2 new FAIL  e.g. HG1 -> 10 Ohm -> Q1 gate: R306 between U302.HG1 and Q301.G
+  PASS [inject] TPS565208 VIN/SW swapped: 3 new FAIL  e.g. SW -> 4.7 uH -> 5.1 V node (ZVD input): L302 between U303.SW and Q101.D
+  PASS [inject] MT3608 FB/EN swapped: 3 new FAIL  e.g. Vout = 0.6*(1+Rtop/Rbot), below TAS PVDD max: Rtop [] Rbot [('R343', 100000.0)]
+  PASS [inject] BMS B1/B2 swapped: 2 new FAIL  e.g. cell 1 + = cell 2 - = BMS B1  -> 2 different nodes: BT401.+, BT402.-, J401.2
+  PASS [inject] cell 2 holder rotated (polarity): 3 new FAIL  e.g. cell 1 + = cell 2 - = BMS B1  -> 2 different nodes: BT401.+, BT402.-, J401.2
+  PASS [inject] USB D+/D- swapped at the CH340: 2 new FAIL  e.g. D+ (both receptacle rows) -> CH340 UD+  -> 2 different nodes: J301.D+, U502.UD+
+  PASS [inject] supervisor I2C SDA/SCL swapped: 2 new FAIL  e.g. SCL1: amps, supervisor PC2 (I2C SCL), OLED  -> 2 different nodes: J101.GPIO3, U201.SCL, U2
+  PASS [inject] both amps on the same I2C address (ADR 15k): 1 new FAIL  e.g. amp 2 ADR 47 k to DVDD -> I2C 0x2E: [('R221', 15000.0)]
+  PASS [inject] buck divider wrong (10k -> 12k: 4.4 V for the Pi): 1 new FAIL  e.g. Vout = 0.760*(1+Rtop/Rbot) for the Pi: R331 57.6k / R332 12k -> 4.408 V
+  PASS [inject] BAT_NUM resistor 9.1k (4 cells): 1 new FAIL  e.g. BAT_NUM 6.2 k = 3 cells in series: [('R311', 9100.0)]
+  PASS [inject] amp 2 PBTL tie OUT_A+/OUT_A- missing: 2 new FAIL  e.g. U202 BST_A- bootstrap 0.22 uF: []
+  PASS [inject] something else on ID_SD (HAT violation): 1 new FAIL  e.g. ID_SD: EEPROM SDA + its pull-up only (HAT rule)  extra ['R106'] missing []
+  -> 16 pass, 0 warn, 0 FAIL
+   exit 0
+== twin twin_plug  02:33:58
+== layer 2: Pi 4/5 plugged in face down
+  PASS [holes] Pi hole pattern found, face down (max error 0.000 mm); orientation chosen by the enclosure: ports over the open corner
+  PASS [pin] every Pi pin lands on the socket pad with its own number
+  PASS [ports] USB/Ethernet block hangs over the open corner (no board under it)
+  PASS [thermal] Pi 4 SoC lid (15 mm) inside the exposed thermal pad
+  PASS [thermal] Pi 5 SoC lid (17 mm) inside the exposed thermal pad
+  PASS [antenna] antenna corner covered by the copper keep-out: 81 % (on-board part)
+  PASS [shadow] no top-side part under the Pi (only its socket)
+  -> 7 pass, 0 warn, 0 FAIL
+== layer 2b: Pi signals through the geometric join
+  -> 31 pass, 0 warn, 0 FAIL
+== selftest
+  PASS [inject] socket rows swapped: 26 FAIL
+  PASS [inject] Pi plugged one pin off: 24 FAIL
+  -> 2 pass, 0 warn, 0 FAIL
+   exit 0
+== twin twin_analog  02:34:01
+== layer 3: copper vs current, set-points
+  -> 36 pass, 0 warn, 0 FAIL
+== selftest: injected faults
+  PASS [inject] CELL1 link necked to 0.25 mm, no pour: 1 new FAIL
+  PASS [inject] buck divider -> 6.1 V: 1 new FAIL
+  -> 2 pass, 0 warn, 0 FAIL
+   exit 0
+== twin twin_mech  02:44:39
+== layer 4: mechanics (cells, edges, lid controls)
+  -> 37 pass, 0 warn, 0 FAIL
+== selftest: injected faults
+  PASS [inject] cell holder turned 90 degrees: 3 new FAIL
+  PASS [inject] cell 2 holder reversed: 2 new FAIL
+  PASS [inject] PLAY button on the bottom: 1 new FAIL
+  PASS [inject] USB-C turned round (pads over the edge): 1 new FAIL
+  -> 4 pass, 0 warn, 0 FAIL
+   exit 0
+== 02:44:40 done

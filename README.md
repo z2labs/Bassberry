@@ -49,6 +49,18 @@ It is the successor of [rfsparkling/RPi_Speaker](https://github.com/rfsparkling/
 | <img src="docs/img/bassberry_top.png" width="100%"> | <img src="docs/img/bassberry_board.png" width="100%"> |
 
 Renders are generated from code with Blender Cycles: [`render/render.py`](render/render.py).
+
+### PCB rev 0.2 (KiCad 10, routed with srouter)
+
+| Top (Pi socket face-down, 3× 18650, lid controls) | Bottom (amplifiers, charger, buck, supervisor) |
+|---|---|
+| <img src="docs/img/pcb_render_top.png" width="100%"> | <img src="docs/img/pcb_render_bottom.png" width="100%"> |
+
+<p align="center"><img src="docs/img/pcb_layers.png" width="95%"></p>
+
+180 × 110 mm, 4 layers. DRC 0 errors / 0 unconnected / 0 schematic-parity issues; digital twin layers 1-4 all PASS
+(netlist vs datasheets, Pi plugged in face-down, copper ampacity incl. pours and vias, mechanics). Details in
+[`hardware/README.md`](hardware/README.md).
 Orange = sealed satellite chambers (0.20 l each), green = sub chamber (1.5 l) tuned by two opposed passive radiators.
 
 ## Acoustics

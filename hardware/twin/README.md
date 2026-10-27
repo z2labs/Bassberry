@@ -35,6 +35,8 @@ Exit code: `0` clean, `1` FAIL, `2` missing input, `3` self-test failed.
   supervisor I2C swap, both amps on one I2C address, wrong buck divider, BAT_NUM for 4 cells, missing PBTL tie, an extra load on ID_SD.
 * Layer 2: socket rows swapped, Pi plugged one pin off.
 * Layer 3: a battery link necked to 0.25 mm without its pour, a buck divider giving 6.1 V.
+  (Max-flow runs in a window around the source and sink pads that grows only if needed: ignoring copper can only lower
+  the result, so a PASS is never optimistic. Via capacity is 1.5 A per 0.3 mm of drill.)
 * Layer 4: a cell holder turned 90°, a holder reversed, a lid button on the bottom, the USB-C turned round.
 
 ## What it found (rev 0.2)
@@ -45,6 +47,11 @@ Exit code: `0` clean, `1` FAIL, `2` missing input, `3` self-test failed.
 * **Power copper too thin** where srouter had to route a power net at the width of its smallest pad → `fatten.py`
   and `power_pour.py` (see the hardware README), checked by the layer-3 max-flow.
 * The Pi socket footprint and the face-down mapping are correct pin by pin (layer 2); both Pi 4 and Pi 5 SoC lids sit on the thermal pad.
+* **14 under-rated current paths** on the first routed board (the +BATT rail, the 5 V path, the buck SW node, single vias in
+  2-3 A speaker paths, a battery link): layer 3 now prints where the min cut is, which led to the trunk pass, the In1 +BATT
+  plane, the parallel / larger vias, and two part rotations. Final board: 0 FAIL.
+* **srouter's track_tidy disconnects things** (a track moved off a pad, two track pieces no longer meeting, a lost layer
+  change): caught by DRC, repaired by `tidy_guard.py`.
 
 ## Physical list (not provable from copper)
 

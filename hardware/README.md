@@ -55,12 +55,32 @@ Routing follows `srouter/docs/USAGE.md`: GND is never routed (In2 plane + F/B po
   high-current track on F.Cu, In1.Cu and B.Cu, filled only into free space, plus ceil(I / 1.5 A) parallel vias at every
   layer change of a high-current net), zone fill, gnd_stitch, via_rescue, stitch_audit, silk_dfm, zone refill, DRC with
   schematic parity, digital twin 1-4. `full_flow.ps1` runs everything unattended.
-* Gates: `escape_probe.py` (no pad walled in before routing), the pre-route twin layers 1/2/4.
+* Gates: `escape_probe.py` (no pad walled in before routing), the pre-route twin layers 1/2/4; `full_flow.ps1` stops on any failure.
+* Repairs: `tidy_guard.py` re-joins what srouter's track_tidy pulls apart (pads, track pieces, lost layer changes) and drops dangling stubs;
+  GND pins with no room for a via get one between the pin rows (0.45/0.2 mm) or a short link to the nearest GND.
 
 ## Digital twin
 
 `hardware/twin/` - four layers, spec written only from datasheets and the Raspberry Pi documents, each with injected-fault
 self-tests. See [`twin/README.md`](twin/README.md).
+
+## Result (rev 0.2, `hardware/bassberry/route/`)
+
+| Check | Result |
+|---|---|
+| ERC | 2 expected errors only (TAS5805M PBTL output pairing, as in the TI datasheet) |
+| Routing | every net routed by srouter (trunk pass, 3 passes, automatic rip-up and reroute for nets left over) |
+| DRC (`--schematic-parity --severity-all`) | **0 errors, 0 unconnected, 0 parity**; 152 warnings: 122 `lib_footprint_mismatch` (silk_dfm moved/cut silkscreen inside the footprints), 29 silkscreen cosmetics, 1 copper sliver |
+| Twin layer 1 (netlist vs source documents) | 170 PASS, 10 WARN (physical checks + accepted deviations), 0 FAIL; 16/16 injected faults caught |
+| Twin layer 2 (Pi 4/5 plugged in face-down) | 7 + 31 PASS; 2/2 injected faults caught |
+| Twin layer 3 (copper ampacity, set-points, LDO) | 36 PASS, 0 FAIL; 2/2 injected faults caught |
+| Twin layer 4 (mechanics) | 37 PASS; 4/4 injected faults caught |
+
+How the power copper was made to pass layer 3 (all automatic, `power_pour.py`): corridor pours per high-current net on
+F.Cu / In1.Cu / B.Cu splitting the room between neighbouring nets, a **+BATT plane on In1.Cu** fed by taps from every
++BATT pad, In1 copies of the battery-link pours (joined by the holder through-hole contacts), and vias grown to 1.0/0.5 mm
+or doubled until each layer change carries its current. The buck converter is turned so its SW pin points straight at the
+inductor, the ZVD PFET so its source pins face the Pi 5 V pins.
 
 ## Known open items (rev 0.2)
 
