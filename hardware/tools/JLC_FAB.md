@@ -64,9 +64,15 @@ put the 18650 holders across the board and the socket 25 mm off.
 4. writes `rotation = KiCad .pos rotation + (JLC footprint angle - KiCad footprint angle)` and the position of JLC's
    footprint origin. Bottom side: both footprints are mirrored (seen from the top); KiCad 10's .pos rotation for bottom
    parts is the top-view angle + 180 (verified on all 158 bottom parts), so the same formula holds.
-5. **Land-pattern check** from the same fit: every JLC pad centre must land on copper of that footprint. This caught
-   an "in-stock alternative" 18650 holder offered by JLC whose contacts are 82.6 mm apart against the Keystone 1042's
-   79.4 mm. Check every substitute picked in JLC's tool this way before accepting it.
+5. **Land-pattern check** from the same fit: every JLC pad centre must land on copper of that footprint. It flagged
+   the MYOUNG BH-18650-B1BA002 18650 holder (C2988620) on the Keystone 1042 footprint: JLC's model has its pads at
+   82.6 mm, the Keystone footprint at 79.4 mm. Check every substitute picked in JLC's tool this way before accepting it.
+6. **When the part changes, the footprint follows the maker's drawing, not JLC's model.** The BH-18650-B1BA002
+   drawing (WD-CP-0088) gives 7.77 x 7.35 mm pads 79.26 mm apart and a D2.40 locating-peg hole; JLC's model has small
+   pads at the tab tips (82.6 mm) - both land inside the drawing's pads. Number the pads like JLC's model (here
+   1 = '-', 2 = '+'), so the fit by pin number cannot turn a polarised or pegged part 180 deg; the schematic follows
+   the footprint numbering. Project footprints live in `<project>/<lib>.pretty` + `fp-lib-table`; `pcb_build.py` and
+   `jlc_rotfix.py` look there before the KiCad library.
 
 The report (`jlc/rotfix_report.csv`) lists per part: LCSC code, JLC footprint name, KiCad rotation, JLC rotation,
 position, fit rms, how it was matched, verdict. Still look at JLC's placement preview (both sides) and at the DFM

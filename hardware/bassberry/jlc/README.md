@@ -26,12 +26,11 @@ The Pi SoC thermal pad is a deliberate mask opening on both sides.
 
 **JLC's BOM page shows one side at a time** ("Top Side ... 10 parts detected"): set *PCBA side* on the PCB page to
 **Bottom** (or Both) and the 158 bottom parts appear. Recommended: JLC assembles the bottom only; the 10 top parts are
-large hand-solder parts, and at the time of writing the Keystone 1042 and the TL3342 had no JLC stock and the EC11 a
-shortfall.
+large parts (holders, switches, encoder, socket).
 
 * **Both sides:** top = 3 battery holders, 5 tact switches, the encoder, the 2x20 socket; bottom = everything else.
 * **Through-hole (JLC THT assembly or hand soldering):** J101 2x20 socket, J201-J203 JST XH, J402 JST PH, J501 header,
-  SW506 encoder; the Keystone 1042 holders are SMD-tab parts that JLC lists as "wave soldering".
+  SW506 encoder; the 18650 holders (MYOUNG BH-18650-B1BA002) are SMT parts.
 * 38 lines are JLC Basic parts, 48 Extended (39 distinct Extended codes, each carries JLC's extended-part fee).
 * **Rotations and centres are fitted, not guessed** (`hardware/tools/jlc_rotfix.py`, report in `rotfix_report.csv`):
   for every placed part the EasyEDA footprint of its LCSC part (the model JLC places) is downloaded and fitted onto the
@@ -43,8 +42,9 @@ shortfall.
   that KiCad's land pattern does not have - pins 1-4 and the drain fit, no action. F401 and U502 fit with 0.6 / 0.4 mm
   pad-spacing differences (2410 fuse on 2512 pads, SOP-16 row spacing), centred.
 * **Part numbers: `lcsc_parts.csv` is the source of truth**, as confirmed in stock by Zoltan on 2026-10-27
-  (Keystone 1042 C5249310, TL3342F160QG C2886898, EC11E15244G1 C370970 on the top side). Substitutes tried in JLC's
-  BOM tool were checked by the same fit: the 18650 holder C2988620 does **not** fit (contacts 82.6 mm apart vs 79.4 mm).
+  (top side: 18650 holder BH-18650-B1BA002 C2988620, TL3342F160QG C2886898, EC11E15244B2 C470754). The holder
+  has its own footprint from the maker's drawing (contacts 79.26 mm apart, D2.40 peg hole on the '+' end; pad 1 = '-',
+  pad 2 = '+' like JLC's model): `hardware/bassberry/bassberry.pretty`.
 * Still look at JLC's placement preview before paying, and at the DFM check JLC sends after the order.
 
 ## Check before ordering
