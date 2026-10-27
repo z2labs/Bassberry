@@ -28,7 +28,7 @@ def main(path):
     moved, stuck = 0, []
     for v in [t for t in b.GetTracks() if t.GetClass() == "PCB_VIA"]:
         c = (mm(v.GetPosition().x), mm(v.GetPosition().y)); r = mm(v.GetWidth(pcbnew.F_Cu)) / 2
-        if cu.off_pads(c, r, GAP):
+        if cu.off_pads(c, r, 0.0):        # not touching: leave it (moving costs room); touching: move
             continue
         # the pad(s) it touches: push away from the nearest point of the nearest one
         best = None
@@ -51,26 +51,29 @@ def main(path):
             n = math.hypot(c[0] - q[0], c[1] - q[1]) or 1; u = ((c[0] - q[0]) / n, (c[1] - q[1]) / n); base = -d
         ends = [t for t in tracks if t.GetNetname() == v.GetNetname() and (t.GetStart() == v.GetPosition() or t.GetEnd() == v.GetPosition())]
         done = False
-        s = base + r + GAP + 0.01
-        while s <= base + r + GAP + MAXSHIFT and not done:
-            np_ = (c[0] + u[0] * s, c[1] + u[1] * s)
-            ok = cu.off_pads(np_, r, GAP) and all(cu.clear(v.GetNetname(), l, np_, np_, r, skip=(v,)) for l in ALL)
-            for t in ends if ok else []:
-                other = t.GetEnd() if t.GetStart() == v.GetPosition() else t.GetStart()
-                o = (mm(other.x), mm(other.y))
-                if not cu.clear(t.GetNetname(), t.GetLayer(), o, np_, mm(t.GetWidth()) / 2, skip=(t,)):
-                    ok = False; break
-            if ok:
-                old = v.GetPosition(); new = pcbnew.VECTOR2I(FM(np_[0]), FM(np_[1]))
-                for t in ends:
-                    if t.GetStart() == old:
-                        t.SetStart(new)
-                    else:
-                        t.SetEnd(new)
-                v.SetPosition(new)
-                cu = fatten.Copper(b)          # the moved tracks change the picture for the next via
-                moved += 1; done = True
-            s += 0.05
+        for gap in (GAP, 0.05):                # 0.15 mm if there is room, else at least not touching
+            s = base + r + gap + 0.01
+            while s <= base + r + gap + MAXSHIFT and not done:
+                np_ = (c[0] + u[0] * s, c[1] + u[1] * s)
+                ok = cu.off_pads(np_, r, gap) and all(cu.clear(v.GetNetname(), l, np_, np_, r, skip=(v,)) for l in ALL)
+                for t in ends if ok else []:
+                    other = t.GetEnd() if t.GetStart() == v.GetPosition() else t.GetStart()
+                    o = (mm(other.x), mm(other.y))
+                    if not cu.clear(t.GetNetname(), t.GetLayer(), o, np_, mm(t.GetWidth()) / 2, skip=(t,)):
+                        ok = False; break
+                if ok:
+                    old = v.GetPosition(); new = pcbnew.VECTOR2I(FM(np_[0]), FM(np_[1]))
+                    for t in ends:
+                        if t.GetStart() == old:
+                            t.SetStart(new)
+                        else:
+                            t.SetEnd(new)
+                    v.SetPosition(new)
+                    cu = fatten.Copper(b)          # the moved tracks change the picture for the next via
+                    moved += 1; done = True
+                s += 0.05
+            if done:
+                break
         if not done:
             stuck.append(f"{v.GetNetname()} at ({c[0]:.2f},{c[1]:.2f}) on {ref}.{num}")
     pcbnew.SaveBoard(path, b)
