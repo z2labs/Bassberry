@@ -3,7 +3,7 @@
 | File | Upload where | What |
 |---|---|---|
 | `bassberry_gerber.zip` | PCB order, "Add gerber file" | Gerber (4 copper, mask, paste, silk, outline) + Excellon (PTH and NPTH separate) |
-| `bassberry_bom_jlc.csv` | SMT assembly, BOM | `Comment, Designator, Footprint, LCSC Part #` - 86 lines, 168 placed parts |
+| `bassberry_bom_jlc.csv` | SMT assembly, BOM | `Comment, Designator, Footprint, LCSC Part #` - one line per LCSC code (69 lines), 168 placed parts |
 | `bassberry_cpl_jlc.csv` | SMT assembly, CPL | `Designator, Mid X, Mid Y, Layer, Rotation` (KiCad placement, mm) |
 | `bassberry_bom_jlc_bottom.csv` + `bassberry_cpl_jlc_bottom.csv` | SMT assembly, **bottom side only** (recommended) | the 158 bottom parts |
 | `bassberry_bom_jlc_top.csv` + `bassberry_cpl_jlc_top.csv` | top side, if JLC should do it too | the 10 top parts (holders, tact switches, encoder, 2x20 socket) |

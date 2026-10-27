@@ -34,9 +34,10 @@ def netlist():
 
 def main():
     comps = netlist()
-    parts = {}
+    parts, parts_by_code = {}, {}
     for row in csv.DictReader(open(os.path.join(J, "lcsc_parts.csv"), encoding="utf-8")):
         parts[(row["value"], row["footprint"])] = row
+        parts_by_code.setdefault(row["lcsc"].strip(), row)
     pos = {r["Ref"]: r for r in csv.DictReader(open(os.path.join(J, "bassberry_pos_kicad.csv"), encoding="utf-8"))}
     errors = []
     groups = collections.defaultdict(list)
@@ -75,6 +76,18 @@ def main():
             wf.writerow([len(refs), v, ",".join(refs), fp, p["lcsc"].strip(), p.get("mpn", ""), p.get("manufacturer", ""),
                          p.get("basic_or_extended", ""), p.get("smt_or_tht", ""), p.get("key_spec", ""),
                          p.get("verified_url", ""), p.get("notes", "")])
+    # JLC upload: one line per LCSC code. Two schematic values on the same part (100n and 100n 50V both C14663) would
+    # otherwise come back from JLC's BOM tool as "multiple lines matched to the same part" questions, unselected
+    merged = {}
+    for cm, refs, fp, code in bom_rows:
+        mp = parts_by_code.get(code, {}).get("mpn") or cm
+        e = merged.setdefault(code, [mp, [], fp])
+        e[1].extend(refs)
+    with open(os.path.join(J, "bassberry_bom_jlc.csv"), "w", newline="", encoding="utf-8") as fb:
+        wb = csv.writer(fb); wb.writerow(["Comment", "Designator", "Footprint", "LCSC Part #"])
+        for code, (mp, refs, fp) in sorted(merged.items(), key=lambda kv: nat(sorted(kv[1][1], key=nat)[0])):
+            wb.writerow([mp, ",".join(sorted(refs, key=nat)), fp, code])
+    bom_rows = [[merged[code][0], sorted(merged[code][1], key=nat), merged[code][2], code] for code in merged]
     placed = {r for refs in groups.values() for r in refs}
     with open(os.path.join(J, "bassberry_cpl_jlc.csv"), "w", newline="", encoding="utf-8") as fc:
         w = csv.writer(fc)
