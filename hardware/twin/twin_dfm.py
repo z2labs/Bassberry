@@ -23,7 +23,23 @@ usage: kicad-python twin_dfm.py board.kicad_pcb [--selftest] [-q] [--list]     e
 """
 import os, sys, math, copy
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from twin_common import Report
+try:
+    from twin_common import Report
+except ImportError:                     # standalone (srouter tools/jlc_dfm_check.py)
+    class Report:
+        def __init__(self, title):
+            self.title, self.rows = title, []
+        def add(self, sev, group, msg):
+            self.rows.append((sev, group, msg))
+        def fails(self):
+            return [r for r in self.rows if r[0] == "FAIL"]
+        def show(self, quiet_pass=False):
+            print(f"== {self.title}")
+            for s, g, m in self.rows:
+                if not (quiet_pass and s == "PASS"):
+                    print(f"  {s:4} [{g}] {m}")
+            n = {k: sum(1 for r in self.rows if r[0] == k) for k in ("PASS", "WARN", "FAIL")}
+            print(f"  -> {n['PASS']} pass, {n['WARN']} warn, {n['FAIL']} FAIL")
 
 VIA_PAD_FAIL, VIA_PAD_WARN = 0.10, 0.15
 PAD_PAD_FAIL = 0.10

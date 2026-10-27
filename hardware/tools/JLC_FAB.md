@@ -84,3 +84,22 @@ report JLC sends after the order.
 * PCBA side: Top, Bottom or Both - must match the BOM/CPL uploaded. Large through-hole top parts (holders, switches,
   encoder, headers) are cheaper to hand-solder than to pay for second-side assembly.
 * Re-match within 24 h of ordering (JLC's note): stock and prices move.
+
+## 6. DFM - check what JLC checks, before uploading
+
+KiCad's DRC can be clean (0 errors) while JLC's DFM report is red: DRC checks clearance between **different** nets,
+round-hole minimums and silkscreen as a warning; JLC checks the Gerbers geometrically. Found on Bassberry rev 0.2:
+
+| JLC DFM item (Danger) | cause | fix in the flow |
+|---|---|---|
+| Via to pad 0 mm, pad spacing 0.04 mm | router ends a track in a via whose ring overlaps an SMD pad of the same net | DSN keep-outs over SMD pads on a closed inner plane (srouter blocks vias in any keep-out layer); `via_off_pad.py` moves the rest; via placement in pours/stitching checks `off_pads` |
+| Slot width 0.6 mm | KiCad USB-C footprint shell slots | widen plated slots to 0.7 mm (pad grows with the drill) |
+| Silkscreen to hole 0 mm | silk lines/text over **via** holes (tented vias count) | `silk_dfm.py --fix` treats via holes as obstacles |
+| Silkscreen to pad 0 mm | silk clipped by `--subtract-soldermask` ends right at the mask opening | `silk_dfm.py --fix`, 0.15 mm |
+| THT to SMD 1.69 mm | SMD parts near through-hole pins (selective/wave solder) | warning; keep 2 mm where the THT part is machine-soldered |
+
+The check that reproduces these on the board before any Gerber is written: `twin_dfm.py` (Bassberry twin layer 5) /
+`jlc_dfm_check.py` (srouter tools) - via ring to any SMD pad (own net too) >= 0.10 mm (warn < 0.15), pads of different
+parts >= 0.10 mm, plated slots >= 0.65 mm, silk >= 0.15 mm from mask openings and from every drilled hole; warnings for
+via rings < 0.15 mm, short slots, THT pads < 2 mm from SMD pads. On the board JLC rejected it flagged exactly JLC's
+Danger categories. Thresholds: jlcpcb.com/capabilities/pcb-capabilities and the JLCDFM report itself.
