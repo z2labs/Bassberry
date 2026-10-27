@@ -10,7 +10,9 @@ Layer roles (DSN layer type + -top cost), GND is never routed (In2 plane + F/B p
   pass 1 power   wide rails, battery, charger power stage, speaker outputs:  B.Cu open, In1 open, F.Cu cost 3
   pass 2 fast    I2S, I2C, USB D+/D-, HAT ID:                                In1 open, B.Cu cost 2, F.Cu cost 10
   pass 3 rest    everything else:                                           In1 + B.Cu open, F.Cu cost 4
-In2.Cu is exported as a power layer (closed). The router style is always oct + smooth (USAGE.md: known limits).
+In2.Cu (GND plane): closed in passes 0, 1a and 2 (fast signals keep an unbroken reference); open at a high cost
+(IN2) in pass 1b, pass 3 and the repair - Zoltan 2026-10-27: short GND-plane crossings are fine, the plane is stitched
+densely afterwards. The router style is always oct + smooth (USAGE.md: known limits).
 After the passes: via drill repair, GND pours re-filled, SoC via field restored; post-processing is run by postroute.ps1.
 """
 import os, sys, re, json, shutil, subprocess, time
@@ -84,9 +86,9 @@ PASSES = [
     # 1a: high-current nets alone, outer layers only (In1 closed: 0.5 oz inner copper carries a third), vias avoided
     ("pass1a_heavy", HEAVY, ["-top", "F.Cu:6", "-via", "20000", "-it", "80"]),
     # 1b: everything that escapes from between power pins (QFN, amp bootstrap), the 3V3 rails
-    ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:40", "-via", "8000", "-it", "80"]),
+    ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:40"] + IN2 + ["-via", "8000", "-it", "80"]),
     ("pass2_fast", FAST, ["-top", "F.Cu:10", "-top", "B.Cu:2", "-via", "2500"]),
-    ("pass3_rest", ["*"], ["-top", "F.Cu:4", "-via", "2000"]),
+    ("pass3_rest", ["*"], ["-top", "F.Cu:4"] + IN2 + ["-via", "2000"]),
 ]
 
 
@@ -99,6 +101,7 @@ def rules(only, width):
     }
 
 
+IN2 = ["-top", "In2.Cu:30"]   # wires on the GND plane only where nothing else fits
 VIA_PAD_INSET = 0.17   # mm: via keep-out = SMD pad inset by this (srouter keeps a via centre one via diameter off it)
 
 
@@ -120,15 +123,22 @@ def pad_via_keepouts(board):
     return "\n".join(out)
 
 
+def closed_for(name, args):
+    """layers exported as power (no wires): In2 unless the pass opens it (IN2 in its args), In1 too in pass 1a"""
+    c = () if "In2.Cu:30" in args else ("In2.Cu",)
+    return c + (("In1.Cu",) if name in ("pass1a_heavy", "pass1a2_amp") else ())
+
+
 def export_dsn(board, path, closed=("In2.Cu",)):
     assert pcbnew.ExportSpecctraDSN(board, path), "DSN export failed"
     t = open(path, encoding="utf-8").read()
     t = t.replace("    (boundary", pad_via_keepouts(board) + "\n    (boundary", 1)      # after the layer list
     open(path, "w", encoding="utf-8").write(t)
-    # In2.Cu is the solid GND plane: always closed; pass 1a also closes In1.Cu
+    # In2.Cu is the GND plane: closed unless the pass opens it; pass 1a also closes In1.Cu
     t2 = t
-    for l in closed:
-        t2 = re.sub(r"\(layer " + re.escape(l) + r"\s*\(type \w+\)", f"(layer {l} (type power)", t2)
+    for l in ("In1.Cu", "In2.Cu"):
+        typ = "power" if l in closed else "signal"
+        t2 = re.sub(r"\(layer " + re.escape(l) + r"\s*\(type \w+\)", f"(layer {l} (type {typ})", t2)
     open(path, "w", encoding="utf-8").write(t2)
     return t2 != t
 
@@ -224,7 +234,7 @@ def stuck_nets(logf):
 
 def run_pass(b, name, only, args, width):
     dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
-    export_dsn(b, dsn, ("In2.Cu",))
+    export_dsn(b, dsn, closed_for(name, args))
     json.dump(rules(only, width), open(rj, "w"), indent=1)
     logf = os.path.join(OUT, name + ".log")
     with open(logf, "w", encoding="utf-8") as fh:
@@ -282,7 +292,7 @@ def sub(*args):
 
 def repair(summary):
     stuck = stuck_nets(os.path.join(OUT, "pass3_rest.log"))
-    args = ["-top", "F.Cu:4", "-via", "1500", "-it", "120"]
+    args = ["-top", "F.Cu:4"] + IN2 + ["-via", "1500", "-it", "120"]
     for rnd in range(1, 4):
         if not stuck:
             break
@@ -321,7 +331,7 @@ def main():
             name, dsn, ses, rep, rj = trunk_pass(b)
         else:
             dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
-            export_dsn(b, dsn, ("In2.Cu", "In1.Cu") if name in ("pass1a_heavy", "pass1a2_amp") else ("In2.Cu",))
+            export_dsn(b, dsn, closed_for(name, args))
             json.dump(rules(only, width), open(rj, "w"), indent=1)
         cmd = [SR, "-de", dsn, "-do", ses, "-rules", rj, "-report", rep] + args
         print(">>", " ".join(cmd), flush=True)
