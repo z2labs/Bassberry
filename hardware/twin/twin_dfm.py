@@ -20,6 +20,7 @@ Checks (what JLC sees: copper, holes, silk after --subtract-soldermask):
   tht-smd     THT pad to an SMD pad of another part:   WARN < 2.0 mm (assembly / selective solder) [JLC-DFM]
 
 usage: kicad-python twin_dfm.py board.kicad_pcb [--selftest] [-q] [--list]     exit 0 / 1 FAIL / 2 input / 3 selftest
+       kicad-python twin_dfm.py board.kicad_pcb --fix-silk      (flow step after silk_dfm --fix; the check never edits)
 """
 import os, sys, math, copy
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -105,10 +106,10 @@ def bb_hit(a, b):
 
 
 # ------------------------------------------------------------------ board -> geometry
-def extract(path):
+def extract(path, board=None):
     import pcbnew
     mm = pcbnew.ToMM; FM = pcbnew.FromMM
-    b = pcbnew.LoadBoard(path)
+    b = board or pcbnew.LoadBoard(path)
 
     def polys(item, layer, clr=0.0):
         ps = pcbnew.SHAPE_POLY_SET()
@@ -159,7 +160,7 @@ def extract(path):
             w = mm(it.GetWidth()) if hasattr(it, "GetWidth") and it.GetClass() == "PCB_SHAPE" else \
                 (mm(it.GetTextThickness()) if hasattr(it, "GetTextThickness") else None)
             for q in polys(it, lay):
-                g["silk"].append(dict(name=name, side=side, poly=q, bb=bbox(q), w=w))
+                g["silk"].append(dict(name=name, side=side, poly=q, bb=bbox(q), w=w, obj=it))
     return g
 
 
@@ -218,7 +219,7 @@ def check(g, listing=False):
             if o["side"] == s["side"] and bb_hit(q, o["bb"]):
                 d = poly_poly(s["poly"], o["poly"])
                 if d < SILK_PAD:
-                    bad.append((s, o["name"], d)); break
+                    bad.append((s, o["name"], d)); s["bad"] = True; break
     group("silk-pad", bad, [], len(g["silk"]), lambda x: f"{x[0]['side']}.Silk {x[0]['name']} - {x[1]} {x[2]:.2f} mm")
     bad = []
     for s in g["silk"]:
@@ -228,7 +229,7 @@ def check(g, listing=False):
                 continue
             d = poly_pt(c, s["poly"]) - r
             if d < SILK_HOLE:
-                bad.append((s, name, d)); break
+                bad.append((s, name, d)); s["bad"] = True; break
     group("silk-hole", bad, [], len(g["silk"]), lambda x: f"{x[0]['side']}.Silk {x[0]['name']} - hole {x[1]} {max(x[2], 0):.2f} mm")
     warn = [s for s in g["silk"] if s["w"] is not None and 0 < s["w"] < SILK_W - 1e-6]
     group("silk-width", [], warn, len(g["silk"]), lambda s: f"{s['name']} {s['w']:.2f} mm")
@@ -249,6 +250,23 @@ def check(g, listing=False):
                     warn.append((t, s, d)); break
     group("tht-smd", [], warn, len(tht), lambda x: f"{x[0]['ref']}.{x[0]['num']}-{x[1]['ref']} {x[2]:.2f} mm")
     return rep
+
+
+def fix_silk(path):
+    """last silk step after silk_dfm --fix: silk items that still come within 0.15 mm of a mask opening or a drilled hole
+    (measured on the real pad outline, not its bounding box) go to the Fab layer of their side - kept as documentation,
+    not printed."""
+    import pcbnew
+    b = pcbnew.LoadBoard(path)
+    g = extract(path, b)
+    check(g)
+    n = 0
+    for s in g["silk"]:
+        if s.get("bad"):
+            s["obj"].SetLayer(pcbnew.F_Fab if s["side"] == "F" else pcbnew.B_Fab); n += 1
+            print(f"  to Fab: {s['side']}.Silk {s['name']}")
+    pcbnew.SaveBoard(path, b)
+    print(f"dfm silk fix: {n} silk items moved to Fab")
 
 
 def selftest(g):
@@ -281,6 +299,8 @@ if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     if not args or not os.path.exists(args[0]):
         print(__doc__); sys.exit(2)
+    if "--fix-silk" in sys.argv:
+        fix_silk(args[0]); sys.exit(0)
     g = extract(args[0])
     r = check(g, "--list" in sys.argv); r.show("-q" in sys.argv)
     code = 1 if r.fails() else 0

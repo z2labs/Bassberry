@@ -30,6 +30,7 @@ step "4 via_rescue"   { & $py "$tools\via_rescue.py" $board --net GND }
 step "4b via_off_pad" { & $py "$root\hardware\tools\via_off_pad.py" $board }
 step "5 stitch_audit" { & $py "$tools\stitch_audit.py" $board }
 step "6 silk_dfm fix" { & $py "$tools\silk_dfm.py" $board --fix }
+step "6a dfm silk fix" { & $py "$root\hardware\twin\twin_dfm.py" $board --fix-silk }
 step "6 silk_dfm"     { & $py "$tools\silk_dfm.py" $board }
 step "6b zone refill" { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(r'$board',b);print('refilled after stitching')" }
 step "7 DRC"          { & $cli pcb drc --schematic-parity --severity-all --format json -o "$root\hardware\bassberry\route\drc.json" $board;
