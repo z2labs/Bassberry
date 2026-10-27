@@ -15,7 +15,7 @@ in : hardware/bassberry/bassberry.kicad_pcb, jlc/bassberry_bom_jlc.csv (LCSC cod
 out: jlc/bassberry_cpl_jlc*.csv (rewritten), jlc/rotfix_report.csv, jlc/easyeda_cache/*.json
 needs curl (Windows 10+ has curl.exe); the EasyEDA API refuses Python's own HTTP client.
 """
-import os, sys, csv, json, math, subprocess, re
+import os, sys, csv, json, math, subprocess, re, time
 import pcbnew
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -30,7 +30,11 @@ TOL = 0.25         # mm rms: a fit worse than this means the JLC part does not m
 def easyeda(code):
     os.makedirs(CACHE, exist_ok=True)
     f = os.path.join(CACHE, code + ".json")
-    if not os.path.exists(f):
+    for attempt in range(6):
+        if os.path.exists(f) and open(f, encoding="utf-8", errors="replace").read(1) == "{":
+            break
+        if attempt:
+            time.sleep(5 * attempt)                     # the API throttles bursts with an HTML 403 page
         subprocess.run(["curl.exe" if os.name == "nt" else "curl", "-s", "-A", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
                         "-H", "Accept: application/json", "-o", f,
                         f"https://easyeda.com/api/products/{code}/components?version=6.4.19.5"], check=True)
