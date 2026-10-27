@@ -20,9 +20,11 @@ foreach ($t in 'twin_check', 'twin_plug', 'twin_mech') {
 if ($gate) { "== pre-route twin FAILED: not routing" | Out-File -Append -Encoding utf8 $log; exit 1 }
 "== $(Get-Date -Format HH:mm:ss) route" | Out-File -Append -Encoding utf8 $log
 & $py hardware\tools\route.py 2>&1 | Select-String -NotMatch "duplicate image|^>>" | Out-File -Append -Encoding utf8 $log
-if ($LASTEXITCODE -ne 0) { "== route FAILED (escape gate or srouter)" | Out-File -Append -Encoding utf8 $log; exit 1 }
+if ($LASTEXITCODE -ne 0) { "== route FAILED (escape gate or srouter)" | Out-File -Append -Encoding utf8 $log
+  & $py hardware\tools\route_metrics.py --note "route failed" 2>&1 | Out-Null; exit 1 }
 Copy-Item hardware\bassberry\bassberry.kicad_pcb hardware\bassberry\route\bassberry_routed_raw.kicad_pcb
 "== $(Get-Date -Format HH:mm:ss) post-route" | Out-File -Append -Encoding utf8 $log
 & powershell -ExecutionPolicy Bypass -File "$root\hardware\tools\postroute.ps1" 2>&1 | Out-Null
 Get-Content "$root\hardware\bassberry\route\postroute.log" | Out-File -Append -Encoding utf8 $log
 "== $(Get-Date -Format HH:mm:ss) done" | Out-File -Append -Encoding utf8 $log
+& $py hardware\tools\route_metrics.py --note "$env:FLOW_NOTE" 2>&1 | Select-String -NotMatch "duplicate image" | Out-File -Append -Encoding utf8 $log
