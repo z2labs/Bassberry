@@ -5,6 +5,8 @@
 | `bassberry_gerber.zip` | PCB order, "Add gerber file" | Gerber (4 copper, mask, paste, silk, outline) + Excellon (PTH and NPTH separate) |
 | `bassberry_bom_jlc.csv` | SMT assembly, BOM | `Comment, Designator, Footprint, LCSC Part #` - 86 lines, 168 placed parts |
 | `bassberry_cpl_jlc.csv` | SMT assembly, CPL | `Designator, Mid X, Mid Y, Layer, Rotation` (KiCad placement, mm) |
+| `bassberry_bom_jlc_bottom.csv` + `bassberry_cpl_jlc_bottom.csv` | SMT assembly, **bottom side only** (recommended) | the 158 bottom parts |
+| `bassberry_bom_jlc_top.csv` + `bassberry_cpl_jlc_top.csv` | top side, if JLC should do it too | the 10 top parts (holders, tact switches, encoder, 2x20 socket) |
 | `bassberry_bom_full.csv` | - | the same lines with MPN, maker, Basic/Extended, SMT/THT, key spec, the page each code was checked on, notes |
 | `not_assembled.csv` | - | parts JLC does not place (DNP, solder jumpers, test point, BMS wire pads, and the 3 parts below) |
 | `gerber_check.png` | - | every Gerber layer rendered by an independent viewer (pygerber) |
@@ -20,6 +22,11 @@ minimum 0.25 / 0.15), smallest track / gap 0.2 / 0.15 mm. No via-in-pad, no impe
 The Pi SoC thermal pad is a deliberate mask opening on both sides.
 
 ## Assembly
+
+**JLC's BOM page shows one side at a time** ("Top Side ... 10 parts detected"): set *PCBA side* on the PCB page to
+**Bottom** (or Both) and the 158 bottom parts appear. Recommended: JLC assembles the bottom only; the 10 top parts are
+large hand-solder parts, and at the time of writing the Keystone 1042 and the TL3342 had no JLC stock and the EC11 a
+shortfall.
 
 * **Both sides:** top = 3 battery holders, 5 tact switches, the encoder, the 2x20 socket; bottom = everything else.
 * **Through-hole (JLC THT assembly or hand soldering):** J101 2x20 socket, J201-J203 JST XH, J402 JST PH, J501 header,

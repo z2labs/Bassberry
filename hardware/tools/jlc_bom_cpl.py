@@ -56,6 +56,7 @@ def main():
             errors.append(f"{ref}: not in the placement file")
             continue
         groups[(c["value"], c["fp"])].append(ref)
+    bom_rows = []
     nat = lambda r: (re.sub(r"\d", "", r), int(re.sub(r"\D", "", r) or 0))
     with open(os.path.join(J, "bassberry_bom_jlc.csv"), "w", newline="", encoding="utf-8") as fb, \
             open(os.path.join(J, "bassberry_bom_full.csv"), "w", newline="", encoding="utf-8") as ff:
@@ -66,7 +67,11 @@ def main():
         for (v, fp), refs in sorted(groups.items(), key=lambda kv: nat(sorted(kv[1], key=nat)[0])):
             p = parts[(v, fp)]
             refs = sorted(refs, key=nat)
-            wb.writerow([v, ",".join(refs), fp, p["lcsc"].strip()])
+            # JLC matches by the LCSC code; a bare comment like "BT" is left unmatched by its importer, so non-passive
+            # lines carry the maker part number in front of the schematic value
+            cm = v if refs[0][0] in "RC" or not p.get("mpn") else f"{p['mpn']} ({v})"
+            wb.writerow([cm, ",".join(refs), fp, p["lcsc"].strip()])
+            bom_rows.append([cm, refs, fp, p["lcsc"].strip()])
             wf.writerow([len(refs), v, ",".join(refs), fp, p["lcsc"].strip(), p.get("mpn", ""), p.get("manufacturer", ""),
                          p.get("basic_or_extended", ""), p.get("smt_or_tht", ""), p.get("key_spec", ""),
                          p.get("verified_url", ""), p.get("notes", "")])
@@ -78,6 +83,22 @@ def main():
             r = pos[ref]
             w.writerow([ref, f"{float(r['PosX']):.4f}mm", f"{float(r['PosY']):.4f}mm",
                         "Top" if r["Side"].lower().startswith("top") else "Bottom", f"{float(r['Rot']) % 360:.0f}"])
+    # one file pair per side as well: JLC assembles one side or both; the top side here is only the holders, the tact
+    # switches, the encoder and the 2x20 socket (hand-soldering them saves the second-side assembly)
+    for side in ("Top", "Bottom"):
+        on = {ref for ref in placed if ("Top" if pos[ref]["Side"].lower().startswith("top") else "Bottom") == side}
+        with open(os.path.join(J, f"bassberry_bom_jlc_{side.lower()}.csv"), "w", newline="", encoding="utf-8") as fs:
+            w = csv.writer(fs); w.writerow(["Comment", "Designator", "Footprint", "LCSC Part #"])
+            for cm, refs, fp, code in bom_rows:
+                d = [r for r in refs if r in on]
+                if d:
+                    w.writerow([cm, ",".join(d), fp, code])
+        with open(os.path.join(J, f"bassberry_cpl_jlc_{side.lower()}.csv"), "w", newline="", encoding="utf-8") as fs:
+            w = csv.writer(fs); w.writerow(["Designator", "Mid X", "Mid Y", "Layer", "Rotation"])
+            for ref in sorted(on, key=nat):
+                r = pos[ref]
+                w.writerow([ref, f"{float(r['PosX']):.4f}mm", f"{float(r['PosY']):.4f}mm", side, f"{float(r['Rot']) % 360:.0f}"])
+        print(f"{side}: {len(on)} parts")
     with open(os.path.join(J, "not_assembled.csv"), "w", newline="", encoding="utf-8") as fn:
         w = csv.writer(fn); w.writerow(["Designator", "Value", "Footprint", "Why"])
         for s in sorted(skipped, key=lambda s: nat(s[0])):
