@@ -38,12 +38,12 @@ shortfall.
   rotation plus the angle between JLC's and KiCad's footprint; the CPL position is where JLC's footprint origin lands
   (the 2x20 socket and the encoder have their KiCad origin on a pin, not at the body centre). The same fit is the
   land-pattern check: every JLC pad centre must land on this footprint's copper.
-  Results: 168 parts fitted; 167 OK. Q101 (DMP3013SFV): JLC's PowerDI3333 model has two small exposed-pad side tabs
+  Results: 168 parts fitted; 167 OK (the encoder 7/7 pads, the holders and switches exact). Q101 (DMP3013SFV): JLC's PowerDI3333 model has two small exposed-pad side tabs
   that KiCad's land pattern does not have - pins 1-4 and the drain fit, no action. F401 and U502 fit with 0.6 / 0.4 mm
   pad-spacing differences (2410 fuse on 2512 pads, SOP-16 row spacing), centred.
-* Top-side substitutes picked in JLC's BOM tool: the 18650 holder C2988620 does **not** fit (its contacts are 82.6 mm
-  apart, the Keystone 1042 footprint 79.4 mm) - the BOM keeps the Keystone 1042 C5249310; the TL3342F450QG (C2886897) and
-  the EC11E1820402 (C361165) fit (check that encoder's shaft length for the lid).
+* **Part numbers: `lcsc_parts.csv` is the source of truth**, as confirmed in stock by Zoltan on 2026-10-27
+  (Keystone 1042 C5249310, TL3342F160QG C2886898, EC11E15244G1 C370970 on the top side). Substitutes tried in JLC's
+  BOM tool were checked by the same fit: the 18650 holder C2988620 does **not** fit (contacts 82.6 mm apart vs 79.4 mm).
 * Still look at JLC's placement preview before paying, and at the DFM check JLC sends after the order.
 
 ## Check before ordering
