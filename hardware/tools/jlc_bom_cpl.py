@@ -15,12 +15,16 @@ Exit code 1 if a fitted part has no LCSC code, or the placement and the netlist 
 import csv, os, re, sys, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PRJ = os.path.normpath(os.path.join(HERE, "..", "bassberry"))
+# --project DIR (KiCad project folder; default: the Bassberry one) and --name NAME (file stem; default: the .kicad_pcb in DIR)
+_a = sys.argv[1:]
+PRJ = os.path.abspath(_a[_a.index("--project") + 1]) if "--project" in _a else os.path.normpath(os.path.join(HERE, "..", "bassberry"))
+NAME = _a[_a.index("--name") + 1] if "--name" in _a else next(
+    (f[:-10] for f in sorted(os.listdir(PRJ)) if f.endswith(".kicad_pcb") and not f.endswith("_placed.kicad_pcb")), "board")
 J = os.path.join(PRJ, "jlc")
 
 
 def netlist():
-    t = open(os.path.join(PRJ, "bassberry.net"), encoding="utf-8").read()
+    t = open(os.path.join(PRJ, f"{NAME}.net"), encoding="utf-8").read()
     out = {}
     for b in re.split(r"\(comp\s", t)[1:]:
         r = re.search(r'\(ref "([^"]+)"\)', b)
@@ -38,7 +42,7 @@ def main():
     for row in csv.DictReader(open(os.path.join(J, "lcsc_parts.csv"), encoding="utf-8")):
         parts[(row["value"], row["footprint"])] = row
         parts_by_code.setdefault(row["lcsc"].strip(), row)
-    pos = {r["Ref"]: r for r in csv.DictReader(open(os.path.join(J, "bassberry_pos_kicad.csv"), encoding="utf-8"))}
+    pos = {r["Ref"]: r for r in csv.DictReader(open(os.path.join(J, f"{NAME}_pos_kicad.csv"), encoding="utf-8"))}
     errors = []
     groups = collections.defaultdict(list)
     skipped = []
@@ -59,8 +63,8 @@ def main():
         groups[(c["value"], c["fp"])].append(ref)
     bom_rows = []
     nat = lambda r: (re.sub(r"\d", "", r), int(re.sub(r"\D", "", r) or 0))
-    with open(os.path.join(J, "bassberry_bom_jlc.csv"), "w", newline="", encoding="utf-8") as fb, \
-            open(os.path.join(J, "bassberry_bom_full.csv"), "w", newline="", encoding="utf-8") as ff:
+    with open(os.path.join(J, f"{NAME}_bom_jlc.csv"), "w", newline="", encoding="utf-8") as fb, \
+            open(os.path.join(J, f"{NAME}_bom_full.csv"), "w", newline="", encoding="utf-8") as ff:
         wb = csv.writer(fb); wf = csv.writer(ff)
         wb.writerow(["Comment", "Designator", "Footprint", "LCSC Part #"])
         wf.writerow(["Qty", "Comment", "Designator", "Footprint", "LCSC Part #", "MPN", "Manufacturer", "Basic/Extended",
@@ -83,13 +87,13 @@ def main():
         mp = parts_by_code.get(code, {}).get("mpn") or cm
         e = merged.setdefault(code, [mp, [], fp])
         e[1].extend(refs)
-    with open(os.path.join(J, "bassberry_bom_jlc.csv"), "w", newline="", encoding="utf-8") as fb:
+    with open(os.path.join(J, f"{NAME}_bom_jlc.csv"), "w", newline="", encoding="utf-8") as fb:
         wb = csv.writer(fb); wb.writerow(["Comment", "Designator", "Footprint", "LCSC Part #"])
         for code, (mp, refs, fp) in sorted(merged.items(), key=lambda kv: nat(sorted(kv[1][1], key=nat)[0])):
             wb.writerow([mp, ",".join(sorted(refs, key=nat)), fp, code])
     bom_rows = [[merged[code][0], sorted(merged[code][1], key=nat), merged[code][2], code] for code in merged]
     placed = {r for refs in groups.values() for r in refs}
-    with open(os.path.join(J, "bassberry_cpl_jlc.csv"), "w", newline="", encoding="utf-8") as fc:
+    with open(os.path.join(J, f"{NAME}_cpl_jlc.csv"), "w", newline="", encoding="utf-8") as fc:
         w = csv.writer(fc)
         w.writerow(["Designator", "Mid X", "Mid Y", "Layer", "Rotation"])
         for ref in sorted(placed, key=nat):
@@ -100,13 +104,13 @@ def main():
     # switches, the encoder and the 2x20 socket (hand-soldering them saves the second-side assembly)
     for side in ("Top", "Bottom"):
         on = {ref for ref in placed if ("Top" if pos[ref]["Side"].lower().startswith("top") else "Bottom") == side}
-        with open(os.path.join(J, f"bassberry_bom_jlc_{side.lower()}.csv"), "w", newline="", encoding="utf-8") as fs:
+        with open(os.path.join(J, f"{NAME}_bom_jlc_{side.lower()}.csv"), "w", newline="", encoding="utf-8") as fs:
             w = csv.writer(fs); w.writerow(["Comment", "Designator", "Footprint", "LCSC Part #"])
             for cm, refs, fp, code in bom_rows:
                 d = [r for r in refs if r in on]
                 if d:
                     w.writerow([cm, ",".join(d), fp, code])
-        with open(os.path.join(J, f"bassberry_cpl_jlc_{side.lower()}.csv"), "w", newline="", encoding="utf-8") as fs:
+        with open(os.path.join(J, f"{NAME}_cpl_jlc_{side.lower()}.csv"), "w", newline="", encoding="utf-8") as fs:
             w = csv.writer(fs); w.writerow(["Designator", "Mid X", "Mid Y", "Layer", "Rotation"])
             for ref in sorted(on, key=nat):
                 r = pos[ref]

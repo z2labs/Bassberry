@@ -11,6 +11,7 @@
 | `not_assembled.csv` | - | parts JLC does not place (DNP, solder jumpers, test point, BMS wire pads, and the 3 parts below) |
 | `gerber_check.png` | - | every Gerber layer rendered by an independent viewer (pygerber) |
 
+How it was made and why (JLC importer quirks, rotations, land-pattern check): [`hardware/tools/JLC_FAB.md`](../../tools/JLC_FAB.md).
 Regenerate: `powershell -File hardware\tools\jlc_fab.ps1` (Gerber, drill, placement from the board), then
 `python3 hardware/tools/jlc_bom_cpl.py` (BOM + CPL from the netlist, the placement and `lcsc_parts.csv`).
 

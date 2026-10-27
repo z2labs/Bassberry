@@ -19,7 +19,11 @@ import os, sys, csv, json, math, subprocess, re, time
 import pcbnew
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PRJ = os.path.normpath(os.path.join(HERE, "..", "bassberry"))
+# --project DIR (KiCad project folder; default: the Bassberry one) and --name NAME (file stem; default: the .kicad_pcb in DIR)
+_a = sys.argv[1:]
+PRJ = os.path.abspath(_a[_a.index("--project") + 1]) if "--project" in _a else os.path.normpath(os.path.join(HERE, "..", "bassberry"))
+NAME = _a[_a.index("--name") + 1] if "--name" in _a else next(
+    (f[:-10] for f in sorted(os.listdir(PRJ)) if f.endswith(".kicad_pcb") and not f.endswith("_placed.kicad_pcb")), "board")
 J = os.path.join(PRJ, "jlc")
 CACHE = os.path.join(J, "easyeda_cache")
 FPDIR = os.environ.get("KICAD_FP", r"C:\Program Files\KiCad\10.0\share\kicad\footprints")
@@ -108,13 +112,13 @@ def fit(model, target, by_number, inl=None):
 
 
 def main():
-    b = pcbnew.LoadBoard(os.path.join(PRJ, "bassberry.kicad_pcb"))
+    b = pcbnew.LoadBoard(os.path.join(PRJ, f"{NAME}.kicad_pcb"))
     mm = pcbnew.ToMM
     code = {}
-    for r in csv.DictReader(open(os.path.join(J, "bassberry_bom_jlc.csv"), encoding="utf-8")):
+    for r in csv.DictReader(open(os.path.join(J, f"{NAME}_bom_jlc.csv"), encoding="utf-8")):
         for d in r["Designator"].split(","):
             code[d] = r["LCSC Part #"]
-    kpos = {r["Ref"]: r for r in csv.DictReader(open(os.path.join(J, "bassberry_pos_kicad.csv"), encoding="utf-8"))}
+    kpos = {r["Ref"]: r for r in csv.DictReader(open(os.path.join(J, f"{NAME}_pos_kicad.csv"), encoding="utf-8"))}
     rows, report, conv = [], [], {}
     for fp in sorted(b.GetFootprints(), key=lambda f: f.GetReference()):
         ref = fp.GetReference()
@@ -172,8 +176,8 @@ def main():
         out.append([ref, f"{t[0]:.4f}mm", f"{t[1]:.4f}mm", "Bottom" if bottom else "Top", f"{r:.0f}"])
     nat = lambda r: (re.sub(r"\d", "", r[0]), int(re.sub(r"\D", "", r[0]) or 0))
     out.sort(key=nat)
-    for name, pick in (("bassberry_cpl_jlc.csv", lambda r: True), ("bassberry_cpl_jlc_top.csv", lambda r: r[3] == "Top"),
-                       ("bassberry_cpl_jlc_bottom.csv", lambda r: r[3] == "Bottom")):
+    for name, pick in ((f"{NAME}_cpl_jlc.csv", lambda r: True), (f"{NAME}_cpl_jlc_top.csv", lambda r: r[3] == "Top"),
+                       (f"{NAME}_cpl_jlc_bottom.csv", lambda r: r[3] == "Bottom")):
         with open(os.path.join(J, name), "w", newline="", encoding="utf-8") as f:
             w = csv.writer(f); w.writerow(["Designator", "Mid X", "Mid Y", "Layer", "Rotation"])
             w.writerows([r for r in out if pick(r)])
