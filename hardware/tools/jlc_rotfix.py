@@ -115,7 +115,7 @@ def main():
         title, model = easyeda(code[ref])
         model = [(n, -x if bottom else x, y) for n, x, y in model if n]
         nums_t, nums_m = {n for n, _, _ in target}, {n for n, _, _ in model}
-        by_number = len(nums_m & nums_t) >= 0.8 * len(nums_m) and not ref.startswith("J101")
+        by_number = len(nums_m & nums_t) >= max(2, 0.6 * min(len(nums_m), len(nums_t))) and not ref.startswith("J101")
         a, t, err, nin, ncmp = fit(model, target, by_number)
         if by_number and (nin < max(2, 0.6 * ncmp) or err > TOL):   # numbering differs: geometry only
             g = fit(model, target, False)
@@ -138,10 +138,20 @@ def main():
             conv[round((prot - ka) % 360)] += 1
         rows.append([ref, t, a, ka, prot, bottom])
         jrot = (prot - ka + a) % 360
-        ok = err <= TOL and nin >= max(2, 0.6 * ncmp)
+        # verdict: every JLC pad centre must land on copper of this footprint (any of its pads, numbered or not)
+        boxes = []
+        for p in fp.Pads():
+            if p.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH:
+                continue
+            bb = p.GetBoundingBox()
+            boxes.append((mm(bb.GetX()), -mm(bb.GetBottom()), mm(bb.GetRight()), -mm(bb.GetY())))
+        land = [rot((x, y), a) for _, x, y in model]
+        off = [(round(px + t[0], 2), round(py + t[1], 2)) for px, py in land
+               if not any(x0 - 0.05 <= px + t[0] <= x1 + 0.05 and y0 - 0.05 <= py + t[1] <= y1 + 0.05 for x0, y0, x1, y1 in boxes)]
+        ok = not off
         report.append([ref, code[ref], title, "bottom" if bottom else "top", f"{prot:.0f}", f"{jrot:.0f}", f"{t[0]:.3f}", f"{t[1]:.3f}",
                        f"{err:.3f}", f"{nin}/{ncmp} " + ("pins by number" if by_number else "pads by geometry"),
-                       "OK" if ok else "LAND PATTERN MISMATCH - check this part"])
+                       "OK" if ok else f"LAND PATTERN MISMATCH: {len(off)} of {len(land)} JLC pads off the copper"])
     # JLC rotation = KiCad .pos rotation corrected by the angle between JLC's footprint and KiCad's own footprint, both
     # fitted to the same pads (bottom: KiCad .pos = top-view angle + 180, the offset printed below; same rule for the JLC footprint)
     print("KiCad .pos vs top-view angle of KiCad's own footprint, bottom side (pos - angle):", dict(conv))
