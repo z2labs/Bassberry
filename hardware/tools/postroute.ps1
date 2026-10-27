@@ -25,9 +25,9 @@ $orph = & $py "$tools\via_rescue.py" $board --net GND --dry 2>&1 | Select-String
 "== 2b walled-in GND pads: $($orph -join ' ')" | Out-File -Append -Encoding utf8 $log
 # (gnd_pad_rescue is not used: it re-routes the ripped nets at srouter's single width, which would undo the power copper;
 #  GND pads get their own dog-bone vias before routing instead - pcb_build.py gnd_dogbones)
-step "3 z2_stitch"    { & $py "$root\hardware\tools\z2_stitch.py" $board }   # Z2 Stitch 0.3.0 (z2labs/z2-stitch) in place of srouter gnd_stitch
 step "4 via_rescue"   { & $py "$tools\via_rescue.py" $board --net GND }
 step "4b via_off_pad" { & $py "$root\hardware\tools\via_off_pad.py" $board }
+step "4c z2_stitch"   { & $py "$root\hardware\tools\z2_stitch.py" $board }   # Z2 Stitch 0.3.0, last copper step: nothing is routed after it
 step "5 stitch_audit" { & $py "$tools\stitch_audit.py" $board }
 step "6 silk_dfm fix" { & $py "$tools\silk_dfm.py" $board --fix }
 step "6a dfm silk fix" { & $py "$root\hardware\twin\twin_dfm.py" $board --fix-silk }
