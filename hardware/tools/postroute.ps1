@@ -16,6 +16,7 @@ function step($name, [scriptblock]$b) {
 Copy-Item $board "$root\hardware\bassberry\route\pre_tidy.kicad_pcb"
 step "1 track_tidy"   { & $py "$tools\track_tidy.py" $board }
 step "1a tidy_guard"  { & $py "$root\hardware\tools\tidy_guard.py" "$root\hardware\bassberry\route\pre_tidy.kicad_pcb" $board }
+step "1c via_off_pad" { & $py "$root\hardware\tools\via_off_pad.py" $board }
 step "1b power_pour" { & $py "$root\hardware\tools\power_pour.py" $board }
 step "2 zone fill"    { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(r'$board',b);print('filled')" }
 # walled-in GND pads first (gnd_pad_rescue moves the signal tracks and strips stitching, so it goes before gnd_stitch)
@@ -26,6 +27,7 @@ $orph = & $py "$tools\via_rescue.py" $board --net GND --dry 2>&1 | Select-String
 #  GND pads get their own dog-bone vias before routing instead - pcb_build.py gnd_dogbones)
 step "3 gnd_stitch"   { & $py "$tools\gnd_stitch.py" $board }
 step "4 via_rescue"   { & $py "$tools\via_rescue.py" $board --net GND }
+step "4b via_off_pad" { & $py "$root\hardware\tools\via_off_pad.py" $board }
 step "5 stitch_audit" { & $py "$tools\stitch_audit.py" $board }
 step "6 silk_dfm fix" { & $py "$tools\silk_dfm.py" $board --fix }
 step "6 silk_dfm"     { & $py "$tools\silk_dfm.py" $board }

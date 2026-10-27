@@ -254,6 +254,15 @@ for ref, c in sorted(comps.items()):
     fp.SetExcludedFromBOM(c["nobom"])       # (library jumpers / test points carry their own flag)
     if ref == "J101":
         pi_socket_cleanup(fp)
+    # plated slots narrower than 0.65 mm are a JLC DFM "danger" (slot width check): the USB-C shell legs' 0.6 mm slots
+    # become 0.7 mm (legs are 0.5-0.6 mm), the pad grows with them to keep its ring
+    for pad in fp.Pads():
+        d = pad.GetDrillSize()
+        if pad.GetAttribute() == pcbnew.PAD_ATTRIB_PTH and d.x != d.y and min(d.x, d.y) < mm(0.65):
+            grow = mm(0.7) - min(d.x, d.y)
+            pad.SetDrillSize(pcbnew.VECTOR2I(d.x + grow, d.y + grow))
+            s_ = pad.GetSize(pcbnew.F_Cu)
+            pad.SetSize(pcbnew.F_Cu, pcbnew.VECTOR2I(s_.x + grow, s_.y + grow)) if hasattr(pad, "SetSize") else None
     for pad in fp.Pads():
         n = pinnet.get((ref, pad.GetNumber()))
         if n:

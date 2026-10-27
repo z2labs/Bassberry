@@ -20,6 +20,7 @@ GND_MOAT = 1.0   # mm kept free around a GND pad that has no via of its own yet 
 VIA_A = 1.5      # A per 0.6/0.3 mm via (same figure as the layer-3 twin)
 PRIO = 5        # 5..9 by current: above the GND pours (0), below the SoC thermal pad (10)
 SPLIT = 1.0     # mm a pour keeps from another high-current net's track on the same layer
+SPINE = 0.5     # mm: width a wide power track keeps inside its pour (the pour carries the current)
 # nets whose outer corridor is copied onto In1 as well (above the +BATT plane): the battery links run between the
 # holders' plated contacts, which reach In1 by themselves, so the inner copy adds capacity without a single via
 MIRROR_IN1 = ["/battery/CELL*"]
@@ -87,7 +88,7 @@ def add_vias(b):
         # 1) a bigger barrel in place: 1.0 / 0.5 mm (2.5 A) if it clears everything
         me = next(x for x in allv_net[net] if x[3] is v)
         if have < need and me[2] < 0.45 and hole_ok(c, 0.5, skip=v) and \
-                all(cu.clear(net, l, c, c, 0.5) for l in ALL):
+                all(cu.clear(net, l, c, c, 0.5) for l in ALL) and cu.off_pads(c, 0.5):
             v.SetWidth(FM(1.0)); v.SetDrill(FM(0.5)); have += amps(0.5) - amps(me[2]); me[2] = 0.5
             cu.add(net, "all", ("circ", c, 0.5), v); made += 1
         # 2) parallel vias inside the net's own pour on every layer this via joins
@@ -104,7 +105,7 @@ def add_vias(b):
                 for dia, drill in ((1.0, 0.5), (0.6, 0.3), (0.45, 0.2)):
                     if not hole_ok(p, drill):
                         continue
-                    if not all(cu.clear(net, l, p, p, dia / 2) for l in ALL):
+                    if not all(cu.clear(net, l, p, p, dia / 2) for l in ALL) or not cu.off_pads(p, dia / 2):
                         continue
                     # joined through the net's own pour on every layer, or else by a stub from the via on each layer
                     stubs = [l for l in layers if not inside(own_fill(net, l), p, dia / 2 + 0.05)]
@@ -184,7 +185,7 @@ def plane_taps(b):
                                 continue
                             if not inside(own[l], q, dia / 2 + 0.05) or not inside(pf, q, dia / 2 + 0.05):
                                 continue
-                            if not all(cu.clear(net, ll, q, q, dia / 2) for ll in ALL):
+                            if not all(cu.clear(net, ll, q, q, dia / 2) for ll in ALL) or not cu.off_pads(q, dia / 2):
                                 continue
                             v = pcbnew.PCB_VIA(b); v.SetPosition(pcbnew.VECTOR2I(FM(q[0]), FM(q[1])))
                             v.SetWidth(FM(dia)); v.SetDrill(FM(drill)); v.SetNet(p.GetNet()); b.Add(v)
@@ -284,6 +285,14 @@ def main(path):
                 z.SetIslandRemovalMode(pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
                 z.Outline().Append(ps.UnitSet(i))          # outline with its holes (the GND moats)
                 b.Add(z); made += 1
+    # the wide power tracks become polygons: their copper is already inside the net's corridor pour (built from the full
+    # width above), so the track itself is thinned to a 0.5 mm spine that keeps the connection. The layout reads as
+    # pours, and the zone filler gives the same copper (other nets' pours were kept SPLIT mm off the full width).
+    thinned = 0
+    for t in tracks:
+        if t.GetClass() != "PCB_VIA" and t.GetNetname() in power_nets and pcbnew.ToMM(t.GetWidth()) > SPINE:
+            t.SetWidth(FM(SPINE)); thinned += 1
+    print(f"power_pour: {thinned} wide power tracks turned into pour (spine {SPINE} mm)")
     # In1.Cu: whatever room the signals leave becomes a +BATT plane (below every corridor pour), fed by taps
     outline = pcbnew.SHAPE_POLY_SET(); b.GetBoardPolygonOutlines(outline, True)
     for pname, (pl, pnet) in PLANES.items():

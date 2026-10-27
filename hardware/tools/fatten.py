@@ -105,6 +105,20 @@ class Copper:
             bb = g[1:5]
         self.items.append((net, layers, g, bb, obj))
 
+    def off_pads(self, p, r, gap=0.15):
+        """True if a via of radius r at p keeps gap from every SMD pad, own net included (JLC DFM 'via to pad':
+        a via touching a pad of its own net wicks solder away from the joint)"""
+        for (n, ls, g, bb, obj) in self.items:
+            if g[0] != "rect" or obj is None or not hasattr(obj, "GetAttribute"):
+                continue
+            if obj.GetAttribute() != pcbnew.PAD_ATTRIB_SMD:
+                continue
+            if bb[0] - r - gap > p[0] or bb[2] + r + gap < p[0] or bb[1] - r - gap > p[1] or bb[3] + r + gap < p[1]:
+                continue
+            if d_seg_rect(p, p, g[1:5]) < r + gap:
+                return False
+        return True
+
     def clear(self, net, layer, a, b, hw, skip=()):
         """True if a capsule a-b with half width hw on layer keeps CLR from every other-net item"""
         m = hw + max(CLR, CLR_PAD) + 0.05
@@ -178,7 +192,7 @@ def main(path, dry=False):
         have = sum(cap(mm(x.GetDrillValue())) for x in mates)
         # the via itself first: 1.0 / 0.5 mm where it clears (2.5 A)
         if GROW and have < need and mm(v.GetDrillValue()) < 0.45 and holes_ok(c, 0.5, skip=v) and \
-                all(cu.clear(net, l, c, c, 0.5) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu)):
+                all(cu.clear(net, l, c, c, 0.5) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu)) and cu.off_pads(c, 0.5):
             have += cap(0.5) - cap(mm(v.GetDrillValue()))
             if not dry:
                 v.SetWidth(FM(1.0)); v.SetDrill(FM(0.5))
@@ -195,7 +209,7 @@ def main(path, dry=False):
                 for vd, vh in (((1.0, 0.5),) if GROW else ()) + ((VIA_D, VIA_HOLE),):
                     if not inside(p, vd / 2 + EDGE) or not holes_ok(p, vh):
                         continue
-                    ok = all(cu.clear(net, l, p, p, vd / 2) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu))
+                    ok = all(cu.clear(net, l, p, p, vd / 2) for l in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu)) and cu.off_pads(p, vd / 2)
                     ok = ok and all(cu.clear(net, l, c, p, sw / 2) for l in layers)
                     if not ok:
                         continue
