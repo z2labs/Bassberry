@@ -20,6 +20,9 @@ GND_MOAT = 1.0   # mm kept free around a GND pad that has no via of its own yet 
 VIA_A = 1.5      # A per 0.6/0.3 mm via (same figure as the layer-3 twin)
 PRIO = 5        # 5..9 by current: above the GND pours (0), below the SoC thermal pad (10)
 SPLIT = 1.0     # mm a pour keeps from another high-current net's track on the same layer
+# nets whose outer corridor is copied onto In1 as well (above the +BATT plane): the battery links run between the
+# holders' plated contacts, which reach In1 by themselves, so the inner copy adds capacity without a single via
+MIRROR_IN1 = ["/battery/CELL*"]
 # zone name -> (layer, net): a plane on an inner layer that takes all the room the signals leave there
 PLANES = {"PWR_PLANE_+BATT_In1.Cu": (pcbnew.In1_Cu, "+BATT")}
 TAP_A = {"big": 4.5, "small": 1.5}   # A each pad of the plane net must be able to push into the plane
@@ -250,8 +253,9 @@ def main(path):
         for layer in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.B_Cu):     # In1: power that srouter had to take inside
             ps = pcbnew.SHAPE_POLY_SET()
             n = 0
+            mirror = layer == pcbnew.In1_Cu and any(fnmatch.fnmatchcase(net, g) for g in MIRROR_IN1)
             for t in tracks:
-                if t.GetClass() == "PCB_VIA" or t.GetNetname() != net or t.GetLayer() != layer:
+                if t.GetClass() == "PCB_VIA" or t.GetNetname() != net or (t.GetLayer() != layer and not mirror):
                     continue
                 t.TransformShapeToPolygon(ps, layer, FM(BUFFER), FM(0.05), pcbnew.ERROR_INSIDE)
                 n += 1

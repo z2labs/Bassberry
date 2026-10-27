@@ -126,7 +126,7 @@ def import_ses(board, ses):
 # board on the real net, and the later passes join the small pads to that trunk at their own width: a neck-down
 # that happens only at the last millimetres before a fine-pitch pin.
 TRUNK_MAX = 1.6      # mm, widest trunk asked from the router (fatten.py and the pours widen further)
-TRUNK_MAX_NET = {f"{BT}CELL*": 2.4}   # battery links between the holders: open board, full IPC width
+TRUNK_MAX_NET = {}   # (2.4 mm battery-link trunks congested pass 1b; the links get In1 copies of their pours instead)
 TRUNK_MIN = 0.5      # mm, a trunk narrower than this is no trunk
 
 
