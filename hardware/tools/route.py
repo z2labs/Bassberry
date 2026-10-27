@@ -10,9 +10,9 @@ Layer roles (DSN layer type + -top cost), GND is never routed (In2 plane + F/B p
   pass 1 power   wide rails, battery, charger power stage, speaker outputs:  B.Cu open, In1 open, F.Cu cost 3
   pass 2 fast    I2S, I2C, USB D+/D-, HAT ID:                                In1 open, B.Cu cost 2, F.Cu cost 10
   pass 3 rest    everything else:                                           In1 + B.Cu open, F.Cu cost 4
-In2.Cu (GND plane): closed in passes 0, 1a and 2 (fast signals keep an unbroken reference); open at a high cost
-(IN2) in pass 1b, pass 3 and the repair - Zoltan 2026-10-27: short GND-plane crossings are fine, the plane is stitched
-densely afterwards. The router style is always oct + smooth (USAGE.md: known limits).
+In2.Cu (GND plane): closed in every pass; open at a high cost (IN2) in the repair, for the nets the passes left
+(Zoltan 2026-10-27: GND-plane crossings are fine, the plane is stitched densely afterwards). Open in pass 1b it made
+each srouter iteration 10x slower (30 s -> 330 s) on this board. The router style is always oct + smooth (USAGE.md: known limits).
 After the passes: via drill repair, GND pours re-filled, SoC via field restored; post-processing is run by postroute.ps1.
 """
 import os, sys, re, json, shutil, subprocess, time
@@ -87,9 +87,9 @@ PASSES = [
     # 1a: high-current nets alone, outer layers only (In1 closed: 0.5 oz inner copper carries a third), vias avoided
     ("pass1a_heavy", HEAVY, ["-top", "F.Cu:6", "-via", "20000", "-it", "80"]),
     # 1b: everything that escapes from between power pins (QFN, amp bootstrap), the 3V3 rails
-    ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:40"] + IN2 + ["-via", "8000", "-it", "80"]),
+    ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:40", "-via", "8000", "-it", "80"]),
     ("pass2_fast", FAST, ["-top", "F.Cu:10", "-top", "B.Cu:2", "-via", "2500"]),
-    ("pass3_rest", ["*"], ["-top", "F.Cu:4"] + IN2 + ["-via", "2000"]),
+    ("pass3_rest", ["*"], ["-top", "F.Cu:4", "-via", "2000"]),
 ]
 
 
