@@ -1,7 +1,7 @@
 Comment,Designator,Footprint,LCSC Part #
-18650 cell 1 (Keystone 1042),BT401,BatteryHolder_Keystone_1042_1x18650,C2988620
-18650 cell 2 (Keystone 1042),BT402,BatteryHolder_Keystone_1042_1x18650,C2988620
-18650 cell 3 (Keystone 1042),BT403,BatteryHolder_Keystone_1042_1x18650,C2988620
+1042 (18650 cell 1 (Keystone 1042)),BT401,BatteryHolder_Keystone_1042_1x18650,C5249310
+1042 (18650 cell 2 (Keystone 1042)),BT402,BatteryHolder_Keystone_1042_1x18650,C5249310
+1042 (18650 cell 3 (Keystone 1042)),BT403,BatteryHolder_Keystone_1042_1x18650,C5249310
 2.54-2*20 (RPi 40-pin (face-down socket)),J101,Raspberry_Pi_Zero_Socketed_THT_FaceDown_MountingHoles,C2977589
 TL3342F450QG (POWER),SW501,SW_SPST_TL3342,C2886897
 TL3342F160QG (BT),SW502,SW_SPST_TL3342,C2886898
