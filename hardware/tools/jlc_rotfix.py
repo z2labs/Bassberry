@@ -122,6 +122,8 @@ def main():
         prot = float(kpos[ref]["Rot"]) % 360
         if not bottom and kerr < 0.05 and round(ka) % 360 != round(prot) % 360:
             print(f"  note: {ref} top-side KiCad fit {ka} vs .pos {prot:.0f}")
+        if os.environ.get("ROTDBG") and bottom:
+            print("DBG", ref, name, "pos", prot, "ka", ka, "kerr", round(kerr, 3), "a", a, "err", round(err, 3), fp.GetOrientationDegrees())
         if bottom and kerr < 0.05:
             conv.setdefault(round((prot + ka) % 360), 0)
             conv[round((prot + ka) % 360)] += 1
