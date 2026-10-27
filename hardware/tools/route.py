@@ -129,10 +129,16 @@ def closed_for(name, args):
     return c + (("In1.Cu",) if name in ("pass1a_heavy", "pass1a2_amp") else ())
 
 
-def export_dsn(board, path, closed=("In2.Cu",)):
+KEEPOUT_PASSES = ("pass2_fast", "pass3_rest")   # + repair: the power passes need vias next to their pads
+
+
+def export_dsn(board, path, closed=("In2.Cu",), keepouts=True):
+    """keepouts: via keep-outs over SMD pads. Off in the power passes (with them pass 1b took 89 min instead of 15 and
+    left 4 nets): their few vias that touch a pad are moved by via_off_pad.py afterwards, twin layer 5 checks."""
     assert pcbnew.ExportSpecctraDSN(board, path), "DSN export failed"
     t = open(path, encoding="utf-8").read()
-    t = t.replace("    (boundary", pad_via_keepouts(board) + "\n    (boundary", 1)      # after the layer list
+    if keepouts:
+        t = t.replace("    (boundary", pad_via_keepouts(board) + "\n    (boundary", 1)      # after the layer list
     open(path, "w", encoding="utf-8").write(t)
     # In2.Cu is the GND plane: closed unless the pass opens it; pass 1a also closes In1.Cu
     t2 = t
@@ -209,7 +215,7 @@ def trunk_pass(b):
                     p.SetNet(taps[n])
     name = "pass0_trunk"
     dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
-    export_dsn(b2, dsn, ("In2.Cu", "In1.Cu"))
+    export_dsn(b2, dsn, ("In2.Cu", "In1.Cu"), keepouts=False)
     r = rules(list(plan), [(n, w, CLR) for n, (w, sm) in plan.items()])
     json.dump(r, open(rj, "w"), indent=1)
     return name, dsn, ses, rep, rj
@@ -331,7 +337,7 @@ def main():
             name, dsn, ses, rep, rj = trunk_pass(b)
         else:
             dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
-            export_dsn(b, dsn, closed_for(name, args))
+            export_dsn(b, dsn, closed_for(name, args), keepouts=name in KEEPOUT_PASSES)
             json.dump(rules(only, width), open(rj, "w"), indent=1)
         cmd = [SR, "-de", dsn, "-do", ses, "-rules", rj, "-report", rep] + args
         print(">>", " ".join(cmd), flush=True)
