@@ -4,7 +4,7 @@ $ErrorActionPreference = "Continue"
 $root  = Resolve-Path "$PSScriptRoot\..\.."
 $py    = "C:\Program Files\KiCad\10.0\bin\python.exe"
 $cli   = "C:\Program Files\KiCad\10.0\bin\kicad-cli.exe"
-$tools = if ($env:SROUTER_TOOLS) { $env:SROUTER_TOOLS } else { "C:\Users\RF\Documents\GitHub\srouter-b3\tools" }
+$tools = if ($env:SROUTER_TOOLS) { $env:SROUTER_TOOLS } else { "C:\Users\RF\Documents\GitHub\srouter-jlc\tools" }   # feat/jlc-fab: silk_dfm also clears via holes
 $board = "$root\hardware\bassberry\bassberry.kicad_pcb"
 $log   = "$root\hardware\bassberry\route\postroute.log"
 function step($name, [scriptblock]$b) {
@@ -34,6 +34,6 @@ step "6 silk_dfm"     { & $py "$tools\silk_dfm.py" $board }
 step "6b zone refill" { & $py -c "import pcbnew;b=pcbnew.LoadBoard(r'$board');pcbnew.ZONE_FILLER(b).Fill(b.Zones());pcbnew.SaveBoard(r'$board',b);print('refilled after stitching')" }
 step "7 DRC"          { & $cli pcb drc --schematic-parity --severity-all --format json -o "$root\hardware\bassberry\route\drc.json" $board;
                         & $py -c "import json,collections;d=json.load(open(r'$root\hardware\bassberry\route\drc.json'));v=d['violations'];u=d.get('unconnected_items',[]);p=d.get('schematic_parity',[]);c=collections.Counter((x['severity'],x['type']) for x in v);print('violations',len(v),'unconnected',len(u),'parity',len(p));[print(' ',k,n) for k,n in c.most_common()]" }
-foreach ($t in 'twin_check','twin_plug','twin_analog','twin_mech') {
+foreach ($t in 'twin_check','twin_plug','twin_analog','twin_mech','twin_dfm') {
   step "twin $t" { & $py "$root\hardware\twin\$t.py" $board --selftest -q }
 }

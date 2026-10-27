@@ -236,7 +236,9 @@ def check(g, listing=False):
 
 
 def selftest(g):
-    base = {r[1] for r in check(g).fails()}
+    def nfail(rep, grp):
+        return sum(int(m.split(" of ")[0]) for s, gr, m in rep.rows if s == "FAIL" and gr == grp)
+    base = check(g)
     st = Report("selftest: injected faults")
     p = next(p for p in g["pads"] if p["kind"] == "smd")
     g1 = copy.deepcopy(g); g1["vias"].append(dict(c=p["poly"][0], r=0.225, d=0.2, net=p["net"]))
@@ -254,8 +256,8 @@ def selftest(g):
     for name, gg, grp in (("via on an SMD pad", g1, "via-pad"), ("0.6 mm plated slot", g2, "slot"),
                           ("silk line across a hole", g3, "silk-hole"), ("silk on a pad", g4, "silk-pad"),
                           ("two parts' pads 0.03 mm apart", g5, "pad-pad")):
-        new = {r[1] for r in check(gg).fails()} - base
-        st.add("PASS" if grp in new else "FAIL", "inject", f"{name}: {'caught' if grp in new else 'MISSED'} ({grp})")
+        hit = nfail(check(gg), grp) > nfail(base, grp)
+        st.add("PASS" if hit else "FAIL", "inject", f"{name}: {'caught' if hit else 'MISSED'} ({grp})")
     return st
 
 

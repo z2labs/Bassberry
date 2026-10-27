@@ -12,6 +12,7 @@ Raspberry Pi drawings, HAT design guide). Every table names its source. It is ne
 | 2 | `twin_plug.py` | board geometry + Pi drawings | the Pi is fitted **face down** to the 58 × 49 mm hole pattern, then each Pi pin is joined to whatever pad is physically under it and the Pi signals of layer 1 are re-checked through that join; port block over the open corner, Pi 4 and Pi 5 SoC lids on the thermal pad, antenna in the keep-out, nothing under the Pi |
 | 3 | `twin_analog.py` | the routed copper incl. zone fills | rasterised (0.2 mm) max-flow ampacity of each high-current path through tracks, pads and power pours on all layers, between the pads where the current really enters and leaves (IPC-2221, 20 K rise, vias 1.5 A each); Pi 5 V set-point and IR drop at 5 A, boost set-point, TAS5805M PVDD window, LDO dissipation (USB side at a 20 V PD contract) |
 | 4 | `twin_mech.py` | board geometry | 18650 holders (axis, contact spacing, side by side, series links at the same end, clear of the Pi), USB-C at the rear edge, lid controls in the front strip, speaker connectors on the acoustic side, screw heads free |
+| 5 | `twin_dfm.py` | board geometry vs JLC DFM | what JLC's DFM check flags on the Gerbers and KiCad's DRC does not: via ring on an SMD pad (own net too), pads of different parts < 0.1 mm, plated slot < 0.65 mm, silk < 0.15 mm from a mask opening or a drilled hole (vias included); warnings: via ring < 0.15 mm, short slots, THT pad < 2 mm from an SMD pad |
 
 ## Run
 
@@ -21,6 +22,7 @@ $py = "C:\Program Files\KiCad\10.0\bin\python.exe"
 & $py hardware\twin\twin_plug.py   hardware\bassberry\bassberry.kicad_pcb --selftest
 & $py hardware\twin\twin_analog.py hardware\bassberry\bassberry.kicad_pcb --selftest
 & $py hardware\twin\twin_mech.py   hardware\bassberry\bassberry.kicad_pcb --selftest
+& $py hardware\twin\twin_dfm.py    hardware\bassberry\bassberry.kicad_pcb --selftest
 ```
 
 Layer 1 also runs without KiCad on the netlist: `python3 hardware/twin/twin_check.py hardware/bassberry/bassberry.net --selftest`.
