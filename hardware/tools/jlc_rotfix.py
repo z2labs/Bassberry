@@ -6,9 +6,9 @@ the copper: for each placed part it downloads the EasyEDA footprint of its LCSC 
 and the position that put the JLC pads on the board's pads (pad numbers matched; geometry only where the numbering
 differs, e.g. a socket). The residual of that fit is the check that the JLC part really fits the land pattern.
 
-Bottom side: the JLC model is mirrored (seen from the top), fitted the same way, and the rotation is written in KiCad's
-.pos convention for the bottom side, which is the one JLC documents for KiCad files: the convention is derived per run
-from KiCad's own footprints (the same fit done with the KiCad library footprint must reproduce KiCad's .pos rotation).
+Rotation = KiCad .pos rotation + (angle of JLC's footprint - angle of KiCad's own library footprint), both fitted to the
+same board pads (bottom side: both mirrored, seen from the top). So the file stays in KiCad's .pos convention, which is
+the one JLC documents for KiCad, and only the footprint-to-footprint difference is added.
 
     kicad-python hardware/tools/jlc_rotfix.py
 in : hardware/bassberry/bassberry.kicad_pcb, jlc/bassberry_bom_jlc.csv (LCSC code per designator), jlc/bassberry_pos_kicad.csv
@@ -55,36 +55,45 @@ def rot(v, a):
     return (v[0] * c - v[1] * s, v[0] * s + v[1] * c)
 
 
-def fit(model, target, by_number):
-    """model, target: [(number, x, y)] (y up). Returns (angle, (tx, ty), rms) of target ~ R(angle) model + t."""
+def fit(model, target, by_number, inl=0.3):
+    """model, target: [(number, x, y)] (y up). Returns (angle, (tx, ty), rms over inliers, inliers, compared).
+    By number: the translation is the one most pin pairs agree on (an exposed pad numbered differently, or a tab whose
+    anchor is not its centre, does not drag the fit), the rms is over the pins that agree. Geometry only: every model
+    pad to its nearest board pad."""
     best = None
     for a in (0, 90, 180, 270):
         m = [(n, rot((x, y), a)) for n, x, y in model]
         if by_number:
-            pairs = []
-            for n, (x, y) in m:
-                cand = [(tx, ty) for tn, tx, ty in target if tn == n]
-                if cand:
-                    pairs.append(((x, y), cand))
-            if len(pairs) < max(2, len(m) // 2):
+            tn = {}
+            for n, x, y in target:
+                tn.setdefault(n, []).append((x, y))
+            mn = {}
+            for n, p in m:
+                mn.setdefault(n, []).append(p)
+            pairs = [(mn[n][0], tn[n][0]) for n in mn if n in tn and len(mn[n]) == 1 and len(tn[n]) == 1]
+            if len(pairs) < 2:
                 continue
-            # translation from the matched pad centroids, then nearest same-number pad
-            t = (sum(min(c, key=lambda q: 0)[0] for _, c in pairs) / len(pairs) - sum(p[0] for p, _ in pairs) / len(pairs),
-                 sum(min(c, key=lambda q: 0)[1] for _, c in pairs) / len(pairs) - sum(p[1] for p, _ in pairs) / len(pairs))
-            for _ in range(3):
-                ds = [min(c, key=lambda q: (q[0] - p[0] - t[0]) ** 2 + (q[1] - p[1] - t[1]) ** 2) for p, c in pairs]
-                t = (sum(q[0] - p[0] for (p, _), q in zip(pairs, ds)) / len(pairs),
-                     sum(q[1] - p[1] for (p, _), q in zip(pairs, ds)) / len(pairs))
-            err = math.sqrt(sum((q[0] - p[0] - t[0]) ** 2 + (q[1] - p[1] - t[1]) ** 2 for (p, _), q in zip(pairs, ds)) / len(pairs))
+            cands = [(q[0] - p[0], q[1] - p[1]) for p, q in pairs]
+            scored = []
+            for t in cands:
+                ins = [(p, q) for p, q in pairs if math.hypot(q[0] - p[0] - t[0], q[1] - p[1] - t[1]) < inl]
+                scored.append((len(ins), t, ins))
+            n_in, t, ins = max(scored, key=lambda s: s[0])
+            t = (sum(q[0] - p[0] for p, q in ins) / len(ins), sum(q[1] - p[1] for p, q in ins) / len(ins))
+            err = math.sqrt(sum((q[0] - p[0] - t[0]) ** 2 + (q[1] - p[1] - t[1]) ** 2 for p, q in ins) / len(ins))
+            cand = (a, t, err, len(ins), len(pairs))
+            key = (len(ins), -err)
         else:
             cm = (sum(p[0] for _, p in m) / len(m), sum(p[1] for _, p in m) / len(m))
             ct = (sum(x for _, x, _ in target) / len(target), sum(y for _, _, y in target) / len(target))
             t = (ct[0] - cm[0], ct[1] - cm[1])
-            err = math.sqrt(sum(min((tx - p[0] - t[0]) ** 2 + (ty - p[1] - t[1]) ** 2 for _, tx, ty in target)
-                                for _, p in m) / len(m))
-        if best is None or err < best[2] - 1e-6:
-            best = (a, t, err)
-    return best
+            ds = [min(math.hypot(tx - p[0] - t[0], ty - p[1] - t[1]) for _, tx, ty in target) for _, p in m]
+            err = math.sqrt(sum(d * d for d in ds) / len(ds))
+            cand = (a, t, err, sum(1 for d in ds if d < inl), len(ds))
+            key = (cand[3], -err)
+        if best is None or key > best[0]:
+            best = (key, cand)
+    return best[1] if best else (0, (0, 0), 99.0, 0, 1)
 
 
 def main():
@@ -107,36 +116,38 @@ def main():
         model = [(n, -x if bottom else x, y) for n, x, y in model if n]
         nums_t, nums_m = {n for n, _, _ in target}, {n for n, _, _ in model}
         by_number = len(nums_m & nums_t) >= 0.8 * len(nums_m) and not ref.startswith("J101")
-        a, t, err = fit(model, target, by_number)
-        if by_number and err > TOL:                       # numbering differs (e.g. A/B/C vs 1/2/3): geometry only
-            a2, t2, err2 = fit(model, target, False)
-            if err2 < err:
-                a, t, err, by_number = a2, t2, err2, False
+        a, t, err, nin, ncmp = fit(model, target, by_number)
+        if by_number and (nin < max(2, 0.6 * ncmp) or err > TOL):   # numbering differs: geometry only
+            g = fit(model, target, False)
+            if (g[3] / g[4], -g[2]) > (nin / ncmp, -err):
+                a, t, err, nin, ncmp = g; by_number = False
         # KiCad's own footprint through the same fit -> the angle that corresponds to KiCad's .pos rotation
         lib, name = str(fp.GetFPID().GetLibNickname()), str(fp.GetFPID().GetLibItemName())
         kfp = pcbnew.FootprintLoad(os.path.join(FPDIR, lib + ".pretty"), name)
         kmodel = [(p.GetNumber(), mm(p.GetPosition().x), -mm(p.GetPosition().y)) for p in kfp.Pads()
                   if p.GetAttribute() != pcbnew.PAD_ATTRIB_NPTH and p.GetNumber() and p.GetNumber() in nums_t]
         kmodel = [(n, -x if bottom else x, y) for n, x, y in kmodel]
-        ka, _, kerr = fit(kmodel, target, not ref.startswith("J101"))
+        ka, _, kerr, _, _ = fit(kmodel, target, not ref.startswith("J101"))
         prot = float(kpos[ref]["Rot"]) % 360
         if not bottom and kerr < 0.05 and round(ka) % 360 != round(prot) % 360:
             print(f"  note: {ref} top-side KiCad fit {ka} vs .pos {prot:.0f}")
         if os.environ.get("ROTDBG") and bottom:
             print("DBG", ref, name, "pos", prot, "ka", ka, "kerr", round(kerr, 3), "a", a, "err", round(err, 3), fp.GetOrientationDegrees())
         if bottom and kerr < 0.05:
-            conv.setdefault(round((prot + ka) % 360), 0)
-            conv[round((prot + ka) % 360)] += 1
+            conv.setdefault(round((prot - ka) % 360), 0)
+            conv[round((prot - ka) % 360)] += 1
         rows.append([ref, t, a, ka, prot, bottom])
-        report.append([ref, code[ref], title, "bottom" if bottom else "top", f"{prot:.0f}", a, f"{t[0]:.3f}", f"{t[1]:.3f}",
-                       f"{err:.3f}", "pad numbers" if by_number else "geometry only",
-                       "OK" if err <= TOL else "LAND PATTERN MISMATCH - check this part"])
-    # bottom convention: KiCad .pos rotation = (k - fitted angle) for KiCad's own footprints; k is the same for all
-    k = max(conv, key=conv.get) if conv else 0
-    print("bottom-side convention: pos rotation = (%d - top-view angle), from %d parts" % (k, conv.get(k, 0)), dict(conv))
+        jrot = (prot - ka + a) % 360
+        ok = err <= TOL and nin >= max(2, 0.6 * ncmp)
+        report.append([ref, code[ref], title, "bottom" if bottom else "top", f"{prot:.0f}", f"{jrot:.0f}", f"{t[0]:.3f}", f"{t[1]:.3f}",
+                       f"{err:.3f}", f"{nin}/{ncmp} " + ("pins by number" if by_number else "pads by geometry"),
+                       "OK" if ok else "LAND PATTERN MISMATCH - check this part"])
+    # JLC rotation = KiCad .pos rotation corrected by the angle between JLC's footprint and KiCad's own footprint, both
+    # fitted to the same pads (bottom: KiCad .pos = top-view angle + 180, the offset printed below; same rule for the JLC footprint)
+    print("KiCad .pos vs top-view angle of KiCad's own footprint, bottom side (pos - angle):", dict(conv))
     out = []
     for ref, t, a, ka, prot, bottom in rows:
-        r = ((k - a) % 360) if bottom else a % 360
+        r = (prot - ka + a) % 360
         out.append([ref, f"{t[0]:.4f}mm", f"{t[1]:.4f}mm", "Bottom" if bottom else "Top", f"{r:.0f}"])
     nat = lambda r: (re.sub(r"\d", "", r[0]), int(re.sub(r"\D", "", r[0]) or 0))
     out.sort(key=nat)
@@ -147,7 +158,7 @@ def main():
             w.writerows([r for r in out if pick(r)])
     with open(os.path.join(J, "rotfix_report.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["Designator", "LCSC", "JLC footprint", "Side", "KiCad pos rot", "Fitted top-view angle", "X", "Y",
+        w.writerow(["Designator", "LCSC", "JLC footprint", "Side", "KiCad pos rot", "JLC rotation", "X", "Y",
                     "Fit rms mm", "Matched by", "Verdict"])
         w.writerows(report)
     bad = [r for r in report if not r[-1].startswith("OK")]
