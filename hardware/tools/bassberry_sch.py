@@ -299,13 +299,13 @@ r.C("C53", "1u", "+3V3_USB", "GND", C0603)
 
 # =====================================================================  Battery
 bt = P.child("battery", "battery.kicad_sch", "Battery: 3S 18650 clips, BMS module, protection", GLOBAL)
-bt.text("3x 18650 in Keystone 1042 snap-in holders (spring contacts; pad 1 = +). Balancing + protection: off-the-shelf 3S BMS module (B-, B1, B2, B+, P-).", 25, 22)
+bt.text("3x 18650 in MYOUNG BH-18650-B1BA002 SMT holders (Keystone 1042 clone; pad 2 = +, pad 1 = -). Balancing + protection: off-the-shelf 3S BMS module (B-, B1, B2, B+, P-).", 25, 22)
 bt.text("Reverse-cell LED lights only when a cell is inserted backwards. P- of the BMS = board GND.", 25, 28)
 cells = [("CELL0", "CELL1"), ("CELL1", "CELL2"), ("CELL2", "CELL3")]
 for i, (neg, pos) in enumerate(cells):
     x = 50 + i * 60
-    bt.part("Device:Battery_Cell", f"BT{i+1}", f"18650 cell {i+1} (Keystone 1042)", x, 80, fp="Battery:BatteryHolder_Keystone_1042_1x18650",
-            nets={"1": pos, "2": neg})
+    bt.part("Device:Battery_Cell", f"BT{i+1}", f"18650 cell {i+1} (BH-18650-B1BA002)", x, 80, fp="bassberry:BatteryHolder_MYOUNG_BH-18650-B1BA002",
+            nets={"2": pos, "1": neg})
     bt.part("Device:LED", f"D{i+1}", "LED red 0603 (reverse cell)", x + 25, 80, rot=90, fp="LED_SMD:LED_0603_1608Metric",
             nets={"1": pos, "2": f"REV{i+1}"})
     bt.R(f"R{i+1}", "2k2", x + 35, 80, f"REV{i+1}", neg, R0603)

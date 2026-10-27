@@ -1,6 +1,6 @@
 """Layer 4: board mechanics vs the enclosure concept (docs/architecture.md, render/render.py) and the cell holders.
 
-  * 3 x Keystone 1042 (18 x 65 mm cells): long axis front-to-back, side by side, no overlap with the Pi shadow,
+  * 3 x MYOUNG BH-18650-B1BA002 (Keystone 1042 clone, 18 x 65 mm cells): long axis front-to-back, side by side, no overlap with the Pi shadow,
     series links short (cell n '+' and cell n+1 '-' at the same end)
   * USB-C mouth at the rear edge, buttons / encoder / OLED socket in the front strip (lid plungers)
   * speaker connectors on the bottom (acoustic side), mounting holes free of other parts
@@ -40,7 +40,7 @@ def check(parts):
         along_y = (y1 - y0) > (x1 - x0)
         rep.add("PASS" if along_y else "FAIL", "cells", f"{r}: cell axis front-to-back ({x1-x0:.1f} x {y1-y0:.1f} mm)")
         l = math.dist(c["pads"]["1"], c["pads"]["2"])
-        rep.add("PASS" if 75 < l < 85 else "FAIL", "cells", f"{r}: contact spacing {l:.1f} mm for a 65 mm 18650 (Keystone 1042: 79.4 mm)")
+        rep.add("PASS" if 75 < l < 85 else "FAIL", "cells", f"{r}: contact spacing {l:.1f} mm for a 65 mm 18650 (BH-18650-B1BA002: 79.26 mm)")
         inside = x0 >= 0 and y0 >= 0 and x1 <= W and y1 <= H
         rep.add("PASS" if inside else "FAIL", "cells", f"{r}: inside the outline")
         pi = PI_AREA

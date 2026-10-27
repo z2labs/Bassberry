@@ -13,7 +13,7 @@ Open `bassberry/bassberry.kicad_pro` in KiCad 10. A PDF of the schematic is in [
 | `pi.kicad_sch` | 40-pin socket for a **face-down** Raspberry Pi (B+/2/3/4/5/Zero), I2S series termination, HAT+ ID EEPROM (CAT24C32 @ 0x50, WP jumper), back-power ideal diode |
 | `audio.kicad_sch` | 2x TI TAS5805M: U201 stereo BTL (satellites, PVDD = VBAT), U202 PBTL (sub, PVDD_SUB), LC output filters, speaker connectors |
 | `power.kicad_sch` | USB-C, Injoinic IP2366 PD3.1 3S buck-boost charger (30 W, 4.2 V/cell), TPS565208 5.1 V / 5 A Pi buck, optional MT3608 ~17 V sub boost, HT7533 LDOs |
-| `battery.kicad_sch` | 3x 18650 in Keystone 1042 snap-in holders, off-the-shelf 3S BMS module (B-, B1, B2, B+, P-), reverse-cell LEDs, 10 A fuse, NTC |
+| `battery.kicad_sch` | 3x 18650 in MYOUNG BH-18650-B1BA002 SMT holders (Keystone 1042 clone), off-the-shelf 3S BMS module (B-, B1, B2, B+, P-), reverse-cell LEDs, 10 A fuse, NTC |
 | `ui.kicad_sch` | CH32V003 supervisor (power latch, buttons, encoder, VBAT sense, I2C slave to the Pi), OLED header, CH340C USB console |
 
 Reference designators are numbered per sheet: 1xx Pi, 2xx audio, 3xx power, 4xx battery, 5xx UI.

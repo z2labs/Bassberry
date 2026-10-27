@@ -28,7 +28,8 @@ Sources
   [DS-XC6216] Torex XC6216/XE6216 ETR0321: SOT-89-5 1 VOUT, 2 VSS, 3 CE (B type: active high), 4 NC, 5 VIN; VIN 2-28 V,
               Pd 500 mW (1300 mW PCB mounted), dropout 300 mV at 20 mA.
   [USB-C]     USB Type-C receptacle pin map: VBUS A4/A9/B4/B9, GND A1/A12/B1/B12, CC1 A5, CC2 B5, D+ A6/B6, D- A7/B7.
-  [KEY-1042]  Keystone 1042 18650 holder drawing ('+' marked contact = pad 1 in the KiCad footprint silk).
+  [BH-18650]  MYOUNG BH-18650-B1BA002 drawing WD-CP-0088 (LCSC C2988620): '+' contact at the peg-hole end = pad 2,
+              '-' = pad 1 (numbering of JLC's EasyEDA model, so the CPL fit by pin number keeps the peg in its hole).
   [KICAD]     KiCad library conventions: diode/LED pad 1 = cathode; SolderJumper "Bridged12" = pads 1-2 shorted by copper.
   [FW]        Bassberry firmware/OS pin map (docs/architecture.md): supervisor CH32V003 PC0 BOOST_EN, PC3..PC7 buttons,
               PD0 PI_POWEROFF, PD2/PD3/PD4 encoder A/B/switch, PD5 PI_IRQ, PD6 PI_SHUTDOWN_REQ, PA1 PI_PWR_EN, PA2 VBAT_SENSE;
@@ -73,7 +74,7 @@ HT75 = {"GND": "1", "VIN": "2", "VOUT": "3"}                                    
 XC6216 = {"VOUT": "1", "VSS": "2", "CE": "3", "NC": "4", "VIN": "5"}                    # [DS-XC6216]
 USBC = {"VBUS": ["A4", "A9", "B4", "B9"], "GND": ["A1", "A12", "B1", "B12"], "CC1": ["A5"], "CC2": ["B5"],
         "D+": ["A6", "B6"], "D-": ["A7", "B7"]}                                          # [USB-C]
-CELL = {"+": "1", "-": "2"}                                                              # [KEY-1042]
+CELL = {"+": "2", "-": "1"}                                                              # [BH-18650]
 DIODE = {"K": "1", "A": "2"}                                                             # [KICAD]
 ENC = {"A": "A", "B": "B", "C": "C", "S1": "S1", "S2": "S2"}                             # Alps EC11E: A, B, common C, switch
 
@@ -195,7 +196,7 @@ A = [
     ("diff", [("J301", "CC1"), ("J301", "CC2")], "CC1/CC2 separate"),
     ("float", IC("DPC"), "DPC unused (USB data goes to the console)"), ("float", IC("DMC"), "DMC unused"),
     *[("float", IC(t), f"{t} NC") for t in ("TEST1", "TEST2", "TEST3", "TEST4", "TEST5")],
-    # ================= battery pack [KEY-1042] [BMS]
+    # ================= battery pack [BH-18650] [BMS]
     ("same", [("BT401", "+"), ("BT402", "-"), ("J401", "2")], "cell 1 + = cell 2 - = BMS B1"),
     ("same", [("BT402", "+"), ("BT403", "-"), ("J401", "3")], "cell 2 + = cell 3 - = BMS B2"),
     ("same", [("BT401", "-"), ("J401", "1")], "cell 1 - = BMS B-"),
@@ -247,7 +248,7 @@ A = [
 PHYSICAL = [
     "OLED module pin order must be GND-VCC-SCL-SDA (1.3in SH1106 modules exist with VCC-GND): check the module before plugging",
     "3S BMS module pad order B-, B1, B2, B+, P- must match the module silk",
-    "Keystone 1042 polarity: '+' marked contact = pad 1, cells must be inserted per the silk",
+    "BH-18650-B1BA002 polarity: '+' contact = pad 2 (peg-hole end, '+' on the silk), cells must be inserted per the silk",
     "NTC on J402 must be fitted (IP2366 11.7: NTC pin never floating)",
     "Pi antenna keep-out position: confirm on a real Pi 4 / Pi 5 / Pi 3B+",
     "TDSON MOSFETs: any 30-40 V SO-8FL/TDSON part with the JEDEC pin-out (1-3 S, 4 G, 5-8 D)",

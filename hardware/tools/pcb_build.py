@@ -89,7 +89,7 @@ for (x, y, d) in HOLES:
 
 # ------------------------------------------------------------ placement plan
 # fixed: ref -> (x, y, rot, side). Cells alternate so the series links are short:
-#   (Keystone 1042 pad 1 = '+'; rot 270 puts pad 1 at the rear)
+#   (BH-18650-B1BA002 '+' = pad 2 at local -x, like the Keystone 1042 it clones; rot 270 puts '+' at the rear)
 #   BT401 '+' rear / '-' front (CELL0 -> BMS B- at the front), BT402 '-' rear, BT403 '+' rear (CELL3 -> fuse -> charger).
 FIXED = {
     "J101": (57.5, 52.5, None, "F"),
@@ -155,7 +155,8 @@ for c in find(find1(net, "components"), "comp"):
 
 def load_fp(fpid):
     lib, name = fpid.split(":")
-    fp = pcbnew.FootprintLoad(os.path.join(FPDIR, lib + ".pretty"), name)
+    own = os.path.join(PRJ, lib + ".pretty")              # project library (fp-lib-table: ${KIPRJMOD})
+    fp = pcbnew.FootprintLoad(own if os.path.isdir(own) else os.path.join(FPDIR, lib + ".pretty"), name)
     if fp is None:
         raise RuntimeError("footprint not found: " + fpid)
     fp.SetFPID(pcbnew.LIB_ID(lib, name))       # keep the library nickname (DRC schematic parity compares it)

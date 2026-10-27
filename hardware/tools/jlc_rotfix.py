@@ -140,7 +140,8 @@ def main():
                 a, t, err, nin, ncmp = g; by_number = False
         # KiCad's own footprint through the same fit -> the angle that corresponds to KiCad's .pos rotation
         lib, name = str(fp.GetFPID().GetLibNickname()), str(fp.GetFPID().GetLibItemName())
-        kfp = pcbnew.FootprintLoad(os.path.join(FPDIR, lib + ".pretty"), name)
+        own = os.path.join(PRJ, lib + ".pretty")
+        kfp = pcbnew.FootprintLoad(own if os.path.isdir(own) else os.path.join(FPDIR, lib + ".pretty"), name)
         kmodel = [(p.GetNumber(), mm(p.GetPosition().x), -mm(p.GetPosition().y)) for p in kfp.Pads()
                   if p.GetAttribute() != pcbnew.PAD_ATTRIB_NPTH and p.GetNumber() and p.GetNumber() in nums_t]
         kmodel = [(n, -x if bottom else x, y) for n, x, y in kmodel]
