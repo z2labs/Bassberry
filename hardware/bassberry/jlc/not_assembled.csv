@@ -1,6 +1,5 @@
 Designator,Value,Footprint,Why
 J401,"3S BMS module (B-,B1,B2,B+,P-)",SolderWire-1sqmm_1x05_P5.4mm_D1.4mm_OD2.7mm,Wire pads
-J502,OLED 1.3in I2C (GND VCC SCL SDA),PinSocket_1x04_P2.54mm_Horizontal,"NOT AT LCSC - hand-fit / consign. No 1x4 right-angle female socket confirmed. C2718488 (BOOMELE 1x4 female) is VERTICAL (holes top) -> does not fit horizontal footprint. Only RA 1x4 found: C5919055 Mill-Max 801-41-004-40-002000 (SMT, expensive, footprint mismatch). BOOMELE RA female exists as 1x5 C35167 / 1x40 C7251. Recommend: change footprint to vertical (C2718488) or hand-fit."
 JP101,EEPROM write enable,SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm,Solder jumper
 JP201,U2 SDIN: Pi / U1 SDOUT,SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm,Solder jumper
 Q305,30V N-MOS (RU3030M2) opt.,TDSON-8-1,DNP
@@ -8,4 +7,4 @@ R310,NC,R_0603_1608Metric,DNP
 R345,DNP 0R 2512 (PVDD_SUB = boost),R_2512_6332Metric,DNP
 SW301,PWRBANK (optional),SW_SPST_TL3342,DNP
 TP101,ID_WP,TestPoint_Pad_D1.5mm,Test point
-U306,XC6216B332PR,SOT-89-5,"NOT AT LCSC - hand-fit / consign. Not found at LCSC/JLC via search (only XC6216D502PR-G C2891270, 5V, seen). Could not confirm any 3.3V XC6216 SOT-89-5 code."
+U306,XC6216B332PR,SOT-89-5,"NOT AT LCSC: no 3.3 V XC6216 in SOT-89-5 (only XC6216B802PR-G 8 V, C725707). Order XC6216B332PR-G through JLC Global Sourcing (Mouser/Digikey) or consign. Alternative needs a footprint change: HT7533-1 C14289 (Basic, SOT-89-3: 1 GND 2 VIN 3 VOUT, 30 V) - at a 20 V PD contract it dissipates ~0.25 W, its whole SOT-89 rating."
