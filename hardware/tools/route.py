@@ -99,9 +99,32 @@ def rules(only, width):
     }
 
 
+VIA_PAD_INSET = 0.17   # mm: via keep-out = SMD pad inset by this (srouter keeps a via centre one via diameter off it)
+
+
+def pad_via_keepouts(board):
+    """srouter lets a via ring overlap an SMD pad (only the hole is kept off); JLC DFM rates a via touching a pad as
+    Danger. A keep-out on In2.Cu (the closed GND plane: no wires there) over every SMD pad, inset so that a 0.45/0.6 mm
+    via ring ends >= 0.05 mm off the pad, stops vias only - srouter blocks vias through every keep-out layer."""
+    out = []
+    for fp in board.GetFootprints():
+        for p in fp.Pads():
+            if p.GetAttribute() != pcbnew.PAD_ATTRIB_SMD:
+                continue
+            bb = p.GetBoundingBox()
+            x0, y0, x1, y1 = (pcbnew.ToMM(v) for v in (bb.GetX(), bb.GetY(), bb.GetRight(), bb.GetBottom()))
+            cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+            hx, hy = max(0.01, (x1 - x0) / 2 - VIA_PAD_INSET), max(0.01, (y1 - y0) / 2 - VIA_PAD_INSET)
+            pts = [(cx - hx, cy - hy), (cx + hx, cy - hy), (cx + hx, cy + hy), (cx - hx, cy + hy)]
+            out.append('    (keepout "" (polygon In2.Cu 0 ' + " ".join(f"{x * 1000:.0f} {-y * 1000:.0f}" for x, y in pts) + "))")
+    return "\n".join(out)
+
+
 def export_dsn(board, path, closed=("In2.Cu",)):
     assert pcbnew.ExportSpecctraDSN(board, path), "DSN export failed"
     t = open(path, encoding="utf-8").read()
+    t = t.replace("    (boundary", pad_via_keepouts(board) + "\n    (boundary", 1)      # after the layer list
+    open(path, "w", encoding="utf-8").write(t)
     # In2.Cu is the solid GND plane: always closed; pass 1a also closes In1.Cu
     t2 = t
     for l in closed:
