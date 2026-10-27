@@ -23,7 +23,8 @@ from board_geom import add_thermal_vias, add_gnd_pours
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRJ = os.path.normpath(os.path.join(HERE, "..", "bassberry"))
 OUT = os.path.join(PRJ, "route")
-SR = os.environ.get("SROUTER", r"C:\Users\RF\Documents\GitHub\srouter-feat\target\release\srouter.exe")
+SR = os.environ.get("SROUTER", r"C:\Users\RF\Documents\GitHub\srouter-stall\target\release\srouter.exe")   # feat/early-stop (-stall)
+STALL = ["-stall", "10"]   # stop a pass after 10 iterations without fewer conflicts (pass 1b plateaued at 25 of 80)
 BOARD = os.path.join(PRJ, "bassberry.kicad_pcb")
 PLACED = os.path.join(PRJ, "bassberry_placed.kicad_pcb")
 os.makedirs(OUT, exist_ok=True)
@@ -85,11 +86,11 @@ FAST = ["I2S_*", f"{PI}PI_BCLK", f"{PI}PI_LRCLK", f"{PI}PI_DOUT", "USB_DP", "USB
 AMP_OUT = [f"{A}AMP1_AP", f"{A}AMP1_AN", f"{A}AMP1_BP", f"{A}AMP1_BN", f"{A}AMP2_P", f"{A}AMP2_N", f"{A}SAT_*", f"{A}SUB_*"]
 PASSES = [
     # 1a: high-current nets alone, outer layers only (In1 closed: 0.5 oz inner copper carries a third), vias avoided
-    ("pass1a_heavy", HEAVY, ["-top", "F.Cu:6", "-via", "20000", "-it", "80"]),
+    ("pass1a_heavy", HEAVY, ["-top", "F.Cu:6", "-via", "20000", "-it", "80"] + STALL),
     # 1b: everything that escapes from between power pins (QFN, amp bootstrap), the 3V3 rails
-    ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:40", "-via", "8000", "-it", "80"]),
-    ("pass2_fast", FAST, ["-top", "F.Cu:10", "-top", "B.Cu:2", "-via", "2500"]),
-    ("pass3_rest", ["*"], ["-top", "F.Cu:4", "-via", "2000"]),
+    ("pass1b_local", POWER, ["-top", "F.Cu:2", "-top", "In1.Cu:40", "-via", "8000", "-it", "80"] + STALL),
+    ("pass2_fast", FAST, ["-top", "F.Cu:10", "-top", "B.Cu:2", "-via", "2500"] + STALL),
+    ("pass3_rest", ["*"], ["-top", "F.Cu:4", "-via", "2000"] + STALL),
 ]
 
 
@@ -298,7 +299,7 @@ def sub(*args):
 
 def repair(summary):
     stuck = stuck_nets(os.path.join(OUT, "pass3_rest.log"))
-    args = ["-top", "F.Cu:4"] + IN2 + ["-via", "1500", "-it", "120"]
+    args = ["-top", "F.Cu:4"] + IN2 + ["-via", "1500", "-it", "120"] + STALL
     for rnd in range(1, 4):
         if not stuck:
             break
@@ -332,7 +333,7 @@ def main():
     width = widths(b)
     print("routing widths:", ", ".join(f"{g} {w}" for g, w, c in width))
     summary = []
-    for name, only, args in [("pass0_trunk", None, ["-top", "F.Cu:3", "-via", "6000", "-it", "80"])] + PASSES:
+    for name, only, args in [("pass0_trunk", None, ["-top", "F.Cu:3", "-via", "6000", "-it", "80"] + STALL)] + PASSES:
         if only is None:
             name, dsn, ses, rep, rj = trunk_pass(b)
         else:
