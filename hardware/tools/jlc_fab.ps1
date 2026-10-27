@@ -11,7 +11,7 @@ Remove-Item -Recurse -Force $g -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force $g | Out-Null
 # JLC KiCad guide: Protel extensions, silkscreen clipped by the mask openings, no X2 / netlist attributes
 & $cli pcb export gerbers -o "$g\" -l "F.Cu,In1.Cu,In2.Cu,B.Cu,F.Paste,B.Paste,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts" `
-      --subtract-soldermask --no-x2 --no-netlist --use-drill-file-origin $b
+      --subtract-soldermask --no-x2 --no-netlist $b
 # Excellon, mm, PTH and NPTH in separate files, plus the drill map
 & $cli pcb export drill -o "$g\" --format excellon --excellon-units mm --excellon-separate-th --generate-map --map-format gerberx2 `
       --drill-origin absolute $b
