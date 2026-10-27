@@ -77,9 +77,14 @@ def fit(model, target, by_number, inl=None):
             if len(pairs) < 2:
                 continue
             cands = [(q[0] - p[0], q[1] - p[1]) for p, q in pairs]
+            if len(pairs) <= 3:                # two- or three-pin part: every pin counts, take the mean
+                cands = [(sum(c[0] for c in cands) / len(cands), sum(c[1] for c in cands) / len(cands))]
+                inl_here = max(inl, max(math.hypot(q[0] - p[0] - cands[0][0], q[1] - p[1] - cands[0][1]) for p, q in pairs) + 1e-6)
+            else:
+                inl_here = inl
             scored = []
             for t in cands:
-                ins = [(p, q) for p, q in pairs if math.hypot(q[0] - p[0] - t[0], q[1] - p[1] - t[1]) < inl]
+                ins = [(p, q) for p, q in pairs if math.hypot(q[0] - p[0] - t[0], q[1] - p[1] - t[1]) < inl_here]
                 scored.append((len(ins), t, ins))
             n_in, t, ins = max(scored, key=lambda s: s[0])
             t = (sum(q[0] - p[0] for p, q in ins) / len(ins), sum(q[1] - p[1] for p, q in ins) / len(ins))
