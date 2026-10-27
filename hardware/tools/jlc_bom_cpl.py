@@ -18,6 +18,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # --project DIR (KiCad project folder; default: the Bassberry one) and --name NAME (file stem; default: the .kicad_pcb in DIR)
 _a = sys.argv[1:]
 PRJ = os.path.abspath(_a[_a.index("--project") + 1]) if "--project" in _a else os.path.normpath(os.path.join(HERE, "..", "bassberry"))
+if not os.path.isdir(PRJ):
+    sys.exit(f"usage: {os.path.basename(__file__)} --project <KiCad project folder> [--name <board file stem>]")
 NAME = _a[_a.index("--name") + 1] if "--name" in _a else next(
     (f[:-10] for f in sorted(os.listdir(PRJ)) if f.endswith(".kicad_pcb") and not f.endswith("_placed.kicad_pcb")), "board")
 J = os.path.join(PRJ, "jlc")
