@@ -572,6 +572,8 @@ def pre_stubs(patterns, maxlen=5.0, width=0.3):
 
 
 pre_stubs(["/audio/AMP?_BST*"])
+from escape_via import escape
+escape(board, ["U303.5"])      # buck EN (PI_PWR_EN): walled in by the buck copper without a via next to the pin
 
 
 # ------------------------------------------------------------ GND dog-bones (USAGE.md: fan-out vias may be placed before
