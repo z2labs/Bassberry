@@ -23,7 +23,7 @@ from board_geom import add_thermal_vias, add_gnd_pours
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRJ = os.path.normpath(os.path.join(HERE, "..", "bassberry"))
 OUT = os.path.join(PRJ, "route")
-SR = os.environ.get("SROUTER", r"C:\Users\RF\Documents\GitHub\srouter-stall\target\release\srouter.exe")   # feat/early-stop (-stall)
+SR = os.environ.get("SROUTER", r"C:\Users\RF\Documents\GitHub\srouter-cong\target\release\srouter.exe")   # feat/congestion-map (-stall, -dir pools, -congmap, -hdecay)
 DIRS = ["-dir", "F.Cu:H:2.5", "-dir", "In1.Cu:V:2.5", "-dir", "In2.Cu:H:2.5", "-dir", "B.Cu:V:2.5"]
 # Preferred direction per layer (Zoltan 2026-10-28: without an H/V split every layer crosses every other and pins get
 # walled in topologically - the last 1-4 nets moved around from run to run). Adjacent signal layers orthogonal
@@ -364,7 +364,7 @@ def main():
             dsn, ses, rep, rj = (os.path.join(OUT, name + e) for e in (".dsn", ".ses", "_report.json", "_rules.json"))
             export_dsn(b, dsn, closed_for(name, args), keepouts=name in KEEPOUT_PASSES)
             json.dump(rules(only, width), open(rj, "w"), indent=1)
-        cmd = [SR, "-de", dsn, "-do", ses, "-rules", rj, "-report", rep] + args
+        cmd = [SR, "-de", dsn, "-do", ses, "-rules", rj, "-report", rep, "-congmap", os.path.join(OUT, name + "_cong.json")] + args
         print(">>", " ".join(cmd), flush=True)
         t0 = time.time()
         logf = os.path.join(OUT, name + ".log")
