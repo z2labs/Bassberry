@@ -573,7 +573,8 @@ def pre_stubs(patterns, maxlen=5.0, width=0.3):
 
 pre_stubs(["/audio/AMP?_BST*"])
 from escape_via import escape
-escape(board, ["U303.5"])      # buck EN (PI_PWR_EN): walled in by the buck copper without a via next to the pin
+escape(board, ["U303.5", "U501.2", "U501.4"])   # buck EN (PI_PWR_EN) under the buck copper; supervisor PI_IRQ / NRST: the repair
+# ping-ponged between them (run 2026-10-28 06:45) - a via next to each pin before routing
 
 
 # ------------------------------------------------------------ GND dog-bones (USAGE.md: fan-out vias may be placed before
