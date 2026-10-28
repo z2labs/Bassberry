@@ -116,9 +116,8 @@ FIXED = {
     # sub boost
     "U304": (100.0, 50.0, 0, "B"), "L303": (100.0, 60.0, 0, "B"),   # next to amp 2
     # amplifiers (bottom, under the cells), output filters towards their connectors
-    # U201 turned 180 deg: its outputs face J201 (left), its inputs face U202's inputs, so the I2S/I2C bus runs in the
-    # clear strip between the two amps instead of through U201's output stage (run 2026-10-28 09:03: 4 bus nets left)
-    "U201": (82.0, 30.0, 180, "B"), "U202": (112.0, 30.0, 0, "B"),
+    # BB_U201_ROT=180 turns U201 so its inputs face U202's (tried 2026-10-28 09:41: U202's local supplies got walled in)
+    "U201": (82.0, 30.0, int(os.environ.get("BB_U201_ROT", "0")), "B"), "U202": (112.0, 30.0, 0, "B"),
     "C234": (82.0, 10.0, 0, "B"), "C244": (112.0, 10.0, 0, "B"),
     # supervisor + console + LDOs
     "U501": (146.0, 84.0, 0, "B"), "U502": (140.0, 30.0, 90, "B"),

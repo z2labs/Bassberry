@@ -340,7 +340,12 @@ def main():
     width = widths(b)
     print("routing widths:", ", ".join(f"{g} {w}" for g, w, c in width))
     summary = []
-    for name, only, args in [("pass0_trunk", None, ["-top", "F.Cu:3", "-via", "6000", "-it", "80"] + STALL)] + PASSES:
+    passes = list(PASSES)
+    if os.environ.get("BB_BUS_FIRST"):          # variant: the I2S/I2C bus (pass 2) claims its corridor before pass 1b
+        i1b = next(i for i, p_ in enumerate(passes) if p_[0] == "pass1b_local")
+        i2 = next(i for i, p_ in enumerate(passes) if p_[0] == "pass2_fast")
+        passes.insert(i1b, passes.pop(i2))
+    for name, only, args in [("pass0_trunk", None, ["-top", "F.Cu:3", "-via", "6000", "-it", "80"] + STALL)] + passes:
         if only is None:
             name, dsn, ses, rep, rj = trunk_pass(b)
         else:
