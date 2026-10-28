@@ -24,7 +24,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PRJ = os.path.normpath(os.path.join(HERE, "..", "bassberry"))
 OUT = os.path.join(PRJ, "route")
 SR = os.environ.get("SROUTER", r"C:\Users\RF\Documents\GitHub\srouter-stall\target\release\srouter.exe")   # feat/early-stop (-stall)
-STALL = ["-stall", "10"]   # stop a pass after 10 iterations without fewer conflicts (pass 1b plateaued at 25 of 80)
+DIRS = ["-dir", "F.Cu:H:2.5", "-dir", "In1.Cu:V:2.5", "-dir", "In2.Cu:H:2.5", "-dir", "B.Cu:V:2.5"]
+# Preferred direction per layer (Zoltan 2026-10-28: without an H/V split every layer crosses every other and pins get
+# walled in topologically - the last 1-4 nets moved around from run to run). Adjacent signal layers orthogonal
+# (F H / In1 V), F and B orthogonal so F<->B via hops stay clean; a step across the preferred direction costs 2.5x.
+STALL = ["-stall", "10"] + DIRS   # stop a pass after 10 iterations without fewer conflicts (pass 1b plateaued at 25 of 80)
 BOARD = os.path.join(PRJ, "bassberry.kicad_pcb")
 PLACED = os.path.join(PRJ, "bassberry_placed.kicad_pcb")
 os.makedirs(OUT, exist_ok=True)
