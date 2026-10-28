@@ -139,6 +139,9 @@ PARTNER = {
     "C501": ("U501", "9"), "C502": ("U501", "9"), "C510": ("U502", "16"),
     "D301": ("J301", "A4"), "R106": ("J101", "11"),
     "R344": ("U202", "16"), "R345": ("U202", "27"),        # PVDD_SUB select links next to amp 2
+    # amp 2 (PBTL) output inductors at the amp's output pins, not at the SUB connector: their least-shared net is SUB_*,
+    # which put them 40 mm away and walled in the U202 output / bootstrap escapes (run 2026-10-28 01:28)
+    "L205": ("U202", "26"), "L206": ("U202", "17"),
     # gate resistors and snubbers at the MOSFETs, so the QFN pins only fan out
     "R306": ("Q301", "4"), "R307": ("Q302", "4"), "R308": ("Q303", "4"), "R309": ("Q304", "4"),
     "R320": ("Q302", "5"), "R321": ("Q304", "5"),
