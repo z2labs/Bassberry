@@ -78,7 +78,8 @@ HEAVY = [f"{BT}CELL*", "+5V", "+5V_BUCK", f"{PW}BUCK_SW", f"{PW}BOOST_SW", f"{PW
 # everything else that escapes from those packages; inner layer and vias expensive so the current stays outside
 POWER = LOCAL + ["+BATT", "VBUS", f"{PW}CHG_VIN", f"{PW}CHG_NODE?", f"{PW}CHG_LX?", "PVDD_SUB",
                  f"{A}AMP1_AP", f"{A}AMP1_AN", f"{A}AMP1_BP", f"{A}AMP1_BN", f"{A}AMP2_P", f"{A}AMP2_N",
-                 "+3V3", "+3V3_AON", "+3V3_USB"]
+                 "+3V3", "+3V3_AON", "+3V3_USB",
+                 "PI_PWR_EN", f"{PW}BUCK_FB"]   # buck control pins: escape before the buck power copper walls U303 in
 FAST = ["I2S_*", f"{PI}PI_BCLK", f"{PI}PI_LRCLK", f"{PI}PI_DOUT", "USB_DP", "USB_DN", "I2C_*", f"{PI}ID_S?",
         "AMP*_PDN", "PI_*",                                    # everything else that leaves the Pi header
         f"{A}AMP2_SDIN", f"{A}AMP1_SDOUT"]
