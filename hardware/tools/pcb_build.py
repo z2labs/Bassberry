@@ -531,7 +531,7 @@ gnd_ties(["U201", "U202", "U302"])
 # ------------------------------------------------------------ GND dog-bones (USAGE.md: fan-out vias may be placed before
 # routing). Every SMD GND pad gets its own 0.6/0.3 mm via to the In2 plane right next to it, so no GND pad depends on a
 # pour finding a way in between the routed tracks later. The via keeps 0.5 mm from foreign pads (their escape lane).
-def gnd_dogbones(clr_pad=0.5, gaps=(0.35, 0.6, 0.9), only=None, vd=0.6, vh=0.3):
+def gnd_dogbones(clr_pad=0.5, gaps=(0.35, 0.6, 0.9), only=None, vd=0.6, vh=0.3, refs=None):
     import fatten
     fatten.CLR = 0.2; fatten.CLR_PAD = clr_pad
     cu = fatten.Copper(board)
@@ -539,7 +539,7 @@ def gnd_dogbones(clr_pad=0.5, gaps=(0.35, 0.6, 0.9), only=None, vd=0.6, vh=0.3):
     made, skipped = 0, []
     for fp in board.GetFootprints():
         ref = fp.GetReference()
-        if ref.startswith("H") or ref in ("J101",):
+        if ref.startswith("H") or ref in ("J101",) or (refs is not None and ref not in refs):
             continue
         lay = pcbnew.B_Cu if fp.IsFlipped() else pcbnew.F_Cu
         gpads = [p for p in fp.Pads() if p.GetNetname() == "GND" and p.GetAttribute() == pcbnew.PAD_ATTRIB_SMD]
@@ -661,8 +661,11 @@ for layer in (pcbnew.F_Cu, pcbnew.F_Mask, pcbnew.B_Cu, pcbnew.B_Mask):
 add_thermal_vias(board, pcbnew)
 # Zoltan 2026-10-27: no GND vias before routing except under exposed pads (footprint EP vias, the Pi SoC thermal pad
 # field); every GND pad reaches GND through the pours, via_rescue and the Z2 stitching after routing (postroute).
+# Exception (Zoltan 2026-10-28, from the run metrics): the dense amp / charger ICs keep their GND pin dog-bones - without
+# them the power pass walled in the U202 bootstrap escapes ("no path" in every repair round).
 PRE_GND_VIAS = False
-left = gnd_dogbones() if PRE_GND_VIAS else []   # after the holes and the SoC via field exist, so it sees them
+PRE_GND_REFS = {"U201", "U202", "U302"}
+left = gnd_dogbones() if PRE_GND_VIAS else gnd_dogbones(refs=PRE_GND_REFS)   # after the holes and the SoC via field
 if left:                           # second chance for the tight ones: farther out, 0.3 mm escape lane
     left = gnd_dogbones(clr_pad=0.3, gaps=(0.35, 0.6, 0.9, 1.2, 1.6), only=set(left))
 def has_gnd_ep(ref):
