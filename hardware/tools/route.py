@@ -265,7 +265,8 @@ def rip_up(stuck):
     """(own process) rip the small-signal nets within RIP mm of the stuck nets' pads, and the stuck nets themselves"""
     import fnmatch
     b = pcbnew.LoadBoard(BOARD)
-    protected = lambda n: (not n or n in NO_RIP or any(fnmatch.fnmatchcase(n, g) for g in HEAVY + POWER))
+    keep_groups = HEAVY + POWER + (FAST if os.environ.get("BB_BUS_FIRST") == "all" else [])   # the bus laid first stays
+    protected = lambda n: (not n or n in NO_RIP or any(fnmatch.fnmatchcase(n, g) for g in keep_groups))
     segs = []
     for t in b.GetTracks():
         a = (t.GetPosition() if t.GetClass() == "PCB_VIA" else t.GetStart())
@@ -307,6 +308,8 @@ def sub(*args):
 def repair(summary):
     stuck = stuck_nets(os.path.join(OUT, "pass3_rest.log"))
     args = ["-top", "F.Cu:4"] + IN2 + ["-via", "1500", "-it", "120"] + STALL
+    best = (len(stuck), list(stuck)); keep = os.path.join(OUT, "repair_best.kicad_pcb")
+    shutil.copy(BOARD, keep)       # a round can leave more nets than it started with (run 14:16: 2 -> 9): keep the best
     for rnd in range(1, 4):
         if not stuck:
             break
@@ -324,6 +327,11 @@ def repair(summary):
         stuck = sorted(set(s1) | set(s2))
         summary.append((f"repair{rnd}", len(stuck)))
         print(f"   repair {rnd}: left {stuck}")
+        if len(stuck) < best[0]:
+            best = (len(stuck), list(stuck)); shutil.copy(BOARD, keep)
+    if len(stuck) > best[0]:
+        shutil.copy(keep, BOARD); stuck = best[1]
+        print(f"   repair: worse than before, board restored to the best round ({best[0]} left)")
     if stuck:
         print("   repair: still unrouted", stuck)
 
