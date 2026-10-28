@@ -47,8 +47,8 @@ def main(path, pitch=2.54):
     after = unconnected(b)
     print(f"z2 stitch: via {vd:.2f}/{dr:.2f} mm, placed {placed}, dropped by protection/DRC {len(dropped)}, "
           f"planes {getattr(m, 'policy', {})}, unconnected {before} -> {after}")
-    if after > before:
-        _, rv, left = actions.rescue_plan(b, NET, vd, dr)
+    if after > 0:       # GND pads that reach no pour (no dog-bone before routing): one via per island
+        _, rv, left = actions.rescue_plan(b, NET, vd, dr, max_new=80)
         if rv:
             actions.place(b, NET, [(x, y, 9) for x, y, _ in rv], vd, dr, protect=True, log=dropped.append)
         after = unconnected(b)
