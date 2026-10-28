@@ -106,7 +106,7 @@ def collect(prj, note=""):
     if os.path.exists(pcb):
         run["board"] = board_metrics(pcb)
     keep = os.path.join(rd, "runs", stamp); os.makedirs(keep, exist_ok=True)
-    for f in glob.glob(os.path.join(rd, "*.log")) + [drc]:
+    for f in glob.glob(os.path.join(rd, "*.log")) + [drc, os.path.join(rd, "bassberry_routed_raw.kicad_pcb")]:
         if os.path.exists(f):
             shutil.copy(f, keep)
     with open(os.path.join(rd, "metrics.jsonl"), "a", encoding="utf-8") as fh:
