@@ -531,6 +531,49 @@ def gnd_ties(refs):
 gnd_ties(["U201", "U202", "U302"])
 
 
+# ------------------------------------------------------------ short two-pin nets pre-routed (bootstrap caps)
+# The BST cap of each half-bridge sits 2-3 mm off its pin; left to the router, an earlier pass ran a long track through
+# the strip between the pin row and the caps and the 3 mm BST link had "no path" (run 2026-10-28 02:21). They are
+# drawn here, straight or one L, on the pads' side, clearance-checked; srouter keeps existing copper.
+def pre_stubs(patterns, maxlen=5.0, width=0.3):
+    import fatten, fnmatch
+    fatten.CLR = 0.15; fatten.CLR_PAD = 0.15
+    cu = fatten.Copper(board)
+    made, skipped = [], []
+    for n, pins in sorted(netpins.items()):
+        if not any(fnmatch.fnmatch(n, pt) for pt in patterns) or len(pins) != 2:
+            continue
+        (r1, n1), (r2, n2) = pins
+        if r1 not in where or r2 not in where or where[r1][3] != where[r2][3]:
+            skipped.append(n); continue
+        p1 = next(q for q in fps[r1].Pads() if q.GetNumber() == n1)
+        p2 = next(q for q in fps[r2].Pads() if q.GetNumber() == n2)
+        a = (pcbnew.ToMM(p1.GetPosition().x), pcbnew.ToMM(p1.GetPosition().y))
+        e = (pcbnew.ToMM(p2.GetPosition().x), pcbnew.ToMM(p2.GetPosition().y))
+        if abs(a[0] - e[0]) + abs(a[1] - e[1]) > maxlen:
+            skipped.append(n); continue
+        lay = pcbnew.B_Cu if where[r1][3] == "B" else pcbnew.F_Cu
+        sz = min(pcbnew.ToMM(min(p1.GetSize(pcbnew.F_Cu).x, p1.GetSize(pcbnew.F_Cu).y)),
+                 pcbnew.ToMM(min(p2.GetSize(pcbnew.F_Cu).x, p2.GetSize(pcbnew.F_Cu).y)))
+        hw = min(width / 2, sz / 2 - 0.025)
+        cands = [[a, e]] if abs(a[0] - e[0]) < 0.05 or abs(a[1] - e[1]) < 0.05 else [[a, (e[0], a[1]), e], [a, (a[0], e[1]), e]]
+        net = netobjs[n]
+        for path in cands:
+            if all(cu.clear(n, lay, path[i], path[i + 1], hw) for i in range(len(path) - 1)):
+                for i in range(len(path) - 1):
+                    tr = pcbnew.PCB_TRACK(board); tr.SetStart(pcbnew.VECTOR2I(mm(path[i][0]), mm(path[i][1])))
+                    tr.SetEnd(pcbnew.VECTOR2I(mm(path[i + 1][0]), mm(path[i + 1][1]))); tr.SetWidth(mm(2 * hw))
+                    tr.SetLayer(lay); tr.SetNet(net); board.Add(tr)
+                    cu.add(n, {lay}, ("seg", path[i], path[i + 1], hw), tr)
+                made.append(n); break
+        else:
+            skipped.append(n)
+    print(f"pre-routed short links: {len(made)} {made}; left to the router: {skipped}")
+
+
+pre_stubs(["/audio/AMP?_BST*"])
+
+
 # ------------------------------------------------------------ GND dog-bones (USAGE.md: fan-out vias may be placed before
 # routing). Every SMD GND pad gets its own 0.6/0.3 mm via to the In2 plane right next to it, so no GND pad depends on a
 # pour finding a way in between the routed tracks later. The via keeps 0.5 mm from foreign pads (their escape lane).

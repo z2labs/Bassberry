@@ -112,6 +112,8 @@ def pad_via_keepouts(board):
     via ring ends >= 0.05 mm off the pad, stops vias only - srouter blocks vias through every keep-out layer."""
     out = []
     for fp in board.GetFootprints():
+        if fp.GetReference() in KEEPOUT_SKIP:
+            continue
         for p in fp.Pads():
             if p.GetAttribute() != pcbnew.PAD_ATTRIB_SMD:
                 continue
@@ -130,7 +132,8 @@ def closed_for(name, args):
     return c + (("In1.Cu",) if name in ("pass1a_heavy", "pass1a2_amp") else ())
 
 
-KEEPOUT_PASSES = ("pass2_fast", "pass3_rest")   # + repair: the power passes need vias next to their pads
+KEEPOUT_PASSES = ("pass2_fast", "pass3_rest")
+KEEPOUT_SKIP = {"J301"}   # USB-C: the pre-routed D+ crossover via sits between the 0.5 mm-pitch pads (run 02:21: D+ "no path")   # + repair: the power passes need vias next to their pads
 
 
 def export_dsn(board, path, closed=("In2.Cu",), keepouts=True):
