@@ -1,0 +1,163 @@
+{
+ "ignore_nets": [
+  "GND"
+ ],
+ "nets": [
+  {
+   "match": "/battery/CELL*",
+   "width_mm": 0.76,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "+BATT",
+   "width_mm": 0.2,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "+5V",
+   "width_mm": 0.4,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "+5V_BUCK",
+   "width_mm": 0.57,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/BUCK_SW",
+   "width_mm": 0.57,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "VBUS",
+   "width_mm": 0.2,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/CHG_VIN",
+   "width_mm": 0.2,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/CHG_NODE?",
+   "width_mm": 0.2,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/CHG_LX?",
+   "width_mm": 0.2,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "PVDD_SUB",
+   "width_mm": 0.38,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/BOOST_SW",
+   "width_mm": 0.57,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/BOOST_OUT",
+   "width_mm": 0.6,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/audio/AMP1_AP",
+   "width_mm": 0.38,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/audio/AMP1_AN",
+   "width_mm": 0.38,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/audio/AMP1_BP",
+   "width_mm": 0.38,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/audio/AMP1_BN",
+   "width_mm": 0.38,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/audio/AMP2_P",
+   "width_mm": 0.38,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/audio/AMP2_N",
+   "width_mm": 0.38,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/audio/SAT_*",
+   "width_mm": 0.6,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/audio/SUB_*",
+   "width_mm": 0.8,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "+3V3",
+   "width_mm": 0.38,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "+3V3_AON",
+   "width_mm": 0.3,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "+3V3_USB",
+   "width_mm": 0.3,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/CHG_HG*",
+   "width_mm": 0.2,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/CHG_LG*",
+   "width_mm": 0.2,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/CHG_BST?",
+   "width_mm": 0.2,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/CHG_SN?",
+   "width_mm": 0.3,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/audio/AMP?_BST*",
+   "width_mm": 0.3,
+   "clearance_mm": 0.15
+  },
+  {
+   "match": "/power/BUCK_BST",
+   "width_mm": 0.3,
+   "clearance_mm": 0.15
+  }
+ ],
+ "diff_pairs": [
+  {
+   "p": "USB_DP",
+   "n": "USB_DN",
+   "gap_mm": 0.15
+  }
+ ],
+ "only": "*",
+ "smooth": true,
+ "style": "oct",
+ "pad_entry": true
+}
